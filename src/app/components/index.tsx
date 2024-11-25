@@ -1,7 +1,7 @@
 import { Wheel } from './Wheel';
 import { Globe } from './Globe';
 import { GLtest } from './GLtest';
-import { Tree } from './Tree';
+import { Rotation } from './CanvasRotation';
 import { Header } from './Header';
 
-export { Globe, Wheel, GLtest, Tree, Header };
+export { Globe, Wheel, GLtest, Rotation, Header };

@@ -1,3 +1,5 @@
+import { Settings } from '../svg';
+
 export const Header = () => {
 
   const items = [
@@ -9,16 +11,24 @@ export const Header = () => {
   return (
     <div className='absolute w-full h-12 z-50 px-12'>
       <div className="flex flex-row items-baseline justify-between">
-      <h1 className="text-4xl font-bold pl-2 pointer-events-none border-b-4 border-black p-2">Portfolio_test</h1>
-        <div className='flex flex-row text-xl font-bold pr-2 border-b-4 border-black p-2'>
-          {items.map((item, index) => (
-            <a key={index}
-              className='pl-2'
-              href={item.href}
-            >
-              {item.name}
-            </a>
-          ))}
+        <a href="/">
+          <h1 className="text-4xl font-bold border-b-4 border-[black] p-2">Portfolio_test</h1>
+        </a>
+        <div className="invisible md:visible flex flex-row items-center gap-8">
+          <div className='flex flex-row text-xl font-bold border-b-4 border-[black] py-2 gap-4'>
+            {items.map((item, index) => (
+              <a key={index}
+                href={item.href}
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
+
+          <button type="button" title='settings'>
+            <Settings />
+          </button>
+            
         </div>
       </div>
     </div>
