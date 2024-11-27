@@ -1,6 +1,6 @@
 import { Wheel } from './Wheel';
 import { Globe } from './Globe';
-import { CanvasRotation } from './CanvasRotation';
+import { CanvasRotationScene } from './CanvasRotationScene';
 import { Header } from './Header';
 
-export { Globe, Wheel, CanvasRotation, Header };
+export { Globe, Wheel, CanvasRotationScene, Header };

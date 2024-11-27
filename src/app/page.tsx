@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { UpArrow } from '@/app/components/svg';
 
-import { CanvasRotation } from '@/app/components/CanvasRotation';
+import { CanvasRotationScene } from '@/app/components';
 
 
 export default function Home() {
@@ -16,16 +16,16 @@ export default function Home() {
   return (
     <>
       <div className={`w-full absolute ${cover ? '-z-50' : ''}`}>
-        <CanvasRotation />
+        <CanvasRotationScene cover={cover} />
       </div>
 
       {cover && (
-        <div>
-          <div className='absolute w-full h-full bg-[lightpink]/30 -z-40'></div>
-          <div className='absolute w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0 pr-12 text-[black]/90 '>
+        <>
+          <div className='absolute w-full h-full bg-[lightpink]/40 -z-40'></div>
+          <div className='invisible md:visible absolute w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0 pr-12 text-[black]/90 '>
             <h2 className='text-4xl font-bold'>Welcome to the site</h2>
             <p className='text-2xl'>This is a test site for a three.js project</p>
-            <p className='invisible md:visible text-md pt-4 text-balance'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio itaque temporibus at voluptates dolor quos possimus consectetur quod. Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.</p>
+            <p className='text-md pt-4 text-balance'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio itaque temporibus at voluptates dolor quos possimus consectetur quod. Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.</p>
           </div>
 
           <button type="button" className='w-full flex flex-row absolute bottom-[10%] justify-center' onClick={() => fadeOverlay()}>
@@ -34,7 +34,7 @@ export default function Home() {
               <h2 className='w-fit text-2xl'>See some projects</h2>
             </div>
           </button>
-        </div>      
+        </>      
       )}
     </>
   );
