@@ -7,21 +7,22 @@ import { CanvasRotationScene } from '@/app/components';
 
 
 export default function Home() {
-  const [cover, setCover] = useState(true);
-  const [overview, setOverview] = useState(false);
+
+  const [scene, setScene] = useState('cover');
+
 
   const fadeOverlay = () => {
-    setCover(false);
+    // Fade out overlay
   };
 
 
   return (
     <>
-      <div className={`size-full fixed ${cover ? '-z-50' : ''}`}>
-        <CanvasRotationScene cover={cover} overview={overview} setOverview={setOverview} />
+      <div className={`size-full fixed ${scene === 'cover' ? '-z-50' : ''}`}>
+        <CanvasRotationScene scene={scene} setScene={setScene} />
       </div>
 
-      {cover && (
+      {scene === 'cover' && (
         <>
           <div className={`fixed w-full h-full bg-[coral]/60 -z-40`}></div>
           <div className='invisible md:visible fixed w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0 pr-12'>
@@ -31,7 +32,7 @@ export default function Home() {
           </div>
 
           <div className='w-full flex flex-row fixed bottom-[10%] justify-center'>
-            <button type="button" onClick={() => {fadeOverlay(); setOverview(true);}}>
+            <button type="button" onClick={() => {fadeOverlay(); setScene('overview')}}>
               <div className='flex flex-col items-center'>
                 <UpArrow width={40} height={40} />
                 <h2 className='w-fit text-2xl'>See some projects</h2>
@@ -40,12 +41,12 @@ export default function Home() {
           </div>
         </>      
       )}
-      {!cover && 
+      {scene !== 'cover' && 
         <div className='w-full flex flex-row fixed bottom-[3%] justify-center'>
-          <button type="button" onClick={() => {if(overview) { setCover(true) } else { setOverview(true) }}}>
+          <button type="button" onClick={() => {if(scene === 'overview') { setScene('cover') } else { setScene('overview'); }}}>
             <div className='flex flex-col items-center'>
               <UpArrow width={40} height={40} rotate={180} />
-              <h2 className='w-fit text-2xl'>{overview ? 'Home' : 'Overview'}</h2>
+              <h2 className='w-fit text-2xl'>{scene === 'overview' ? 'Home' : 'Overview'}</h2>
             </div>
           </button>
         </div>
