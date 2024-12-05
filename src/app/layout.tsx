@@ -25,7 +25,7 @@ export const viewport: Viewport = {
   themeColor: "#000000",
   initialScale: 1,
   width: "device-width",
-  viewportFit: "cover",
+  viewportFit: "auto",
   maximumScale: 1,
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
         <div className="w-full h-full">
           <Header />

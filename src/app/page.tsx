@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { UpArrow } from '@/app/components/svg';
 
 import { CanvasRotationScene } from '@/app/components';
@@ -9,7 +10,7 @@ import { CanvasRotationScene } from '@/app/components';
 export default function Home() {
 
   const [scene, setScene] = useState('cover');
-
+  const router = useRouter();
 
   const fadeOverlay = () => {
     // Fade out overlay
@@ -32,7 +33,7 @@ export default function Home() {
           </div>
 
           <div className='w-full flex flex-row fixed bottom-[10%] justify-center'>
-            <button type="button" onClick={() => {fadeOverlay(); setScene('overview')}}>
+            <button type="button" onClick={() => {fadeOverlay(); setScene('overview'); router.push('/', { scroll: false }); }}>
               <div className='flex flex-col items-center'>
                 <UpArrow width={40} height={40} />
                 <h2 className='w-fit text-2xl'>See some projects</h2>
@@ -43,7 +44,7 @@ export default function Home() {
       )}
       {scene !== 'cover' && 
         <div className='w-full flex flex-row fixed bottom-[3%] justify-center'>
-          <button type="button" onClick={() => {if(scene === 'overview') { setScene('cover') } else { setScene('overview'); }}}>
+          <button type="button" onClick={() => {if(scene === 'overview') { setScene('cover') } else { setScene('overview'); router.push('/', { scroll: false }); }}}>
             <div className='flex flex-col items-center'>
               <UpArrow width={40} height={40} rotate={180} />
               <h2 className='w-fit text-2xl'>{scene === 'overview' ? 'Home' : 'Overview'}</h2>
