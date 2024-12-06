@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useFrame, Canvas, useLoader, useThree } from '@react-three/fiber';
 
-import { MeshLambertMaterial, Color, Mesh, Vector3 } from 'three';
+import { MeshLambertMaterial, Color, Mesh, Vector3, Vector2 } from 'three';
 
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
@@ -17,10 +17,12 @@ const CameraController = ({
   autoRotate, 
   clickedObj, 
   scene,
+  animationReady,
   setAnimationReady
 }) => {
-  const { camera, gl } = useThree();
+  const { camera, gl, raycaster } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
+  const pointer = new Vector2();
 
   controls.autoRotate = autoRotate;
   controls.autoRotateSpeed = 0.1;
@@ -32,24 +34,33 @@ const CameraController = ({
   controls.screenSpacePanning = false;
   controls.zoomToCursor = true;
 
+  function onPointerMove( event ) {
+
+    // calculate pointer position in normalized device coordinates
+    // (-1 to +1) for both components
+  
+    pointer.set( (event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1);
+
+  }
+
   if(scene === 'details') {
     controls.enableRotate = true;
     controls.enablePan = true;
     controls.dampingFactor = 1;
     controls.screenSpacePanning = true;
-    controls.enableZoom = true;
+
+    window.addEventListener( 'pointermove', onPointerMove );
   }
+
+
 
   useEffect(
      () => {
-        controls.minDistance = 3;
-        controls.maxDistance = 7;
         controls.maxPolarAngle = Math.PI / 1.5;
         controls.minPolarAngle = Math.PI / 4;
 
         controls.enableDamping = true;
-        controls.dampingFactor = 1;
-        controls.screenSpacePanning = false;
+        controls.dampingFactor = 2;
         
         return () => {
           controls.dispose();
@@ -58,6 +69,7 @@ const CameraController = ({
   );
 
   useEffect(() => {
+
     if (autoRotate) {
       controls.object.position.y = -2;
       controls.object.position.z = 4;
@@ -82,10 +94,17 @@ const CameraController = ({
       controls.object.position.lerp(new Vector3(-clickedObj.x / 4, 0, -clickedObj.z / 4), 0.017);
       controls.cursor.addVectors(controls.target, controls.object.position);
     }
-
+    // allow details screen when looking at target
     if (scene === 'details' && currentPos.distanceTo(targetPos) < 0.1) {
       setAnimationReady(true);
     }
+    
+    if(animationReady) {
+      raycaster.setFromCamera(pointer, camera);
+      controls.object.position.lerp(raycaster.ray.direction.negate(), 0.008);
+    }
+
+    controls.cursor.addVectors(controls.target, controls.object.position);
 
     orbref.current.innerHTML = `<h3>X: ${controls.object.position.x.toFixed(3)}</h3>
                                 <h3>Y: ${controls.object.position.y.toFixed(3)} </h3>
@@ -250,6 +269,7 @@ export const CanvasRotationScene = ({ scene, setScene }) => {
           autoRotate={scene === 'cover'} 
           clickedObj={clickedObj} 
           scene={scene} 
+          animationReady={animationReady}
           setAnimationReady={setAnimationReady} 
         />
         

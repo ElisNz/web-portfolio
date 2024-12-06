@@ -38,12 +38,11 @@ export const ProjectDetailScreen = (props) => {
       detailsR.style.display = 'block';
     }
 
+    detailsL.style.left = `${lPosx}px`;
+    detailsL.style.top = `${lPosy}px`;
 
-      detailsL.style.left = `${lPosx}px`;
-      detailsL.style.top = `${lPosy}px`;
-
-      detailsR.style.left = `${rPosx}px`;
-      detailsR.style.top = `${rPosy}px`;
+    detailsR.style.left = `${rPosx}px`;
+    detailsR.style.top = `${rPosy}px`;
 
     requestAnimationFrame(setDetailsScreenPosition);
   }
