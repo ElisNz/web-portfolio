@@ -44,8 +44,6 @@ const CameraController = ({
   }
 
   if(scene === 'details') {
-    controls.enableRotate = true;
-    controls.enablePan = true;
     controls.dampingFactor = 1;
     controls.screenSpacePanning = true;
 
@@ -80,7 +78,7 @@ const CameraController = ({
     }
   }, [scene]);
 
-  useFrame(() => {
+  useFrame((state) => {
 
     let currentPos = new Vector3().copy(camera.position);
     let targetPos = new Vector3(-clickedObj.x / 4, 0, -clickedObj.z / 4);
@@ -101,7 +99,7 @@ const CameraController = ({
     
     if(animationReady) {
       raycaster.setFromCamera(pointer, camera);
-      controls.object.position.lerp(raycaster.ray.direction.negate(), 0.008);
+      controls.object.position.lerp(raycaster.ray.direction.negate().divide({x: state.viewport.width / 2, y: state.viewport.height / 2, z: 2}), 0.008);
     }
 
     controls.cursor.addVectors(controls.target, controls.object.position);
@@ -253,11 +251,9 @@ export const CanvasRotationScene = ({ scene, setScene }) => {
   const canvasRef = useRef(null);
 
 
-
   useEffect(() => {
     setAnimationReady(false);
   }, [scene]);
-
 
 
   return (
