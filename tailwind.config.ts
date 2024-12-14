@@ -1,7 +1,5 @@
 import type { Config } from "tailwindcss";
 
-
-
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -15,8 +13,8 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       cursor: {
-        'fancy': 'url(/cursor/cursor-default.png), auto',
-      }
+        fancy: "url(/cursor/cursor-default.png), auto",
+      },
     },
   },
   plugins: [],

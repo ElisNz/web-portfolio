@@ -1,3 +1,3 @@
-import { ProjectDetailScreen } from './ProjectDetailScreen';
+import { ProjectDetailScreen } from "./ProjectDetailScreen";
 
 export { ProjectDetailScreen };

@@ -1,4 +1,4 @@
-import { CanvasRotationScene } from './CanvasRotationScene';
-import { Header } from './Header';
+import { CanvasUI } from "./CanvasUI";
+import { Header } from "./Header";
 
-export { CanvasRotationScene, Header };
+export { CanvasUI, Header };
