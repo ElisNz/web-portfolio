@@ -15,18 +15,19 @@ export const Header = () => {
             cactus_cat
           </h1>
         </a>
-        <div className="invisible md:visible flex flex-row items-center gap-8">
-          <div className="flex flex-row text-xl font-bold border-b-4 border-[black] p-2 gap-4">
+        <div className="invisible md:visible flex flex-row items-center gap-4">
+          <div className="flex flex-col justify-center text-xl font-bold border-r-4 border-[black] pr-4 py-2 gap-4">
+            
             {items.map((item, index) => (
               <a key={index} href={item.href}>
                 {item.name}
               </a>
             ))}
           </div>
-
           <button type="button" title="settings">
             <Settings />
           </button>
+          
         </div>
       </div>
     </div>
