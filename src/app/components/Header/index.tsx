@@ -1,3 +1,4 @@
+'use client';
 import { Settings } from "../svg";
 
 export const Header = () => {
@@ -15,7 +16,7 @@ export const Header = () => {
             cactus_cat
           </h1>
         </a>
-        <div className="invisible md:visible flex flex-row items-center gap-4">
+        <div className="invisible md:visible flex flex-row items-center gap-4 my-4">
           <div className="flex flex-col justify-center text-xl font-bold border-r-4 border-[black] pr-4 py-2 gap-4">
             
             {items.map((item, index) => (
@@ -24,7 +25,7 @@ export const Header = () => {
               </a>
             ))}
           </div>
-          <button type="button" title="settings">
+          <button type="button" title="settings" className="transition duration-300 ease-in-out hover:-rotate-45 hover:scale-110">
             <Settings />
           </button>
           

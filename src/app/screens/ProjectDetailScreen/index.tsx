@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useStore } from "@/app/Store";
 
 export const ProjectDetailScreen = (props) => {
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 10;
@@ -76,11 +77,11 @@ export const ProjectDetailScreen = (props) => {
 
   useEffect(() => {
     setDetailsScreenPosition();
-  }, [props.animationReady]);
+  }, [useStore(state => state.animationReady)]);
 
   return (
-    <>
-      <div id="details-screen-l" className="w-1/4 absolute pr-12">
+    <div className={`${props.visible ? '' : 'hidden'}`}>
+      <div id="details-screen-l" className="w-1/4 absolute pr-36">
         <h2 className="text-2xl font-bold">{props.title || "title_"}</h2>
         <h3 className="text-lg">This is a test project</h3>
         <p className="text-md pt-4 text-balance bg-blend-difference">
@@ -90,7 +91,7 @@ export const ProjectDetailScreen = (props) => {
       </div>
       <div className="absolute size-20 bg-[blue]"></div>
 
-      <div id="details-screen-r" className="w-1/4 absolute pl-12">
+      <div id="details-screen-r" className="w-1/4 absolute pl-36">
         <h3 className="text-lg font-bold">This is a test project</h3>
         <p className="text-md pt-4 text-balance bg-blend-difference">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio itaque
@@ -102,6 +103,6 @@ export const ProjectDetailScreen = (props) => {
           <li>Ab doloremque</li>
         </ul>
       </div>
-    </>
+    </div>
   );
 };
