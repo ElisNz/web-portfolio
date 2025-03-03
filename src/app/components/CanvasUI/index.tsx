@@ -1,7 +1,6 @@
 "use client";
 // Tree test component using three.js with react-three-fiber
 import { useEffect, useRef, useState, Suspense } from "react";
-import Image from "next/image";
 import { useFrame, Canvas, useLoader, useThree } from "@react-three/fiber";
 
 import {
@@ -19,6 +18,7 @@ import { MTLLoader } from "three/examples/jsm/Addons.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { useStore } from "@/app/Store";
+import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
 
 const Fallback = () => {
@@ -43,8 +43,9 @@ const CameraController = ({
   const { camera, gl, raycaster } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
   const pointer = new Vector2();
-  const store = useStore(state => state);
-  const { scene } = store;
+  const scene = useStore((state) => state.scene);
+  const setAnimationReady = useStore((state) => state.setAnimationReady);
+  const animationReady = useStore((state) => state.animationReady);
 
   controls.autoRotate = autoRotate;
   controls.autoRotateSpeed = 2;
@@ -55,6 +56,11 @@ const CameraController = ({
   controls.enableDamping = true;
   controls.screenSpacePanning = false;
   controls.zoomToCursor = true;
+
+/*   if (scene === "details") {
+    controls.object.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+  } */
+  
 
   function onPointerMove(event) {
     // calculate pointer position in normalized device coordinates
@@ -87,9 +93,10 @@ const CameraController = ({
 
   useEffect(() => {
     if (autoRotate) {
-      controls.object.position.y = 1;
+      controls.object.position.y = 0;
       controls.object.position.z = 7;
       controls.object.position.x = 0;
+      controls.target.y = 7;
     }
     if (scene === "details") {
       controls.autoRotate = false;
@@ -101,36 +108,36 @@ const CameraController = ({
     let currentPos = new Vector3().copy(camera.position);
 
     if (scene !== "details") {
-      store.setAnimationReady(false);
+      setAnimationReady(false);
     }
     // initial pan to object position
     if (scene === "overview") {
-      controls.object.position.lerp(cameraPosition, 0.01);
-      controls.target.lerp(new Vector3(0, 1.2, 0), 0.01);
+      controls.object.position.lerp({x: 0, y: 3, z: 10}, 0.01);
+      // controls.target.lerp(new Vector3(0, 10, 5), 0.1);
+      clickedObj.lerp(new Vector3(clickedObj.x, 0, clickedObj.z), 0.01);
     }
     // interactive click-pan
     if (scene === "details") {
-      // TODO: explore lerp to mutate objects to 0,0,0 instead of camera
-      // clickedObj.lerp(new Vector3(0, 0, 0), 0.01);
-      controls.target.lerp(new Vector3(clickedObj.x, clickedObj.y + 1.5, clickedObj.z), 0.1);
 
-      controls.object.position.lerp(
-        new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z),
-        0.01,
-      );
+      clickedObj.lerp(new Vector3(clickedObj.x, 0.4, 1), 0.05);
+      // controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.5, z: clickedObj.z}, 0.1);
+
+      /* controls.object.position.lerp(
+        {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
+        0.1
+      ); */
+    }
+    // console.log(cameraPosition, controls.object.position);
+
+    if (scene === "details" && !animationReady) {
+      setAnimationReady(true);
     }
 
-
-    if (scene === "details" && !store.animationReady && controls.object.position.distanceTo(cameraPosition) < 1) {
-      // TODO: this should use zustand store to avoid re-rendering the camera
-      store.setAnimationReady(true);
-    }
-
-    if (store.animationReady) {
+    if (animationReady) {
       raycaster.setFromCamera(pointer, camera);
-      controls.object.position.lerp(
+      controls.target.lerp(
         raycaster.ray.direction.negate(),
-        0.006,
+        0.001,
       );
     }
 
@@ -151,8 +158,8 @@ export const InteractiveObjectNode = (props) => {
   const [hovered, hover] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [active, setActive] = useState(false);
-  const store = useStore(state => state);
-  const { scene, setScene } = store;
+  const scene = useStore(state => state.scene);
+  const setScene = useStore(state => state.setScene);
 
   const { modelInfo, material, hitbox, position, scale, rotation } = props;
 
@@ -160,6 +167,7 @@ export const InteractiveObjectNode = (props) => {
   const meshRef = useRef(null);
 
   const ROTATION_SPEED = 0.2;
+  const display = scene === 'overview' || scene === 'cover' || (scene === 'details' && active);
 
   const model = useLoader(
     OBJLoader,
@@ -217,6 +225,7 @@ export const InteractiveObjectNode = (props) => {
     }
 
     const textElement = document.getElementById(props.label);
+    
 
     if (!textElement) {
       return;
@@ -229,7 +238,7 @@ export const InteractiveObjectNode = (props) => {
     meshRef.current.updateMatrixWorld();
     textVector.setFromMatrixPosition(meshRef.current.matrixWorld);
     textVector.project(state.camera);
-
+ 
     const widthHalf = state.size.width / 2;
     const heightHalf = state.size.height / 2;
     const allowedWidth = state.size.width - state.size.width / 10;
@@ -252,7 +261,7 @@ export const InteractiveObjectNode = (props) => {
     } else {
       textElement.style.left = `${textVector.x}px`;
       textElement.style.top = `${textVector.y}px`;
-      textElement.style.display = "block";
+      textElement.style.display = display ? 'block' : 'none';
 
       props.selectedPosition.x = textVector.x;
       props.selectedPosition.y = textVector.y;
@@ -260,7 +269,7 @@ export const InteractiveObjectNode = (props) => {
   });
 
   return (
-    <mesh {...props} ref={meshRef}>
+    <mesh {...props} ref={meshRef} visible={display}>
       <primitive object={(model as Object3D).clone()} position={[0, hovered ? 10 : 0, 370]} />
       <mesh
         position={hitbox.position}
@@ -343,6 +352,7 @@ const Director = ({
   trackerRef,
 }) => {
   const [clickedObj, setClickedObj] = useState(new Vector3(0, 0, 4));
+  const [allObj, setAllObj] = useState([]);
   const store = useStore(state => state);
   const { scene } = store;
 
@@ -351,11 +361,13 @@ const Director = ({
     orbref: React.MutableRefObject<any>;
     autoRotate: boolean;
     clickedObj: Vector3;
+    allObj: Vector3[];
   
     constructor() {
       this.orbref = trackerRef;
       this.autoRotate = scene === "cover";
       this.clickedObj = clickedObj;
+      this.allObj = allObj;
       this.cameraPosition = this.setCameraPositionFromScene();
     }
     private setCameraPositionFromScene() {
@@ -379,6 +391,7 @@ const Director = ({
   
   class InteractiveObjectProps extends BaseObject {
     setClickedObj: (position: Vector3) => void;
+    setAllObj: (objects: Vector3[]) => void;
     readonly scene: string;
     selectedPosition: { x: number; y: number };
     setProjectName: (name: string) => void;
@@ -399,6 +412,7 @@ const Director = ({
       super(props.modelInfo, props.material, props.hitbox, props.position, props.scale, props.rotation);
       this.label = props.label;
       this.setClickedObj = setClickedObj;
+      this.setAllObj = setAllObj;
       this.selectedPosition = selectedPosition;
       this.setProjectName = setProjectName;
       this.node = <InteractiveObjectNode key={props.label} {...this} />;
@@ -503,8 +517,8 @@ export const CanvasUI = () => {
   const [selectedPosition] = useState({ x: 0, y: 0 });
   const [projectName, setProjectName] = useState("");
   const trackerRef = useRef(null);
-  const store = useStore(state => state);
-  const { scene } = store;
+  const scene = useStore(state => state.scene);
+  const animationReady = useStore(useShallow((state) => state.animationReady));
 
   return (
     <div
@@ -519,12 +533,11 @@ export const CanvasUI = () => {
           />
         </Suspense>
       </Canvas>
-
-      <ProjectDetailScreen
-        visible={scene === "details" && store.animationReady}
-        title={projectName}
-        selectedPosition={selectedPosition}
-      />
+        <ProjectDetailScreen
+          visible={animationReady}
+          title={projectName}
+          selectedPosition={selectedPosition}
+        />
 
       <div
         ref={trackerRef}

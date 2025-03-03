@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { useStore } from "@/app/Store";
+import { useShallow } from "zustand/react/shallow";
 
 export const ProjectDetailScreen = (props) => {
+  const selectedPosition = useStore(useShallow((state) => state.selectedPosition));
+  const animationReady = useStore(useShallow((state) => state.animationReady));
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 10;
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 10;
-
+  // TODO: if current layout: set abs position for screen
   const setDetailsScreenPosition = () => {
     const detailsL = document.getElementById("details-screen-l");
     const detailsR = document.getElementById("details-screen-r");
@@ -77,10 +80,10 @@ export const ProjectDetailScreen = (props) => {
 
   useEffect(() => {
     setDetailsScreenPosition();
-  }, [useStore(state => state.animationReady)]);
+  }, [animationReady]);
 
   return (
-    <div className={`${props.visible ? '' : 'hidden'}`}>
+    <div className={`${props.visible ? 'transition-opacity delay-1000 duration-1000 ease-in-out opacity-100' : 'opacity-0'}`}>
       <div id="details-screen-l" className="w-1/4 absolute pr-36">
         <h2 className="text-2xl font-bold">{props.title || "title_"}</h2>
         <h3 className="text-lg">This is a test project</h3>
