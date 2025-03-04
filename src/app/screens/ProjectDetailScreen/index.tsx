@@ -1,8 +1,11 @@
 'use client';
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
+
+const sampleTextR = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.";
+const sampleTextL = "Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.";
 
 export const ProjectDetailScreen = (props) => {
 
@@ -12,7 +15,26 @@ export const ProjectDetailScreen = (props) => {
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 5;
   const MODEL_WIDTH = 200;
   const MODEL_HEIGHT = window.innerHeight / 3;
-  // TODO: if current layout: set abs position for screen
+
+  const typeText = (text, element, delay) => {
+    const textArr = text.split("");
+    element.innerHTML = "";
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < textArr.length) {
+        if (element.innerHTML[element.innerHTML.length - 1] === "▋") {
+          element.innerHTML = element.innerHTML.slice(0, -1);
+        }
+        element.innerHTML += textArr[i];
+        element.innerHTML += '▋';
+        i++;
+      } else {
+        element.innerHTML = element.innerHTML.slice(0, -1);
+        clearInterval(interval);
+      }
+    }, delay);
+  }
+
   const setDetailsScreenPosition = () => {
     const detailsL = document.getElementById("details-screen-l");
     const detailsR = document.getElementById("details-screen-r");
@@ -81,12 +103,22 @@ export const ProjectDetailScreen = (props) => {
     setDetailsScreenPosition();
   }, [animationReady]);
 
+  useEffect(() => {
+    if (!props.visible) {
+      return;
+    }
+    setTimeout(() => {
+      typeText(sampleTextL, document.getElementById("text-l"), 30);
+      typeText(sampleTextR, document.getElementById("text-r"), 40);
+    }, 1000);
+  }, [props.visible]);
+
   return (
     <div className={`${props.visible ? 'transition-opacity delay-1000 duration-1000 ease-in-out opacity-100' : 'opacity-0'}`}>
       <div id="details-screen-l" className="w-1/3 absolute">
         <h2 className="text-2xl font-bold">{props.title || "title_"}</h2>
         <h3 className="text-lg">This is a test project</h3>
-        <p className="text-md pt-4 text-balance bg-blend-difference">
+        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-l">
           Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.
         </p>
       </div>
@@ -94,9 +126,8 @@ export const ProjectDetailScreen = (props) => {
 
       <div id="details-screen-r" className="w-1/3 absolute">
         <h3 className="text-lg font-bold">This is a test project</h3>
-        <p className="text-md pt-4 text-balance bg-blend-difference">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Optio itaque
-          temporibus at voluptates dolor quos possimus consectetur quod.
+        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-r">
+          {/* {typeText(sampleText, document.getElementById("text-r"), 100)} */}
         </p>
         <ul className="text-md pt-4 text-balance bg-blend-difference list-disc list-inside">
           <li>Recusandae</li>
