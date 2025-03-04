@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from "react";
 import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
@@ -5,6 +7,7 @@ import { useShallow } from "zustand/react/shallow";
 export const ProjectDetailScreen = (props) => {
   const selectedPosition = useStore(useShallow((state) => state.selectedPosition));
   const animationReady = useStore(useShallow((state) => state.animationReady));
+  
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 10;
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 10;
   // TODO: if current layout: set abs position for screen
@@ -15,11 +18,11 @@ export const ProjectDetailScreen = (props) => {
     if (!detailsL || !detailsR) {
       return;
     }
-
+    console.log(props.selectedPosition, selectedPosition);
     const lPosx =
       props.selectedPosition.x -
       window.innerWidth / 3 +
-      (props.selectedPosition.x - window.innerWidth / 4) / 2;
+      (window.innerWidth / 4) / 2;
     const lPosy = props.selectedPosition.y - window.innerHeight / 2;
 
     const rPosx =

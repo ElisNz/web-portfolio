@@ -20,6 +20,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
+import { text } from "stream/consumers";
 
 const Fallback = () => {
   return (
@@ -243,7 +244,7 @@ export const InteractiveObjectNode = (props) => {
     const heightHalf = state.size.height / 2;
     const allowedWidth = state.size.width - state.size.width / 10;
     const allowedHeight = state.size.height - state.size.height / 10;
-    const xOffset = state.size.width / 20;
+    const xOffset = 100;
     const yOffset = 40;
 
     textVector.x = textVector.x * widthHalf + widthHalf - xOffset;
@@ -261,6 +262,9 @@ export const InteractiveObjectNode = (props) => {
     } else {
       textElement.style.left = `${textVector.x}px`;
       textElement.style.top = `${textVector.y}px`;
+      textElement.style.width = "200px";
+      textElement.style.textShadow = "0.5px 0.5px 0px rgba(0, 0, 0, 0.5)";
+      textElement.style.textAlign = "center";
       textElement.style.display = display ? 'block' : 'none';
 
       props.selectedPosition.x = textVector.x;
@@ -353,8 +357,8 @@ const Director = ({
 }) => {
   const [clickedObj, setClickedObj] = useState(new Vector3(0, 0, 4));
   const [allObj, setAllObj] = useState([]);
-  const store = useStore(state => state);
-  const { scene } = store;
+  const scene = useStore(state => state.scene);
+
 
   class CameraProps {
     cameraPosition: Vector3;

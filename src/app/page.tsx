@@ -74,7 +74,7 @@ export default function Home() {
               </div>
             </button>
           </div>
-          <div className="absolute w-2/3 flex flex-row -z-50 gap-4 bottom-2 -right-20 overflow-clip opacity-50">
+{/*           <div className="absolute w-2/3 flex flex-row -z-50 gap-4 bottom-2 -right-20 overflow-clip opacity-50">
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
@@ -87,7 +87,7 @@ export default function Home() {
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
             <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-          </div>
+          </div> */}
         </>
       )}
     </>
