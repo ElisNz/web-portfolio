@@ -5,8 +5,6 @@ interface storeTypes {
   setScene: (scene: typeof this.scene) => void;
   animationReady: boolean;
   setAnimationReady: (ready: boolean) => void;
-  selectedPosition: { x: number; y: number };
-  setSelectedPosition: (position: { x: number; y: number }) => void;
   fadeOverlay: () => void;
 };
 
@@ -17,8 +15,6 @@ class Store implements storeTypes {
   setScene: (scene: scenes) => void;
   animationReady: boolean;
   setAnimationReady: (ready: boolean) => void;
-  selectedPosition: { x: number; y: number };
-  setSelectedPosition: (position: { x: number; y: number }) => void;
   fadeOverlay: () => void;
 };
 
@@ -27,8 +23,6 @@ export const useStore = create<Store>((set) => ({
   setScene: (scene) => set({ scene }),
   animationReady: false,
   setAnimationReady: (ready) => set({ animationReady: ready }),
-  selectedPosition: { x: 0, y: 0 },
-  setSelectedPosition: (position) => set({ selectedPosition: position }),
   fadeOverlay: () => {
     // Fade out overlay
   },

@@ -20,7 +20,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
-import { text } from "stream/consumers";
+
 
 const Fallback = () => {
   return (
@@ -113,22 +113,21 @@ const CameraController = ({
     }
     // initial pan to object position
     if (scene === "overview") {
-      controls.object.position.lerp({x: 0, y: 3, z: 10}, 0.01);
+      controls.object.position.lerp({x: 0, y: 2, z: 10}, 0.01);
       // controls.target.lerp(new Vector3(0, 10, 5), 0.1);
       clickedObj.lerp(new Vector3(clickedObj.x, 0, clickedObj.z), 0.01);
     }
     // interactive click-pan
     if (scene === "details") {
 
-      clickedObj.lerp(new Vector3(clickedObj.x, 0.4, 1), 0.05);
-      // controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.5, z: clickedObj.z}, 0.1);
+      // clickedObj.lerp(new Vector3(0, 0.4, 1), 0.05);
+      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.5, z: clickedObj.z}, 0.05);
 
       /* controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
         0.1
       ); */
     }
-    // console.log(cameraPosition, controls.object.position);
 
     if (scene === "details" && !animationReady) {
       setAnimationReady(true);
@@ -239,6 +238,7 @@ export const InteractiveObjectNode = (props) => {
     meshRef.current.updateMatrixWorld();
     textVector.setFromMatrixPosition(meshRef.current.matrixWorld);
     textVector.project(state.camera);
+    meshRef.current.position.set(position[0], position[1], position[2]);
  
     const widthHalf = state.size.width / 2;
     const heightHalf = state.size.height / 2;
@@ -290,6 +290,7 @@ export const InteractiveObjectNode = (props) => {
         onClick={() => {
           if (scene !== "details") {
             props.setClickedObj(meshRef.current.position);
+            
             setScene("details");
             setActive(true);
             props.setProjectName(`project_${props.indexNr}`);
