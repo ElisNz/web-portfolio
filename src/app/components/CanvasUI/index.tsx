@@ -262,8 +262,9 @@ export const InteractiveObjectNode = (props) => {
     } else {
       textElement.style.left = `${textVector.x}px`;
       textElement.style.top = `${textVector.y}px`;
-      textElement.style.width = "200px";
-      textElement.style.textShadow = "0.5px 0.5px 0px rgba(0, 0, 0, 0.5)";
+      textElement.style.minWidth = "200px";
+      textElement.style.fontSize = "1.5rem";
+      textElement.style.textShadow = "0.3px 0.3px 0px rgba(0, 0, 0, 0.5)";
       textElement.style.textAlign = "center";
       textElement.style.display = display ? 'block' : 'none';
 

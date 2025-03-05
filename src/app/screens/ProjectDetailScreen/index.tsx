@@ -1,15 +1,21 @@
 'use client';
 
-import { use, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
+
+import { Miniloader } from "@/app/components/Miniloader";
+import { set } from "mongoose";
+
 
 const sampleTextR = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.";
 const sampleTextL = "Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.";
 
+
 export const ProjectDetailScreen = (props) => {
 
   const animationReady = useStore(useShallow((state) => state.animationReady));
+  const [textLoaded, setTextLoaded] = useState(false);
   
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 5;
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 5;
@@ -17,20 +23,25 @@ export const ProjectDetailScreen = (props) => {
   const MODEL_HEIGHT = window.innerHeight / 3;
 
   const typeText = (text, element, delay) => {
+    setTextLoaded(false);
     const textArr = text.split("");
     element.innerHTML = "";
     let i = 0;
+
     const interval = setInterval(() => {
       if (i < textArr.length) {
-        if (element.innerHTML[element.innerHTML.length - 1] === "▋") {
-          element.innerHTML = element.innerHTML.slice(0, -1);
+        if (element.innerHTML[element.innerHTML.length - 1] === "▓") {
+          element.innerHTML = element.innerHTML.slice(0, -2);
         }
         element.innerHTML += textArr[i];
-        element.innerHTML += '▋';
+
+        element.innerHTML += ' ▓';
+
         i++;
       } else {
-        element.innerHTML = element.innerHTML.slice(0, -1);
         clearInterval(interval);
+        element.innerHTML = element.innerHTML.slice(0, -2);
+        setTextLoaded(true);
       }
     }, delay);
   }
@@ -113,28 +124,31 @@ export const ProjectDetailScreen = (props) => {
     }, 1000);
   }, [props.visible]);
 
+
   return (
     <div className={`${props.visible ? 'transition-opacity delay-1000 duration-1000 ease-in-out opacity-100' : 'opacity-0'}`}>
       <div id="details-screen-l" className="w-1/3 absolute">
         <h2 className="text-2xl font-bold">{props.title || "title_"}</h2>
         <h3 className="text-lg">This is a test project</h3>
-        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-l">
-          Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia.
-        </p>
+        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-l" />
       </div>
       <div className="absolute size-20 bg-[blue]"></div>
 
       <div id="details-screen-r" className="w-1/3 absolute">
         <h3 className="text-lg font-bold">This is a test project</h3>
-        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-r">
-          {/* {typeText(sampleText, document.getElementById("text-r"), 100)} */}
-        </p>
+        <p className="text-md pt-4 text-balance bg-blend-difference" id="text-r" />
         <ul className="text-md pt-4 text-balance bg-blend-difference list-disc list-inside">
           <li>Recusandae</li>
           <li>Quae adipisci</li>
           <li>Ab doloremque</li>
         </ul>
       </div>
+
+      {props.visible && !textLoaded && 
+      <div className="absolute bottom-10 right-10">
+        <Miniloader />
+      </div>
+      }
     </div>
   );
 };
