@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useShallow } from "zustand/react/shallow";
 import { UpArrow } from "@/app/components/svg";
+import { Miniloader } from "@/app/components/Miniloader";
 
 import { CanvasUI } from "@/app/components";
 import { useStore } from "@/app/Store";
@@ -10,6 +12,7 @@ import { useStore } from "@/app/Store";
 export default function Home() {
   const store = useStore(state => state);
   const { scene, setScene } = store;
+  const showLoader = useStore(useShallow(state => state.showLoader));
   const router = useRouter();
 
   const fadeOverlay = () => {
@@ -22,9 +25,8 @@ export default function Home() {
         <CanvasUI />
       </div>
 
-      {scene === "cover" && (
-        <>
-          <div className={`fixed w-full h-full bg-[coral]/60 -z-40`}></div>
+        <div className={`${scene === 'cover' ? "opacity-100" : 'transition-all duration-300 opacity-0 invisible pointer-events-none'}`}>
+          <div className={`fixed w-full h-full bg-[coral]/60 -z-40 ${scene === 'cover' ? "opacity-100" : 'opacity-0'}`}></div>
           <div className="invisible md:visible fixed w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0 pr-12">
             <h2 className="text-4xl font-bold">I'm a web designer.</h2>
             <p className="text-lg pt-[1.5rem] text-balance bg-blend-difference">
@@ -50,11 +52,10 @@ export default function Home() {
               </div>
             </button>
           </div>
-        </>
-      )}
-      {scene !== "cover" && (
+        </div>
+
         <>
-          <div className="w-full flex flex-row fixed bottom-[3%] justify-center">
+          <div className={`w-full flex flex-row fixed bottom-[3%] justify-center transition-all duration-300 ${scene !== 'cover' ? "opacity-100" : 'opacity-0 invisible pointer-events-none'}`}>
             <button
               type="button"
               onClick={() => {
@@ -74,22 +75,7 @@ export default function Home() {
               </div>
             </button>
           </div>
-{/*           <div className="absolute w-2/3 flex flex-row -z-50 gap-4 bottom-2 -right-20 overflow-clip opacity-50">
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-          </div>
-          <div className="absolute w-2/3 flex flex-row -z-50 gap-4 top-20 -left-20 overflow-clip opacity-50">
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-            <Image src="/images/texture_text_test.png" width={200} height={100} alt="text" />
-          </div> */}
         </>
-      )}
     </>
   );
 }

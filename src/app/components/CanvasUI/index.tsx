@@ -48,6 +48,7 @@ const CameraController = ({
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
 
+
   controls.autoRotate = autoRotate;
   controls.autoRotateSpeed = 2;
 
@@ -108,32 +109,37 @@ const CameraController = ({
     state.scene.name = scene;
     let currentPos = new Vector3().copy(camera.position);
 
+/*     if (scene !== "cover") {
+      controls.object.position.lerp(
+        {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
+        0.01
+      );
+    } */
+
     if (scene !== "details") {
       setAnimationReady(false);
     }
     // initial pan to object position
     if (scene === "overview") {
-      controls.object.position.lerp({x: 0, y: 2, z: 10}, 0.01);
-      // controls.target.lerp(new Vector3(0, 10, 5), 0.1);
-      clickedObj.lerp(new Vector3(clickedObj.x, 0, clickedObj.z), 0.01);
+      controls.object.position.lerp({x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z}, 0.05);
+      controls.target.lerp({x: 0, y: 0, z: 0}, 0.05);
+      clickedObj.lerp(new Vector3(clickedObj.x, 0, clickedObj.z), 0.05);
     }
     // interactive click-pan
     if (scene === "details") {
-
       // clickedObj.lerp(new Vector3(0, 0.4, 1), 0.05);
-      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.5, z: clickedObj.z}, 0.05);
-
-      /* controls.object.position.lerp(
+      controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
-        0.1
-      ); */
+        0.01
+      );
+      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.6, z: clickedObj.z}, 0.05);
     }
 
     if (scene === "details" && !animationReady) {
       setAnimationReady(true);
     }
 
-    if (animationReady) {
+    if (scene === 'details' && animationReady) {
       raycaster.setFromCamera(pointer, camera);
       controls.target.lerp(
         raycaster.ray.direction.negate(),
@@ -245,7 +251,7 @@ export const InteractiveObjectNode = (props) => {
     const allowedWidth = state.size.width - state.size.width / 10;
     const allowedHeight = state.size.height - state.size.height / 10;
     const xOffset = 100;
-    const yOffset = 40;
+    const yOffset = 6;
 
     textVector.x = textVector.x * widthHalf + widthHalf - xOffset;
     textVector.y = -(textVector.y * heightHalf) + heightHalf + yOffset;
@@ -382,9 +388,9 @@ const Director = ({
 
       switch (scene) {
         case "cover":
-          return new Vector3(4, 0, 2);
+          return new Vector3(0, 3, 10);
         case "overview":
-          return new Vector3(0, 2, 12);
+          return new Vector3(0, 0, 15);
         case "details":
           return new Vector3(clickedObj.x, clickedObj.y + VIEW_HEIGHT, clickedObj.z + VIEW_DISTANCE);
         default:
@@ -462,7 +468,21 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
+        position: [-8, 4, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'details': {
         position: [-8, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      }
+    },
+    _gran2: {
+      'cover': {
+        position: [-12, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'overview': {
+        position: [-8, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -501,6 +521,15 @@ const Director = ({
       rotation: objectPositionDIrections._gran[scene].rotation,
       label: 'motherstructures',
     }),
+    new InteractiveObjectProps({
+      modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
+      material: "models/_gran/__gran_final.mtl",
+      hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
+      position: objectPositionDIrections._gran2[scene].position,
+      scale: 0.001,
+      rotation: objectPositionDIrections._gran[scene].rotation,
+      label: 'gran_2',
+    }),
   ];
 
   return (
@@ -528,7 +557,7 @@ export const CanvasUI = () => {
 
   return (
     <div
-      className={`fixed w-full h-full ${scene === "cover" ? "" : "bg-gradient-to-r from-indigo-500/50 from-10% via-purple-500 via-30% to-pink-500/50"}`}
+      className={`transition-all duration-1000 fixed w-full h-full ${scene === "cover" ? "bg-transparent" : "bg-gradient-to-r from-[coral]/60 from-10% via-50% to-pink-500/60"}`}
     >
       <Canvas>
         <Suspense fallback={Fallback()}>
@@ -539,11 +568,12 @@ export const CanvasUI = () => {
           />
         </Suspense>
       </Canvas>
-        <ProjectDetailScreen
-          visible={animationReady}
-          title={projectName}
-          selectedPosition={selectedPosition}
-        />
+
+      <ProjectDetailScreen
+        visible={animationReady}
+        title={projectName}
+        selectedPosition={selectedPosition}
+      />
 
       <div
         ref={trackerRef}

@@ -1,3 +1,28 @@
+export const Chevron = ({
+  width = 20,
+  height = 20,
+  rotate = 0,
+}: {
+  width?: number;
+  height?: number;
+  rotate?: number;
+}) => {
+  return (
+    <>
+      <svg
+        width={width}
+        height={height}
+        transform={`rotate(${rotate})`}
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path fill="#000000" fill-rule="evenodd" d="M15.293 9.707a1 1 0 001.414-1.414l-6-6a1 1 0 00-1.414 0l-6 6a1 1 0 001.414 1.414L10 4.414l5.293 5.293zm0 8a1 1 0 001.414-1.414l-6-6a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414L10 12.414l5.293 5.293z"/>
+      </svg>
+    </>
+  );
+}
+
 export const UpArrow = ({
   width = 20,
   height = 20,
