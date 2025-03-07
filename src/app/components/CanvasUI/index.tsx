@@ -107,7 +107,7 @@ const CameraController = ({
 
   useFrame((state, delta) => {
     state.scene.name = scene;
-    let currentPos = new Vector3().copy(camera.position);
+    // let currentPos = new Vector3().copy(camera.position);
 
 /*     if (scene !== "cover") {
       controls.object.position.lerp(
@@ -130,9 +130,9 @@ const CameraController = ({
       // clickedObj.lerp(new Vector3(0, 0.4, 1), 0.05);
       controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
-        0.01
+        0.05
       );
-      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 1.6, z: clickedObj.z}, 0.05);
+      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 2, z: clickedObj.z}, 0.05);
     }
 
     if (scene === "details" && !animationReady) {
@@ -440,11 +440,25 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
-        position: [8, 0, 0] as vector,
+        position: [8, 4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [8, 0, 0] as vector,
+        position: [0, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      }
+    },
+    tree_g2: {
+      'cover': {
+        position: [12, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'overview': {
+        position: [8, -4, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'details': {
+        position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
@@ -472,7 +486,7 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [-8, 0, 0] as vector,
+        position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
@@ -486,13 +500,13 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [-8, 0, 0] as vector,
+        position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
   };
 
-
+  // Ensure labels are unique
   const objects: InteractiveObjectProps[] = [
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
@@ -502,6 +516,15 @@ const Director = ({
       scale: 0.001,
       rotation: objectPositionDIrections.tree_g[scene].rotation,
       label: 'markanta',
+    }),
+    new InteractiveObjectProps({
+      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
+      material: "models/tree_g/tree_g.mtl",
+      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      position: objectPositionDIrections.tree_g2[scene].position,
+      scale: 0.001,
+      rotation: objectPositionDIrections.tree_g[scene].rotation,
+      label: 'markanta2',
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_q/tree_q.obj", format: "obj" },
@@ -557,7 +580,7 @@ export const CanvasUI = () => {
 
   return (
     <div
-      className={`transition-all duration-1000 fixed w-full h-full ${scene === "cover" ? "bg-transparent" : "bg-gradient-to-r from-[coral]/60 from-10% via-50% to-pink-500/60"}`}
+      className={`transition-all duration-300 fixed w-full h-full ${scene === "cover" ? "bg-transparent" : "bg-gradient-to-r from-[coral]/60 via-50% to-pink-500/60"}`}
     >
       <Canvas>
         <Suspense fallback={Fallback()}>

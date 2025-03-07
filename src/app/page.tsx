@@ -1,10 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useShallow } from "zustand/react/shallow";
 import { UpArrow } from "@/app/components/svg";
-import { Miniloader } from "@/app/components/Miniloader";
 
 import { CanvasUI } from "@/app/components";
 import { useStore } from "@/app/Store";
@@ -55,7 +53,7 @@ export default function Home() {
         </div>
 
         <>
-          <div className={`w-full flex flex-row fixed bottom-[3%] justify-center transition-all duration-300 ${scene !== 'cover' ? "opacity-100" : 'opacity-0 invisible pointer-events-none'}`}>
+          <div className={`w-full flex flex-row fixed bottom-[3%] justify-center transition-all duration-100 ${scene !== 'cover' ? "opacity-100" : 'opacity-0 invisible pointer-events-none'}`}>
             <button
               type="button"
               onClick={() => {
