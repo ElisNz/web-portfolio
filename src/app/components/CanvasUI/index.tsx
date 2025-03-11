@@ -8,10 +8,10 @@ import {
   Color,
   Mesh,
   Vector3,
-  Vector2,
   Object3D,
   TextureLoader,
   SRGBColorSpace,
+  FloatType,
 } from "three";
 
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -22,7 +22,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
-import { rotate } from "three/webgpu";
 
 
 const Fallback = () => {
@@ -44,9 +43,9 @@ const CameraController = ({
   autoRotate: boolean;
   clickedObj: Vector3;
 }) => {
-  const { camera, gl, raycaster } = useThree();
+  const { camera, gl, raycaster, pointer } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
-  const pointer = new Vector2();
+  // const pointer = new Vector2();
   const scene = useStore((state) => state.scene);
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
@@ -71,6 +70,7 @@ const CameraController = ({
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
 
+    // use heightened coefficient for pointer. This will work without the followig line.
     pointer.set(
       (event.clientX / window.innerWidth) * 2 - 1,
       -(event.clientY / window.innerHeight) * 2 + 1,
@@ -110,6 +110,7 @@ const CameraController = ({
 
   useFrame((state, delta) => {
     state.scene.name = scene;
+
     // let currentPos = new Vector3().copy(camera.position);
 
 /*     if (scene !== "cover") {
@@ -168,17 +169,53 @@ const DisplayScreen = (props) => {
   const scene = useStore(state => state.scene);
   const project = useStore(state => state.project);
   const display = props.showInScenes.includes(scene) || props.showInScenes.includes('all');
+  const { pointer } = useThree();
 
   const loader = new TextureLoader();
   const texture = loader.load( 'https://picsum.photos/300' );
   texture.colorSpace = SRGBColorSpace;
-  const texture2 = loader.load( 'https://picsum.photos/2000' );
+  const texture2 = loader.load( 'https://picsum.photos/1000' );
   texture2.colorSpace = SRGBColorSpace;
+  const texture3 = loader.load( 'https://picsum.photos/1000/300' );
+  texture3.colorSpace = SRGBColorSpace;
 
+  const ref = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const ref4 = useRef(null);
+  const ref5 = useRef(null);
+  const ref6 = useRef(null);
+  //console.log(ref);
+  useFrame((state, delta) => {
+    // ref.current.rotation.y += delta * props.selectedPosition.y % 0.01;
+    if (display) {
+      ref.current.rotation.y += delta * (pointer.x - ref.current.rotation.y) * 0.01;
+      ref.current.rotation.x += delta * (-pointer.y - ref.current.rotation.x) * 0.01;
+
+      ref2.current.rotation.y += delta * ((pointer.x - ref2.current.position.x) - ref2.current.rotation.y) * (ref2.current.position.x - pointer.x);
+      ref2.current.rotation.x += delta * (-pointer.y - ref2.current.rotation.x) * Math.abs((ref2.current.position.x * 0.1));
+
+/*       ref3.current.rotation.y += delta * ((pointer.x - ref3.current.position.x) - ref3.current.rotation.y) * (ref3.current.position.x - pointer.x);
+      ref3.current.rotation.x += delta * (-pointer.y - ref3.current.rotation.x) * Math.abs((ref3.current.position.x * 0.1)); */
+
+      ref4.current.rotation.y += delta * (pointer.x - ref4.current.rotation.y) * Math.abs((ref4.current.position.x * 0.01));
+      ref4.current.rotation.x += delta * (-pointer.y - ref4.current.rotation.x) * Math.abs((ref4.current.position.x * 0.1));
+
+      ref5.current.rotation.y += delta * (pointer.x - ref5.current.rotation.y) * Math.abs((ref5.current.position.x * 0.01));
+      ref5.current.rotation.x += delta * (-pointer.y - ref5.current.rotation.x) * Math.abs((ref5.current.position.x * 0.1));
+
+      ref6.current.rotation.y += delta * (pointer.x - ref6.current.rotation.y) * Math.abs((ref6.current.position.x * 0.01));
+      ref6.current.rotation.x += delta * (-pointer.y - ref6.current.rotation.x) * Math.abs((ref6.current.position.x * 0.1));
+    }
+    
+    console.log(ref2.current);
+    //console.log(state.camera.position);
+    // console.log(ref3.current.rotation);
+  });
 
   return (
-    <group {...props} visible={display}>
-      <mesh position={[4, 3, -1]}>
+    <group {...props} visible={display} ref={ref}>
+      <mesh position={[4, 4.2, -1]} ref={ref2}>
         <meshBasicMaterial color={0x40E0D0} transparent={true} opacity={0.5} map={texture2}/>
         <boxGeometry args={[2, 2, 0.1]} />
       </mesh>
@@ -186,17 +223,21 @@ const DisplayScreen = (props) => {
         <meshBasicMaterial transparent={true} opacity={1} map={texture2}/>
         <boxGeometry args={[5, 5, 0.1]} />
       </mesh>
-      <mesh position={[-4, 0, -4]}>
-        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture2}/>
+      <mesh position={[-4, 0, -4]} ref={ref3}>
+        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture}/>
         <boxGeometry args={[1, 1, 0.1]} />
       </mesh>
-      <mesh position={[-1, 4, -1]}>
-        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.5} map={texture2}/>
-        <boxGeometry args={[1, 1, 0.1]} />
+      <mesh position={[-3, 3.5, -1]} ref={ref4}>
+        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.5} map={texture3}/>
+        <boxGeometry args={[6, 3, 0.1]} />
       </mesh>
-      <mesh position={[-1, -4, -1.5]}>
-        <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture2}/>
-        <boxGeometry args={[1, 1, 0.1]} />
+      <mesh position={[-1, -4, -1.5]} ref={ref5}>
+        <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture}/>
+        <boxGeometry args={[2, 2, 0.1]} />
+      </mesh>
+      <mesh position={[-6, -4, -1.5]} ref={ref6}>
+        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.4} map={texture2}/>
+        <boxGeometry args={[4, 4, 0.1]} />
       </mesh>
     </group>
   )
@@ -211,7 +252,7 @@ export const InteractiveObjectNode = (props) => {
   const setScene = useStore(state => state.setScene);
   const setProject = useStore(state => state.setProject);
 
-  const { modelInfo, material, hitbox, position, showInScenes, label, scale, rotation } = props;
+  const { modelInfo, material, hitbox, position, showInScenes, label } = props;
 
   const textVector = new Vector3(0, 0, 0);
   const meshRef = useRef(null);
@@ -238,7 +279,7 @@ export const InteractiveObjectNode = (props) => {
     let objectLabel = document.createElement("div");
     objectLabel.id = props.label;
     objectLabel.style.position = "absolute";
-    objectLabel.style.color = "white";
+    objectLabel.style.color = "black";
     // objectLabel.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     // objectLabel.style.border = "solid white 2px";
     // objectLabel.style.boxShadow = "5px 3px rgba(255, 255, 255, 1)";
@@ -246,7 +287,8 @@ export const InteractiveObjectNode = (props) => {
     objectLabel.style.fontSize = "1.2rem";
     objectLabel.style.fontWeight = "bold";
     objectLabel.style.overflow = "hidden";
-    objectLabel.innerHTML = `<h3>${props.label}</h3>`;
+    objectLabel.style.textShadow = "0.3px 0.3px 2px rgba(255, 255, 255, 1)";
+    objectLabel.innerHTML = `<h3 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">${props.label}</h3>`;
     // objectLabel.innerHTML = `<Image src="/images/texture_text_test.png" width={100} height={50} alt="text" />`;
 
     document.body.appendChild(objectLabel);
@@ -328,7 +370,7 @@ export const InteractiveObjectNode = (props) => {
   });
 
   return (
-    <mesh {...props} ref={meshRef} visible={display}>
+    <mesh {...props} ref={meshRef} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
       <primitive object={(model as Object3D).clone()} position={[0, hovered ? 10 : 0, 370]} />
       <mesh
         position={hitbox.position}
@@ -488,7 +530,7 @@ const Director = ({
   const objectPositionDirections = {
     markanta: {
       'cover': {
-        position: [8, 0, 0] as vector,
+        position: [-6, 0, -1] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
@@ -502,11 +544,11 @@ const Director = ({
     },
     motherstructures: {
       'cover': {
-        position: [12, 0, 0] as vector,
-        rotation: [0, 0, 0] as vector,
+        position: [4, 0, 2] as vector,
+        rotation: [8, 0, 4] as vector,
       },
       'overview': {
-        position: [-6, 2, 0] as vector,
+        position: [-4, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -516,8 +558,8 @@ const Director = ({
     },
     about: {
       'cover': {
-        position: [0, 0, 0] as vector,
-        rotation: [0, 0, 0] as vector,
+        position: [2, 2, 6] as vector,
+        rotation: [2, 2, 0] as vector,
       },
       'overview': {
         position: [0, -4, 0] as vector,
@@ -545,6 +587,20 @@ const Director = ({
         scale: 1,
       }
     },
+    tree_g: {
+      'cover': {
+        position: [0, -4, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'overview': {
+        position: [0, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'details': {
+        position: [0, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      }
+    },
   };
 
   // Ensure labels are unique
@@ -556,37 +612,36 @@ const Director = ({
       position: objectPositionDirections.markanta[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.markanta[scene].rotation,
-      label: 'markanta',
+      label: 'Markanta',
       showInScenes: ["cover", "overview"]
     }),
-/*     new InteractiveObjectProps({
-      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
-      material: "models/tree_g/tree_g.mtl",
-      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
-      position: objectPositionDirections.tree_g2[scene].position,
-      scale: 0.001,
-      rotation: objectPositionDirections.tree_g[scene].rotation,
-      label: 'markanta2',
-      showInScenes: ["cover", "overview"]
-    }), */
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_q/tree_q.obj", format: "obj" },
-      material: "models/tree_q/tree_q.mtl",
-      hitbox: { size: [200, 400, 200], position: new Vector3(0, 200, 0), geometry: 'box' },
+      material: "models/tree_g/tree_q.mtl",
+      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      position: objectPositionDirections.tree_g[scene].position,
+      scale: 0.02,
+      rotation: objectPositionDirections.tree_g[scene].rotation,
+      showInScenes: ["cover"]
+    }),
+    new InteractiveObjectProps({
+      modelInfo: { name: "/models/kaktus_jacob/_kaktus final.obj", format: "obj" },
+      material: "/models/kaktus_jacob/_kaktus.mtl",
+      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
       position: objectPositionDirections.about[scene].position,
-      scale: 0.01,
+      scale: 0.001,
       rotation: objectPositionDirections.about[scene].rotation,
-      label: 'about_me',
+      label: 'About_me',
       showInScenes: ["cover", "overview"]
     }),
     new InteractiveObjectProps({
-      modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
-      material: "models/_gran/__gran_final.mtl",
+      modelInfo: { name: "/models/kaktus_jacob/_kaktus final.obj", format: "obj" },
+      material: "/models/kaktus_jacob/_kaktus.mtl",
       hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
       position: objectPositionDirections.motherstructures[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.motherstructures[scene].rotation,
-      label: 'motherstructures',
+      label: 'Motherstructures',
       showInScenes: ["cover", "overview"]
     }),
 /*     new InteractiveObjectProps({
@@ -621,7 +676,7 @@ const Director = ({
       {interactiveObjects.map((props, key) => 
         <InteractiveObjectNode key={key} {...props} />
       )}
-
+      
       <DisplayScreen {...display_screens_props} />
     </>
   );
@@ -634,9 +689,25 @@ export const CanvasUI = () => {
   const scene = useStore(state => state.scene);
   const animationReady = useStore(useShallow((state) => state.animationReady));
 
+  let backgroundStyle = '';
+
+  switch (scene) {
+    case "cover":
+      backgroundStyle = 'bg-transparent';
+      break;
+    case "overview":
+      backgroundStyle = 'bg-gradient-to-r from-[pink] to-[white]/60';
+      break;
+    case "details":
+      backgroundStyle = 'bg-gradient-to-r from-[pink] to-pink-200/60';
+      break;
+    default:
+      backgroundStyle = 'bg-transparent';
+  }
+
   return (
     <div
-      className={`transition-all duration-300 fixed w-full h-full ${scene === "cover" ? "bg-transparent" : "bg-gradient-to-r from-[coral]/60 via-50% to-pink-500/60"}`}
+      className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle}`}
     >
       <Canvas>
         <Suspense fallback={Fallback()}>
@@ -656,7 +727,7 @@ export const CanvasUI = () => {
 
       <div
         ref={trackerRef}
-        className="fixed bottom-4 left-0 text-2xl text-[black]/40 p-2"
+        className={`fixed bottom-4 left-0 text-2xl ${scene === 'cover' ? 'text-foreground' : 'text-background'} p-2 z-10 [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]`}
       />
     </div>
   );

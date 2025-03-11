@@ -23,15 +23,15 @@ export default function Home() {
         <CanvasUI />
       </div>
 
-        <div className={`text-white ${scene === 'cover' ? "opacity-100" : 'transition-all duration-300 opacity-0 invisible pointer-events-none'} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}>
-          <div className={`fixed w-full h-full bg-[coral]/60 -z-40 ${scene === 'cover' ? "opacity-100" : 'opacity-0'}`}></div>
-          <div className="invisible md:visible fixed w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0">
-            <h2 className="text-4xl font-bold">I'm a web designer.</h2>
-            <p className="text-lg pt-[1.5rem] text-balance bg-blend-difference font-mono">
+        <div className={`${scene === 'cover' ? "opacity-100" : 'transition-all duration-300 opacity-0 invisible pointer-events-none'} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}>
+          <div className={`fixed w-full h-full bg-gradient-to-r from-[pink]/60 to-[white]/60 -z-50 ${scene === 'cover' ? "opacity-100" : 'opacity-0'}`}></div>
+          <div className="invisible md:visible fixed w-1/3 flex flex-col bottom-20 xl:bottom-40 right-0 ">
+            <h2 className="text-4xl font-bold text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">I'm a web designer.</h2>
+            <p className="text-foreground text-lg pt-[1.5rem] text-balance bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">
               I specialize in creating web experiences with robust design and typography for businesses and individuals.
             </p>
             <br/>
-            <p className="text-lg text-pretty font-mono">
+            <p className="text-foreground text-lg text-pretty font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">
               This is a site for my projects, and a design playground.
             </p>
           </div>
@@ -48,7 +48,7 @@ export default function Home() {
             >
               <div className="flex flex-col items-center">
                 <Chevron width={40} height={40} />
-                <h2 className="text-black w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">See some projects</h2>
+                <h2 className="text-black/70 w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">See some projects</h2>
               </div>
             </button>
           </div>
@@ -70,7 +70,7 @@ export default function Home() {
             >
               <div className="flex flex-col items-center">
                 <Chevron width={40} height={40} rotate={180} />
-                <h2 className="w-fit text-2xl">
+                <h2 className="w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">
                   {scene === "overview" ? "Home" : "Overview"}
                 </h2>
               </div>

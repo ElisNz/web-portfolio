@@ -8,24 +8,27 @@ import { useShallow } from "zustand/react/shallow";
 import { Miniloader } from "@/app/components/Miniloader";
 import { Chevron } from "@/app/components/svg";
 
-
-const sampleTextR = "Let's keep a short description here including some details. Outline keywords below in the list.";
-const sampleTextL = "Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.";
 const projectMap = {
   "about_me": {
     title: "Elis Nilzen",
     subtitle: "Web designer",
-    text: "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground."
+    text: "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground.",
+    titleR: "What I do",
+    description: "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground."
   },
   "motherstructures": {
     title: "Motherstructures",
     subtitle: "Urban greenspaces",
-    text: "Motherstructures is a project that aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!"
+    text: "Motherstructures is a project that aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
+    titleR: "About the project",
+    description: "I was approached to replace a website for a local community project. The project aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!"
   },
   "markanta": {
     title: "Markanta",
     subtitle: "E-commerce platform",
-    text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."
+    text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
+    titleR: "About the project",
+    description: "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."
   },
 };
 
@@ -40,7 +43,7 @@ export const ProjectDetailScreen = (props) => {
 
   const animationReady = useStore(useShallow((state) => state.animationReady));
 
-  const project = useStore(useShallow((state) => state.project));
+  const project = useStore(useShallow((state) => state.project)).toLowerCase();
 
   const [textLoaded, setTextLoaded] = useState(false);
   const [showArrow, setShowArrow] = useState({up: false, down: false});
@@ -218,10 +221,10 @@ export const ProjectDetailScreen = (props) => {
     }
     setTimeout(() => {
       flickerText(projectMap[project].text, document.getElementById("text-l"), LEFT_TYPING_SPEED, 3000);
-      flickerText(sampleTextR, document.getElementById("text-r"), RIGHT_TYPING_SPEED, 2000);
+      flickerText(projectMap[project].description, document.getElementById("text-r"), RIGHT_TYPING_SPEED, 3000);
       flickerText(projectMap[project].title, document.getElementById("title-l"), LEFT_TYPING_SPEED, 2000);
       flickerText(projectMap[project].subtitle, document.getElementById("subtitle-l"), LEFT_TYPING_SPEED, 2000);
-      flickerText("This is a description of the project", document.getElementById("title-r"), RIGHT_TYPING_SPEED, 2000);
+      flickerText(projectMap[project].titleR, document.getElementById("title-r"), RIGHT_TYPING_SPEED, 2000);
     }, 500);
   }, [props.visible]);
 
@@ -232,9 +235,9 @@ export const ProjectDetailScreen = (props) => {
 
   return (
     <>
-      <div className={`[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)] text-white ${props.visible ? 'transition-opacity delay-500 duration-500 ease-in-out opacity-100' : 'opacity-0 invisible'}`}>
+      <div className={`text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]  ${props.visible ? 'transition-opacity delay-500 duration-500 ease-in-out opacity-100' : 'opacity-0 invisible'}`}>
         <div id="details-screen-l" className="w-1/4 absolute">
-          <h2 id="title-l" className="text-4xl font-black border-b-4 border-[white] pb-2" />
+          <h2 id="title-l" className="w-full text-4xl font-black underline underline-offset-[0.4em] pb-2" />
           <h3 id="subtitle-l" className="text-2xl font-semibold pt-[0.3em] font-mono">Subtitle goes here</h3>
           <pre className="text-md pt-4 text-balance bg-blend-difference" id="text-l" /> 
         </div>
@@ -250,7 +253,7 @@ export const ProjectDetailScreen = (props) => {
               <Chevron width={40} height={40} rotate={180}  />
             </div>
           }
-          <div className="text-white [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+          <div className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
             <h3 id="title-r" className="text-2xl font-semibold text-nowrap pr-20"></h3>
             <pre className="text-md pt-4 text-balance bg-blend-difference" id="text-r" />
             <div className="text-md font-mono flex flex-wrap justify-between gap-4 pt-4 pr-32">
@@ -265,13 +268,13 @@ export const ProjectDetailScreen = (props) => {
             </div>
           </div>
           
-          <div className="w-full grid grid-flow-row grid-cols-3 grid-rows-3 gap-2 pt-12 px-20">
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
-            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+          <div className="w-full flex flex-wrap pt-12 pr-20 gap-2 hidden">
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto rounded-lg" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center rounded-lg" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center rounded-lg" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center rounded-lg" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center rounded-lg" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center rounded-lg" />
           </div>
         </div>
         
