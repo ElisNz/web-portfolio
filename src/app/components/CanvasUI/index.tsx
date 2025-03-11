@@ -10,6 +10,8 @@ import {
   Vector3,
   Vector2,
   Object3D,
+  TextureLoader,
+  SRGBColorSpace,
 } from "three";
 
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -20,6 +22,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
+import { rotate } from "three/webgpu";
 
 
 const Fallback = () => {
@@ -118,6 +121,7 @@ const CameraController = ({
 
     if (scene !== "details") {
       setAnimationReady(false);
+      window.removeEventListener("pointermove", onPointerMove);
     }
     // initial pan to object position
     if (scene === "overview") {
@@ -138,7 +142,7 @@ const CameraController = ({
     if (scene === "details" && !animationReady) {
       setAnimationReady(true);
     }
-
+    // interactive pan (move camera from cursor)
     if (scene === 'details' && animationReady) {
       raycaster.setFromCamera(pointer, camera);
       controls.target.lerp(
@@ -159,6 +163,45 @@ const CameraController = ({
   return null;
 };
 
+const DisplayScreen = (props) => {
+  // TODO: create object for use in details
+  const scene = useStore(state => state.scene);
+  const project = useStore(state => state.project);
+  const display = props.showInScenes.includes(scene) || props.showInScenes.includes('all');
+
+  const loader = new TextureLoader();
+  const texture = loader.load( 'https://picsum.photos/300' );
+  texture.colorSpace = SRGBColorSpace;
+  const texture2 = loader.load( 'https://picsum.photos/2000' );
+  texture2.colorSpace = SRGBColorSpace;
+
+
+  return (
+    <group {...props} visible={display}>
+      <mesh position={[4, 3, -1]}>
+        <meshBasicMaterial color={0x40E0D0} transparent={true} opacity={0.5} map={texture2}/>
+        <boxGeometry args={[2, 2, 0.1]} />
+      </mesh>
+      <mesh position={[0, 0, 0]}>
+        <meshBasicMaterial transparent={true} opacity={1} map={texture2}/>
+        <boxGeometry args={[5, 5, 0.1]} />
+      </mesh>
+      <mesh position={[-4, 0, -4]}>
+        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture2}/>
+        <boxGeometry args={[1, 1, 0.1]} />
+      </mesh>
+      <mesh position={[-1, 4, -1]}>
+        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.5} map={texture2}/>
+        <boxGeometry args={[1, 1, 0.1]} />
+      </mesh>
+      <mesh position={[-1, -4, -1.5]}>
+        <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture2}/>
+        <boxGeometry args={[1, 1, 0.1]} />
+      </mesh>
+    </group>
+  )
+};
+
 
 export const InteractiveObjectNode = (props) => {
   const [hovered, hover] = useState(false);
@@ -166,14 +209,19 @@ export const InteractiveObjectNode = (props) => {
   const [active, setActive] = useState(false);
   const scene = useStore(state => state.scene);
   const setScene = useStore(state => state.setScene);
+  const setProject = useStore(state => state.setProject);
 
-  const { modelInfo, material, hitbox, position, scale, rotation } = props;
+  const { modelInfo, material, hitbox, position, showInScenes, label, scale, rotation } = props;
 
   const textVector = new Vector3(0, 0, 0);
   const meshRef = useRef(null);
 
   const ROTATION_SPEED = 0.2;
-  const display = scene === 'overview' || scene === 'cover' || (scene === 'details' && active);
+  let display = showInScenes.includes(scene) || showInScenes.includes('all');
+
+  if (scene === 'details' && !active) {
+   display = false;
+  }
 
   const model = useLoader(
     OBJLoader,
@@ -300,6 +348,7 @@ export const InteractiveObjectNode = (props) => {
             
             setScene("details");
             setActive(true);
+            setProject(label);
             props.setProjectName(`project_${props.indexNr}`);
           }
         }}
@@ -332,12 +381,13 @@ type HitBox = {
 
 
 class BaseObject {
-  modelInfo: ImportModel;
+  modelInfo?: ImportModel;
   material?: string;
-  hitbox: HitBox;
+  hitbox?: HitBox;
   position?: Vector3 | [number, number, number];
   scale: number;
   rotation?: Vector3 | [number, number, number];
+  showInScenes?: string[]
 
   constructor(
     modelInfo: ImportModel,
@@ -346,7 +396,7 @@ class BaseObject {
     position: Vector3 | [number, number, number],
     scale: number,
     rotation: Vector3 | [number, number, number],
-
+    showInScenes: string[]
   ) {
     this.modelInfo = modelInfo;
     this.material = material;
@@ -354,6 +404,7 @@ class BaseObject {
     this.position = position;
     this.scale = scale;
     this.rotation = rotation;
+    this.showInScenes = showInScenes;
   }
 };
 
@@ -403,25 +454,26 @@ const Director = ({
   
   class InteractiveObjectProps extends BaseObject {
     setClickedObj: (position: Vector3) => void;
-    setAllObj: (objects: Vector3[]) => void;
+    setAllObj: (interactiveObjects: Vector3[]) => void;
     readonly scene: string;
     selectedPosition: { x: number; y: number };
     setProjectName: (name: string) => void;
     label: string;
-
+    showInScenes?: string[];
     node: JSX.Element;
 
     constructor(props: {
-        modelInfo: ImportModel,
-        material: string,
-        label: string,
-        hitbox: HitBox,
+        modelInfo?: ImportModel,
+        material?: string,
+        label?: string,
+        hitbox?: HitBox,
         position: Vector3 | [number, number, number],
         scale: number,
         rotation: Vector3 | [number, number, number],
+        showInScenes: string[]
       }
     ) {
-      super(props.modelInfo, props.material, props.hitbox, props.position, props.scale, props.rotation);
+      super(props.modelInfo, props.material, props.hitbox, props.position, props.scale, props.rotation, props.showInScenes);
       this.label = props.label;
       this.setClickedObj = setClickedObj;
       this.setAllObj = setAllObj;
@@ -433,14 +485,14 @@ const Director = ({
 
   type vector = [number, number, number];
 
-  const objectPositionDIrections = {
-    tree_g: {
+  const objectPositionDirections = {
+    markanta: {
       'cover': {
         position: [8, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
-        position: [8, 4, 0] as vector,
+        position: [6, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -448,13 +500,13 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       }
     },
-    tree_g2: {
+    motherstructures: {
       'cover': {
         position: [12, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
-        position: [8, -4, 0] as vector,
+        position: [-6, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -462,13 +514,13 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       }
     },
-    tree_q: {
+    about: {
       'cover': {
-        position: [0, 0, 1] as vector,
+        position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
-        position: [0, 0, 0] as vector,
+        position: [0, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -476,97 +528,101 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       }
     },
-    _gran: {
+    display_screens: {
       'cover': {
-        position: [-8, 0, 1] as vector,
-        rotation: [0, 0, 0] as vector,
-      },
-      'overview': {
-        position: [-8, 4, 0] as vector,
-        rotation: [0, 0, 0] as vector,
-      },
-      'details': {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
-    },
-    _gran2: {
-      'cover': {
-        position: [-12, 0, 0] as vector,
-        rotation: [0, 0, 0] as vector,
+        scale: 0.01,
       },
       'overview': {
-        position: [-8, -4, 0] as vector,
-        rotation: [0, 0, 0] as vector,
-      },
-      'details': {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
+        scale: 1,
+      },
+      'details': {
+        position: [0, 2, 0] as vector,
+        rotation: [0.01, 0, 0] as vector,
+        scale: 1,
       }
     },
   };
 
   // Ensure labels are unique
-  const objects: InteractiveObjectProps[] = [
+  const interactiveObjects: InteractiveObjectProps[] = [
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
       hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
-      position: objectPositionDIrections.tree_g[scene].position,
+      position: objectPositionDirections.markanta[scene].position,
       scale: 0.001,
-      rotation: objectPositionDIrections.tree_g[scene].rotation,
+      rotation: objectPositionDirections.markanta[scene].rotation,
       label: 'markanta',
+      showInScenes: ["cover", "overview"]
     }),
-    new InteractiveObjectProps({
+/*     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
       hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
-      position: objectPositionDIrections.tree_g2[scene].position,
+      position: objectPositionDirections.tree_g2[scene].position,
       scale: 0.001,
-      rotation: objectPositionDIrections.tree_g[scene].rotation,
+      rotation: objectPositionDirections.tree_g[scene].rotation,
       label: 'markanta2',
-    }),
+      showInScenes: ["cover", "overview"]
+    }), */
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_q/tree_q.obj", format: "obj" },
       material: "models/tree_q/tree_q.mtl",
       hitbox: { size: [200, 400, 200], position: new Vector3(0, 200, 0), geometry: 'box' },
-      position: objectPositionDIrections.tree_q[scene].position,
+      position: objectPositionDirections.about[scene].position,
       scale: 0.01,
-      rotation: objectPositionDIrections.tree_q[scene].rotation,
+      rotation: objectPositionDirections.about[scene].rotation,
       label: 'about_me',
+      showInScenes: ["cover", "overview"]
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
       material: "models/_gran/__gran_final.mtl",
       hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
-      position: objectPositionDIrections._gran[scene].position,
+      position: objectPositionDirections.motherstructures[scene].position,
       scale: 0.001,
-      rotation: objectPositionDIrections._gran[scene].rotation,
+      rotation: objectPositionDirections.motherstructures[scene].rotation,
       label: 'motherstructures',
+      showInScenes: ["cover", "overview"]
     }),
-    new InteractiveObjectProps({
+/*     new InteractiveObjectProps({
       modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
       material: "models/_gran/__gran_final.mtl",
       hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
-      position: objectPositionDIrections._gran2[scene].position,
+      position: objectPositionDirections._gran2[scene].position,
       scale: 0.001,
-      rotation: objectPositionDIrections._gran[scene].rotation,
+      rotation: objectPositionDirections._gran[scene].rotation,
       label: 'gran_2',
-    }),
+      showInScenes: ["cover", "overview"]
+    }), */
   ];
+
+  const display_screens_props = new InteractiveObjectProps({
+    position: objectPositionDirections.display_screens[scene].position,
+    scale: objectPositionDirections.display_screens[scene].scale,
+    rotation: objectPositionDirections.display_screens[scene].rotation,
+    showInScenes: ["details"]
+  });
+
 
   return (
     <>
       <CameraController
         {...cameraProps}
       />
-      <fog attach="fog" args={["#CD7A6D", 8, 25]} />
+      <fog attach="fog" args={["#CD7A6D", 6, 25]} />
       <ambientLight intensity={1.5} visible={scene !== "cover"} />
       <directionalLight position={[0, 10, 0]} intensity={4} visible={scene !== "cover"} />
 
-      {objects.map((props, key) => 
+      {interactiveObjects.map((props, key) => 
         <InteractiveObjectNode key={key} {...props} />
       )}
+
+      <DisplayScreen {...display_screens_props} />
     </>
   );
 };

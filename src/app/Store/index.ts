@@ -2,10 +2,8 @@ import { create } from 'zustand';
 
 interface storeTypes {
   scene: string;
-  setScene: (scene: typeof this.scene) => void;
   animationReady: boolean;
-  setAnimationReady: (ready: boolean) => void;
-  fadeOverlay: () => void;
+  project: string;
 };
 
 type scenes = "cover" | "overview" | "details";
@@ -17,7 +15,10 @@ class Store implements storeTypes {
   setLoader: (show: boolean) => void;
   animationReady: boolean;
   setAnimationReady: (ready: boolean) => void;
-  fadeOverlay: () => void;
+  project: string;
+  setProject: (projectName: string) => void;
+  startInterpolation: boolean;
+  setStartInterpolation: (start: boolean) => void;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -27,7 +28,8 @@ export const useStore = create<Store>((set) => ({
   setLoader: (show) => set({ showLoader: show }),
   animationReady: false,
   setAnimationReady: (ready) => set({ animationReady: ready }),
-  fadeOverlay: () => {
-    // Fade out overlay
-  },
+  project: "",
+  setProject: (projectName) => set({ project: projectName }),
+  startInterpolation: false,
+  setStartInterpolation: (start) => set({ startInterpolation: start }),
 }));

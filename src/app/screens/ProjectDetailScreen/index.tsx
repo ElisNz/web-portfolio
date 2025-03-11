@@ -11,21 +11,45 @@ import { Chevron } from "@/app/components/svg";
 
 const sampleTextR = "Let's keep a short description here including some details. Outline keywords below in the list.";
 const sampleTextL = "Recusandae, quae adipisci ab doloremque nobis ullam aliquid voluptatem reiciendis id? Mollitia. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.";
+const projectMap = {
+  "about_me": {
+    title: "Elis Nilzen",
+    subtitle: "Web designer",
+    text: "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground."
+  },
+  "motherstructures": {
+    title: "Motherstructures",
+    subtitle: "Urban greenspaces",
+    text: "Motherstructures is a project that aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!"
+  },
+  "markanta": {
+    title: "Markanta",
+    subtitle: "E-commerce platform",
+    text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."
+  },
+};
 
+const getRandomAsciiChar = () => {
+  const asciiStart = 32; // Space character
+  const asciiEnd = 126;  // Tilde (~) character
+  const randomAscii = Math.floor(Math.random() * (asciiEnd - asciiStart + 1)) + asciiStart;
+  return String.fromCharCode(randomAscii);
+};
 
 export const ProjectDetailScreen = (props) => {
 
   const animationReady = useStore(useShallow((state) => state.animationReady));
-  //const scene = useStore(useShallow((state) => state.scene));
-  //const setShowLoader = useStore(useShallow((state) => state.setLoader));
+
+  const project = useStore(useShallow((state) => state.project));
+
   const [textLoaded, setTextLoaded] = useState(false);
   const [showArrow, setShowArrow] = useState({up: false, down: false});
-  
+
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 5;
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 5;
   const MODEL_WIDTH = 400;
   const CARD_WIDTH = window.innerWidth / 8;
-  const MODEL_HEIGHT = window.innerHeight / 2;
+  const MODEL_HEIGHT = window.innerHeight / 2 - 40;
   const LEFT_TYPING_SPEED = 1;
   const RIGHT_TYPING_SPEED = 10;
 
@@ -46,7 +70,7 @@ export const ProjectDetailScreen = (props) => {
           setTextLoaded(true);
           clearInterval(j);
         }
-      }, 10);
+      }, 1);
     }, maxTime);
 
     const interval = setInterval(() => {
@@ -60,7 +84,7 @@ export const ProjectDetailScreen = (props) => {
         return;
       }
 
-      textTemplate[randomElement] = "▓";
+      textTemplate[randomElement] = getRandomAsciiChar();
       element.innerHTML = textTemplate.join("");
       
       setTimeout(() => {
@@ -70,7 +94,7 @@ export const ProjectDetailScreen = (props) => {
           setTextLoaded(true);
           clearInterval(interval);
         }
-      }, 300);
+      }, 200);
       element.innerHTML = textTemplate.join("");
     }, delay);
   };
@@ -109,10 +133,10 @@ export const ProjectDetailScreen = (props) => {
       return;
     }
 
-    const lPosx = window.innerWidth / 2 - MODEL_WIDTH - CARD_WIDTH + props.selectedPosition.x % 100;
+    const lPosx = window.innerWidth / 2 - MODEL_WIDTH - CARD_WIDTH + props.selectedPosition.x % 10;
     const lPosy = props.selectedPosition.y - MODEL_HEIGHT;
 
-    const rPosx = window.innerWidth / 2 + CARD_WIDTH - props.selectedPosition.x % 100;
+    const rPosx = window.innerWidth / 2 + CARD_WIDTH - props.selectedPosition.x % 10;
     const rPosy = lPosy;
 
     if (
@@ -193,8 +217,11 @@ export const ProjectDetailScreen = (props) => {
       return;
     }
     setTimeout(() => {
-      flickerText(sampleTextL, document.getElementById("text-l"), LEFT_TYPING_SPEED, 700);
-      flickerText(sampleTextR, document.getElementById("text-r"), RIGHT_TYPING_SPEED, 1000);
+      flickerText(projectMap[project].text, document.getElementById("text-l"), LEFT_TYPING_SPEED, 3000);
+      flickerText(sampleTextR, document.getElementById("text-r"), RIGHT_TYPING_SPEED, 2000);
+      flickerText(projectMap[project].title, document.getElementById("title-l"), LEFT_TYPING_SPEED, 2000);
+      flickerText(projectMap[project].subtitle, document.getElementById("subtitle-l"), LEFT_TYPING_SPEED, 2000);
+      flickerText("This is a description of the project", document.getElementById("title-r"), RIGHT_TYPING_SPEED, 2000);
     }, 500);
   }, [props.visible]);
 
@@ -205,41 +232,46 @@ export const ProjectDetailScreen = (props) => {
 
   return (
     <>
-      <div className={`${props.visible ? 'transition-opacity delay-500 duration-500 ease-in-out opacity-100' : 'opacity-0 invisible'}`}>
+      <div className={`[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)] text-white ${props.visible ? 'transition-opacity delay-500 duration-500 ease-in-out opacity-100' : 'opacity-0 invisible'}`}>
         <div id="details-screen-l" className="w-1/4 absolute">
-          <h2 className="text-4xl font-black">{props.title || "title_"}</h2>
-          <h3 className="text-2xl pt-[0.3em]">Subtitle goes here</h3>
-          <pre className="text-md pt-4 text-balance bg-blend-difference font-Geist" id="text-l" />
+          <h2 id="title-l" className="text-4xl font-black border-b-4 border-[white] pb-2" />
+          <h3 id="subtitle-l" className="text-2xl font-semibold pt-[0.3em] font-mono">Subtitle goes here</h3>
+          <pre className="text-md pt-4 text-balance bg-blend-difference" id="text-l" /> 
         </div>
 
         <div id="details-screen-r" className="absolute w-1/3 max-h-[50vh] overflow-y-auto scrollbar-hide scroll-smooth touch-pan-y" onScrollCapture={getScrollPos}>
           {showArrow.up && 
-            <div className="fixed w-full content-center top-[10vh] ml-[10%]">
+            <div className="fixed w-full content-center top-[15vh] ml-[15%] animate-pulse">
               <Chevron width={40} height={40} />
             </div>
           }
           {showArrow.down && 
-            <div className="fixed w-full content-center bottom-[20vh] ml-[10%]">
+            <div className="fixed w-full content-center bottom-[15vh] ml-[15%] animate-pulse">
               <Chevron width={40} height={40} rotate={180}  />
             </div>
           }
-          <div>
-            <h3 className="text-[1.5rem] font-bold font-mono text-pretty tracking-[0.2rem] [text-shadow:_0_4px_2px_rgb(99_102_241_/_0.8)] pr-20">This is a description of the project</h3>
+          <div className="text-white [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <h3 id="title-r" className="text-2xl font-semibold text-nowrap pr-20"></h3>
             <pre className="text-md pt-4 text-balance bg-blend-difference" id="text-r" />
-            <div className="flex flex-row gap-4 pt-4">
-              <ul className="text-md text-balance bg-blend-difference list-disc list-inside indent-8">
+            <div className="text-md font-mono flex flex-wrap justify-between gap-4 pt-4 pr-32">
+              <ul className="text-balance bg-blend-difference list-disc list-inside indent-8">
                 <li>Recusandae</li>
                 <li>Quae adipisci</li>
+              </ul>
+              <ul className="text-md text-balance bg-blend-difference list-disc list-inside indent-8">
                 <li>Ab doloremque</li>
                 <li>Recusandae</li>
               </ul>
-              <Image src="https://picsum.photos/300/200" width={300} height={200} className="self-center place-self-start px-8" alt="text" />
             </div>
           </div>
           
-          <div className="w-full flex flex-row justify-evenly gap-12 pt-12 pr-20">
-            <Image src="https://picsum.photos/150" width={150} height={150} alt="text" />
-            <Image src="/images/texture_text_test.png" width={150} height={200} alt="text" className="self-center" />
+          <div className="w-full grid grid-flow-row grid-cols-3 grid-rows-3 gap-2 pt-12 px-20">
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
+            <Image src="https://picsum.photos/100" width={100} height={100} alt="text" className="h-auto self-center" />
           </div>
         </div>
         

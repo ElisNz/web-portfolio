@@ -9,10 +9,10 @@ export const Header = () => {
   ];
 
   return (
-    <div className="absolute w-full h-12 z-50 px-12">
+    <div className="absolute w-full h-12 z-50 px-12 [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.6)]">
       <div className="w-full flex flex-row items-baseline justify-between">
         <a href="/">
-          <h1 className="text-4xl font-bold border-b-4 border-[black] p-2">
+          <h1 className="text-4xl font-bold underline underline-offset-[0.5em] p-2">
             cactus_cat
           </h1>
         </a>
