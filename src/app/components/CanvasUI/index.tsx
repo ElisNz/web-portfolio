@@ -11,7 +11,6 @@ import {
   Object3D,
   TextureLoader,
   SRGBColorSpace,
-  FloatType,
 } from "three";
 
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -112,13 +111,10 @@ const CameraController = ({
     state.scene.name = scene;
 
     // let currentPos = new Vector3().copy(camera.position);
-
-/*     if (scene !== "cover") {
-      controls.object.position.lerp(
-        {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
-        0.01
-      );
-    } */
+    if (scene === "cover") {
+      controls.object.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+      controls.target.set(cameraPosition.x, cameraPosition.y, cameraPosition.z - 1);
+    }
 
     if (scene !== "details") {
       setAnimationReady(false);
@@ -185,59 +181,70 @@ const DisplayScreen = (props) => {
   const ref4 = useRef(null);
   const ref5 = useRef(null);
   const ref6 = useRef(null);
-  //console.log(ref);
+  const ref7 = useRef(null);
+
+  const viewVector = new Vector3();
+  const viewVector2 = new Vector3();
+  const viewVector3 = new Vector3();
+  const viewVector4 = new Vector3();
+  const viewVector5 = new Vector3();
+  const viewVector6 = new Vector3();
+  const viewVector7 = new Vector3();
+
   useFrame((state, delta) => {
-    // ref.current.rotation.y += delta * props.selectedPosition.y % 0.01;
+
+    viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
+    viewVector2.set(-ref2.current.position.x + pointer.x * 0.1, -ref2.current.position.y + pointer.y * 0.1, state.camera.position.z);
+    viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);
+    viewVector4.set(ref4.current.position.x + pointer.x * 0.1, ref4.current.position.y + pointer.y * 0.1, state.camera.position.z).addScalar(ref4.current.position.z * 0.1);
+    viewVector5.set(-ref5.current.position.x + pointer.x, -ref5.current.position.y + pointer.y, state.camera.position.z * 2).addScalar(ref5.current.position.x * 0.1);
+    viewVector6.set(state.camera.position.z + pointer.x, -ref6.current.position.y + pointer.y * 0.1, state.camera.position.z * 2).addScalar(ref6.current.position.x * 0.1);
+    viewVector7.set(-state.camera.position.z + pointer.x, pointer.y, state.camera.position.z * 2);
+
     if (display) {
-      ref.current.rotation.y += delta * (pointer.x - ref.current.rotation.y) * 0.01;
-      ref.current.rotation.x += delta * (-pointer.y - ref.current.rotation.x) * 0.01;
-
-      ref2.current.rotation.y += delta * ((pointer.x - ref2.current.position.x) - ref2.current.rotation.y) * (ref2.current.position.x - pointer.x);
-      ref2.current.rotation.x += delta * (-pointer.y - ref2.current.rotation.x) * Math.abs((ref2.current.position.x * 0.1));
-
-/*       ref3.current.rotation.y += delta * ((pointer.x - ref3.current.position.x) - ref3.current.rotation.y) * (ref3.current.position.x - pointer.x);
-      ref3.current.rotation.x += delta * (-pointer.y - ref3.current.rotation.x) * Math.abs((ref3.current.position.x * 0.1)); */
-
-      ref4.current.rotation.y += delta * (pointer.x - ref4.current.rotation.y) * Math.abs((ref4.current.position.x * 0.01));
-      ref4.current.rotation.x += delta * (-pointer.y - ref4.current.rotation.x) * Math.abs((ref4.current.position.x * 0.1));
-
-      ref5.current.rotation.y += delta * (pointer.x - ref5.current.rotation.y) * Math.abs((ref5.current.position.x * 0.01));
-      ref5.current.rotation.x += delta * (-pointer.y - ref5.current.rotation.x) * Math.abs((ref5.current.position.x * 0.1));
-
-      ref6.current.rotation.y += delta * (pointer.x - ref6.current.rotation.y) * Math.abs((ref6.current.position.x * 0.01));
-      ref6.current.rotation.x += delta * (-pointer.y - ref6.current.rotation.x) * Math.abs((ref6.current.position.x * 0.1));
+      ref.current.lookAt(viewVector);
+      ref2.current.lookAt(viewVector2);
+      ref3.current.lookAt(viewVector3);
+      ref4.current.lookAt(viewVector4);
+      ref5.current.lookAt(viewVector5);
+      ref6.current.lookAt(viewVector6);
+      ref7.current.lookAt(viewVector7);
     }
     
-    console.log(ref2.current);
-    //console.log(state.camera.position);
+    // console.log(ref2.current);
+    // console.log(state.camera.position);
     // console.log(ref3.current.rotation);
   });
 
   return (
-    <group {...props} visible={display} ref={ref}>
+    <group {...props} visible={display}>
       <mesh position={[4, 4.2, -1]} ref={ref2}>
         <meshBasicMaterial color={0x40E0D0} transparent={true} opacity={0.5} map={texture2}/>
         <boxGeometry args={[2, 2, 0.1]} />
       </mesh>
-      <mesh position={[0, 0, 0]}>
-        <meshBasicMaterial transparent={true} opacity={1} map={texture2}/>
+      <mesh position={[0, 0, 0]} ref={ref}>
+        <meshPhongMaterial reflectivity={1} transparent={true} opacity={1} map={texture2}/>
         <boxGeometry args={[5, 5, 0.1]} />
       </mesh>
-      <mesh position={[-4, 0, -4]} ref={ref3}>
+      <mesh position={[-4, 0, -2]} ref={ref3}>
         <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture}/>
         <boxGeometry args={[1, 1, 0.1]} />
       </mesh>
       <mesh position={[-3, 3.5, -1]} ref={ref4}>
-        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.5} map={texture3}/>
+        <meshPhongMaterial reflectivity={1} color={0xFF69B4} transparent={true} opacity={0.5} map={texture3}/>
         <boxGeometry args={[6, 3, 0.1]} />
       </mesh>
       <mesh position={[-1, -4, -1.5]} ref={ref5}>
         <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture}/>
         <boxGeometry args={[2, 2, 0.1]} />
       </mesh>
-      <mesh position={[-6, -4, -1.5]} ref={ref6}>
+      <mesh position={[-6, -4, -2]} ref={ref6}>
         <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.4} map={texture2}/>
         <boxGeometry args={[4, 4, 0.1]} />
+      </mesh>
+      <mesh position={[6.5, -3, 0]} ref={ref7}>
+        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.4} map={texture3}/>
+        <boxGeometry args={[6, 3, 0.1]} />
       </mesh>
     </group>
   )
@@ -295,6 +302,9 @@ export const InteractiveObjectNode = (props) => {
   }, []);
 
   useEffect(() => {
+    if (scene === "cover") { // initial position pre-lerp
+      meshRef.current.position.set(position[0], position[1], position[2]);
+    }
     if (scene !== "details") {
       setActive(false);
     }
@@ -319,7 +329,7 @@ export const InteractiveObjectNode = (props) => {
     if (hovered || active) {
       meshRef.current.rotation.y += delta * ROTATION_SPEED;
     }
-
+    
     const textElement = document.getElementById(props.label);
     
 
@@ -332,9 +342,14 @@ export const InteractiveObjectNode = (props) => {
     }
 
     meshRef.current.updateMatrixWorld();
+    if( scene === "overview") {
+      meshRef.current.position.lerp({x: position[0], y: position[1], z: position[2]}, 0.05);
+    } else if (scene === "details") {
+      meshRef.current.position.set( 0, 0, 0);
+    }
     textVector.setFromMatrixPosition(meshRef.current.matrixWorld);
     textVector.project(state.camera);
-    meshRef.current.position.set(position[0], position[1], position[2]);
+    
  
     const widthHalf = state.size.width / 2;
     const heightHalf = state.size.height / 2;
@@ -370,7 +385,7 @@ export const InteractiveObjectNode = (props) => {
   });
 
   return (
-    <mesh {...props} ref={meshRef} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
+    <mesh ref={meshRef} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
       <primitive object={(model as Object3D).clone()} position={[0, hovered ? 10 : 0, 370]} />
       <mesh
         position={hitbox.position}
@@ -470,7 +485,7 @@ const Director = ({
   
     constructor() {
       this.orbref = trackerRef;
-      this.autoRotate = scene === "cover";
+      this.autoRotate = false;
       this.clickedObj = clickedObj;
       this.allObj = allObj;
       this.cameraPosition = this.setCameraPositionFromScene();
@@ -481,9 +496,9 @@ const Director = ({
 
       switch (scene) {
         case "cover":
-          return new Vector3(0, 3, 10);
+          return new Vector3(0, 0, 5);
         case "overview":
-          return new Vector3(0, 0, 15);
+          return new Vector3(0, 0, 12);
         case "details":
           return new Vector3(clickedObj.x, clickedObj.y + VIEW_HEIGHT, clickedObj.z + VIEW_DISTANCE);
         default:
@@ -534,7 +549,7 @@ const Director = ({
         rotation: [0, 0, 0] as vector,
       },
       'overview': {
-        position: [6, 2, 0] as vector,
+        position: [4, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
@@ -669,9 +684,10 @@ const Director = ({
       <CameraController
         {...cameraProps}
       />
-      <fog attach="fog" args={["#CD7A6D", 6, 25]} />
+      
       <ambientLight intensity={1.5} visible={scene !== "cover"} />
-      <directionalLight position={[0, 10, 0]} intensity={4} visible={scene !== "cover"} />
+      <directionalLight position={[0, 10, 7]} intensity={4} visible={scene === "overview"} />
+      <directionalLight position={[0, 0, 2]} intensity={4} visible={scene === "details"} />
 
       {interactiveObjects.map((props, key) => 
         <InteractiveObjectNode key={key} {...props} />
@@ -716,6 +732,7 @@ export const CanvasUI = () => {
             setProjectName={setProjectName}
             trackerRef={trackerRef}
           />
+
         </Suspense>
       </Canvas>
 
