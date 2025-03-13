@@ -19,13 +19,13 @@ const projectMap = {
   "motherstructures": {
     title: "Motherstructures",
     subtitle: "Urban greenspaces",
-    text: "Motherstructures is a project that aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
+    text: "Motherstructures is a New York based company that aims to create urban greenspaces from simple, easily reusable materials. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
     titleR: "About the project",
     description: "I was approached to replace a website for a local community project. The project aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!"
   },
   "markanta": {
     title: "Markanta",
-    subtitle: "E-commerce platform",
+    subtitle: "Engineering Consulting",
     text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
     titleR: "About the project",
     description: "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."

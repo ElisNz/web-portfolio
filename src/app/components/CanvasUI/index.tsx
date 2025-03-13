@@ -21,6 +21,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from 'zustand/react/shallow'
 import { ProjectDetailScreen } from "@/app/screens";
+import { set } from "mongoose";
 
 
 const Fallback = () => {
@@ -127,7 +128,7 @@ const CameraController = ({
     }
     // interactive click-pan
     if (scene === "details") {
-      clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
+      // clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
       controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
         0.04
@@ -143,7 +144,7 @@ const CameraController = ({
       raycaster.setFromCamera(pointer, camera);
       controls.target.lerp(
         raycaster.ray.direction.negate(),
-        0.001,
+        0.01,
       );
     }
 
@@ -160,12 +161,11 @@ const CameraController = ({
 };
 
 const DisplayScreen = (props) => {
-  // TODO: create object for use in details
   const scene = useStore(state => state.scene);
   const project = useStore(state => state.project);
   const display = props.showInScenes.includes(scene) || props.showInScenes.includes('all');
   const { pointer } = useThree();
-
+  
   const loader = new TextureLoader();
   const texture = loader.load( 'https://picsum.photos/300' );
   texture.colorSpace = SRGBColorSpace;
@@ -190,10 +190,60 @@ const DisplayScreen = (props) => {
   const viewVector6 = new Vector3();
   const viewVector7 = new Vector3();
 
-  useFrame((state, delta) => {
+  useEffect(() => {
+    ref.current.material.opacity = 0;
+    ref2.current.material.opacity = 0;
+    ref3.current.material.opacity = 0;
+    ref4.current.material.opacity = 0;
+    ref5.current.material.opacity = 0;
+    ref6.current.material.opacity = 0;
+    ref7.current.material.opacity = 0;
 
+    ref2.current.position.set(0, 0, 0);
+    ref3.current.position.set(0, 0, 0);
+    ref4.current.position.set(0, 0, 0);
+    ref5.current.position.set(0, 0, 0);
+    ref6.current.position.set(0, 0, 0);
+    ref7.current.position.set(0, 0, 0);
+  }, [scene]);
+
+  const openAnimation = () => {
+    if (ref.current.material.opacity < 1) {
+      ref.current.material.opacity += 0.05;
+    }
+    if (ref2.current.material.opacity < 0.5) {
+      ref2.current.material.opacity += 0.01;
+    }
+    if (ref3.current.material.opacity < 0.3) {
+      ref3.current.material.opacity += 0.01;
+    }
+    if (ref4.current.material.opacity < 0.7) {
+      ref4.current.material.opacity += 0.01;
+    }
+    if (ref5.current.material.opacity < 0.4) {
+      ref5.current.material.opacity += 0.01;
+    }
+    if (ref6.current.material.opacity < 0.3) {
+      ref6.current.material.opacity += 0.01;
+    }
+    if (ref7.current.material.opacity < 0.5) {
+      ref7.current.material.opacity += 0.01;
+    }
+
+    ref2.current.position.lerp({x: 3, y: 4.2, z: -1}, 0.01);
+    ref3.current.position.lerp({x: -4, y: -1, z: -2}, 0.01);
+    ref4.current.position.lerp({x: -3, y: 3.5, z: -1}, 0.01);
+    ref5.current.position.lerp({x: -1, y: -4, z: -1.5}, 0.01);
+    ref6.current.position.lerp({x: -6, y: -4, z: -2}, 0.01);
+    ref7.current.position.lerp({x: 6.5, y: -3, z: 0}, 0.01);
+  };
+
+
+  useFrame((state, delta) => {
+   
+    console.log(ref2.current);
     viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
-    viewVector2.set(pointer.x, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.z * 0.1);
+    viewVector2.set(pointer.x * 0.1, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.x * 0.1);
     viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);
     viewVector4.set(ref4.current.position.x + pointer.x * 0.1, ref4.current.position.y + pointer.y * 0.1, state.camera.position.z).addScalar(ref4.current.position.z * 0.1);
     viewVector5.set(-ref5.current.position.x + pointer.x, -ref5.current.position.y + pointer.y, state.camera.position.z * 2).addScalar(ref5.current.position.x * 0.1);
@@ -208,40 +258,38 @@ const DisplayScreen = (props) => {
       ref5.current.lookAt(viewVector5);
       ref6.current.lookAt(viewVector6);
       ref7.current.lookAt(viewVector7);
+
+      openAnimation();
     }
-    
-    // console.log(ref2.current);
-    // console.log(state.camera.position);
-    // console.log(ref3.current.rotation);
   });
 
   return (
     <group {...props} visible={display}>
-      <mesh position={[3, 4.2, -1]} ref={ref2}>
-        <meshBasicMaterial color={0x40E0D0} transparent={true} opacity={0.5} map={texture2}/>
+      <mesh ref={ref2}>
+        <meshBasicMaterial color={0x40E0D0} transparent={true} map={texture2}/>
         <planeGeometry args={[3, 3]} />
       </mesh>
-      <mesh position={[0, 0, 0]} ref={ref}>
+      <mesh ref={ref}>
         <meshPhongMaterial reflectivity={1} transparent={true} opacity={1} map={texture2}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh position={[-4, -1, -2]} ref={ref3}>
+      <mesh ref={ref3}>
         <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture}/>
         <planeGeometry args={[1, 1]} />
       </mesh>
-      <mesh position={[-3, 3.5, -1]} ref={ref4}>
+      <mesh ref={ref4}>
         <meshPhongMaterial reflectivity={1} color={0xFF69B4} transparent={true} opacity={0.7} map={texture3}/>
         <planeGeometry args={[6, 3]} />
       </mesh>
-      <mesh position={[-1, -4, -1.5]} ref={ref5}>
+      <mesh ref={ref5}>
         <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture}/>
         <planeGeometry args={[2, 2]} />
       </mesh>
-      <mesh position={[-6, -4, -2]} ref={ref6}>
+      <mesh ref={ref6}>
         <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.3} map={texture2}/>
         <planeGeometry args={[4, 4]} />
       </mesh>
-      <mesh position={[6.5, -3, 0]} ref={ref7}>
+      <mesh ref={ref7}>
         <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.5} map={texture3}/>
         <planeGeometry args={[6, 3]} />
       </mesh>
@@ -254,6 +302,7 @@ export const InteractiveObjectNode = (props) => {
   const [hovered, hover] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [active, setActive] = useState(false);
+  const [clicked, setClicked] = useState(false);
   const scene = useStore(state => state.scene);
   const setScene = useStore(state => state.setScene);
   const setProject = useStore(state => state.setProject);
@@ -408,15 +457,17 @@ export const InteractiveObjectNode = (props) => {
           }
         }}
         onClick={() => {
-          console.log(label);
-          setProject(label);
-          props.setProjectName(`project_${props.indexNr}`);
-          props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
-
-          if (scene !== "details") {           
+          if (scene !== "details") { 
+            setClicked(true);
+            setProject(label);
+            props.setProjectName(`project_${props.indexNr}`);
+            props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
+    
             setScene("details");
             setActive(true);
+            setClicked(false);
           }
+
         }}
       >
         {hitbox.geometry === 'box' && 
@@ -613,7 +664,7 @@ const Director = ({
     },
     tree_g: {
       'cover': {
-        position: [-1, 3, 0] as vector,
+        position: [0, 3, 0] as vector,
         rotation: [7, 0, 1] as vector,
       },
       'overview': {
