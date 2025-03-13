@@ -44,14 +44,14 @@ const CameraController = ({
 }) => {
   const { camera, gl, raycaster, pointer } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
-  // const pointer = new Vector2();
+  const project = useStore((state) => state.project);
   const scene = useStore((state) => state.scene);
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
 
 
   controls.autoRotate = autoRotate;
-  controls.autoRotateSpeed = 2;
+  controls.autoRotateSpeed = 4;
 
   controls.enableRotate = false;
   controls.enablePan = false;
@@ -102,7 +102,7 @@ const CameraController = ({
       controls.object.position.x = 0;
       controls.target.y = 7;
     }
-    if (scene === "details") {
+    if (scene === "details" || scene === "overview") {
       controls.autoRotate = false;
     }
   }, [scene]);
@@ -124,16 +124,15 @@ const CameraController = ({
     if (scene === "overview") {
       controls.object.position.lerp({x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z}, 0.05);
       controls.target.lerp({x: 0, y: 0, z: 0}, 0.05);
-      clickedObj.lerp(new Vector3(clickedObj.x, 0, clickedObj.z), 0.05);
     }
     // interactive click-pan
     if (scene === "details") {
-      // clickedObj.lerp(new Vector3(0, 0.4, 1), 0.05);
+      clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
       controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
-        0.05
+        0.04
       );
-      controls.target.lerp({x: clickedObj.x, y: clickedObj.y + 2, z: clickedObj.z}, 0.05);
+      controls.target.set(0, 2, 0);
     }
 
     if (scene === "details" && !animationReady) {
@@ -194,7 +193,7 @@ const DisplayScreen = (props) => {
   useFrame((state, delta) => {
 
     viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
-    viewVector2.set(-ref2.current.position.x + pointer.x * 0.1, -ref2.current.position.y + pointer.y * 0.1, state.camera.position.z);
+    viewVector2.set(pointer.x, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.z * 0.1);
     viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);
     viewVector4.set(ref4.current.position.x + pointer.x * 0.1, ref4.current.position.y + pointer.y * 0.1, state.camera.position.z).addScalar(ref4.current.position.z * 0.1);
     viewVector5.set(-ref5.current.position.x + pointer.x, -ref5.current.position.y + pointer.y, state.camera.position.z * 2).addScalar(ref5.current.position.x * 0.1);
@@ -218,33 +217,33 @@ const DisplayScreen = (props) => {
 
   return (
     <group {...props} visible={display}>
-      <mesh position={[4, 4.2, -1]} ref={ref2}>
+      <mesh position={[3, 4.2, -1]} ref={ref2}>
         <meshBasicMaterial color={0x40E0D0} transparent={true} opacity={0.5} map={texture2}/>
-        <boxGeometry args={[2, 2, 0.1]} />
+        <planeGeometry args={[3, 3]} />
       </mesh>
       <mesh position={[0, 0, 0]} ref={ref}>
         <meshPhongMaterial reflectivity={1} transparent={true} opacity={1} map={texture2}/>
-        <boxGeometry args={[5, 5, 0.1]} />
+        <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh position={[-4, 0, -2]} ref={ref3}>
+      <mesh position={[-4, -1, -2]} ref={ref3}>
         <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture}/>
-        <boxGeometry args={[1, 1, 0.1]} />
+        <planeGeometry args={[1, 1]} />
       </mesh>
       <mesh position={[-3, 3.5, -1]} ref={ref4}>
-        <meshPhongMaterial reflectivity={1} color={0xFF69B4} transparent={true} opacity={0.5} map={texture3}/>
-        <boxGeometry args={[6, 3, 0.1]} />
+        <meshPhongMaterial reflectivity={1} color={0xFF69B4} transparent={true} opacity={0.7} map={texture3}/>
+        <planeGeometry args={[6, 3]} />
       </mesh>
       <mesh position={[-1, -4, -1.5]} ref={ref5}>
         <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture}/>
-        <boxGeometry args={[2, 2, 0.1]} />
+        <planeGeometry args={[2, 2]} />
       </mesh>
       <mesh position={[-6, -4, -2]} ref={ref6}>
-        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.4} map={texture2}/>
-        <boxGeometry args={[4, 4, 0.1]} />
+        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.3} map={texture2}/>
+        <planeGeometry args={[4, 4]} />
       </mesh>
       <mesh position={[6.5, -3, 0]} ref={ref7}>
-        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.4} map={texture3}/>
-        <boxGeometry args={[6, 3, 0.1]} />
+        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.5} map={texture3}/>
+        <planeGeometry args={[6, 3]} />
       </mesh>
     </group>
   )
@@ -259,15 +258,18 @@ export const InteractiveObjectNode = (props) => {
   const setScene = useStore(state => state.setScene);
   const setProject = useStore(state => state.setProject);
 
-  const { modelInfo, material, hitbox, position, showInScenes, label } = props;
 
-  const textVector = new Vector3(0, 0, 0);
+  const { modelInfo, material, hitbox, position, showInScenes, label, rotation } = props;
+
+  const textVector = new Vector3();
+  // const rotationVector = new Vector3(rotation[0], rotation[1], rotation[2]);
   const meshRef = useRef(null);
 
+  const AUTO_ROTATION_SPEED = 0.05;
   const ROTATION_SPEED = 0.2;
   let display = showInScenes.includes(scene) || showInScenes.includes('all');
 
-  if (scene === 'details' && !active) {
+  if (scene === 'details' && !active) { // necessary since the label is linked to this object
    display = false;
   }
 
@@ -284,7 +286,7 @@ export const InteractiveObjectNode = (props) => {
 
   useEffect(() => {
     let objectLabel = document.createElement("div");
-    objectLabel.id = props.label;
+    objectLabel.id = label;
     objectLabel.style.position = "absolute";
     objectLabel.style.color = "black";
     // objectLabel.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
@@ -295,14 +297,15 @@ export const InteractiveObjectNode = (props) => {
     objectLabel.style.fontWeight = "bold";
     objectLabel.style.overflow = "hidden";
     objectLabel.style.textShadow = "0.3px 0.3px 2px rgba(255, 255, 255, 1)";
-    objectLabel.innerHTML = `<h3 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">${props.label}</h3>`;
+    objectLabel.innerHTML = `<h3 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">${label || ''}</h3>`;
+
     // objectLabel.innerHTML = `<Image src="/images/texture_text_test.png" width={100} height={50} alt="text" />`;
 
     document.body.appendChild(objectLabel);
   }, []);
 
   useEffect(() => {
-    if (scene === "cover") { // initial position pre-lerp
+    if (scene === "cover") { // set initial position pre-lerp
       meshRef.current.position.set(position[0], position[1], position[2]);
     }
     if (scene !== "details") {
@@ -325,28 +328,33 @@ export const InteractiveObjectNode = (props) => {
   }, [model]);
 
   useFrame((state, delta) => {
-    meshRef.current.rotation.y += delta * 0.01;
+    meshRef.current.updateMatrixWorld();
+    meshRef.current.rotation.y += delta * AUTO_ROTATION_SPEED;
+    
+
     if (hovered || active) {
       meshRef.current.rotation.y += delta * ROTATION_SPEED;
     }
     
-    const textElement = document.getElementById(props.label);
+    const textElement = document.getElementById(label);
+
     
-
-    if (!textElement) {
-      return;
-    }
     if (scene === "cover") {
-      textElement.style.display = "none";
-      return;
+      meshRef.current.position.y = Math.sin((state.clock.getElapsedTime() - delta)) * AUTO_ROTATION_SPEED;
+      meshRef.current.rotation.x += delta * AUTO_ROTATION_SPEED;
+      meshRef.current.rotation.z += delta * AUTO_ROTATION_SPEED;
     }
-
-    meshRef.current.updateMatrixWorld();
-    if( scene === "overview") {
+    
+    if(scene === "overview") {
       meshRef.current.position.lerp({x: position[0], y: position[1], z: position[2]}, 0.05);
+      // rotationVector.lerp({x: rotation[0], y: rotation[1], z: rotation[2]}, 0.05);
+      // meshRef.current.rotation.lerp({x: rotation[0], y: rotation[1], z: rotation[2]}, 0.01);
+      // console.log(meshRef.current);
     } else if (scene === "details") {
-      meshRef.current.position.set( 0, 0, 0);
+      meshRef.current.position.set(0, 0, 0);
     }
+    // console.log(rotationVector);
+    // meshRef.current.rotation.setFromVector3(rotationVector);
     textVector.setFromMatrixPosition(meshRef.current.matrixWorld);
     textVector.project(state.camera);
     
@@ -370,14 +378,14 @@ export const InteractiveObjectNode = (props) => {
       textVector.z > 1
     ) {
       textElement.style.display = "none";
-    } else {
+    } else if (textElement) {
       textElement.style.left = `${textVector.x}px`;
       textElement.style.top = `${textVector.y}px`;
       textElement.style.minWidth = "200px";
       textElement.style.fontSize = "1.5rem";
       textElement.style.textShadow = "0.3px 0.3px 0px rgba(0, 0, 0, 0.5)";
       textElement.style.textAlign = "center";
-      textElement.style.display = display ? 'block' : 'none';
+      textElement.style.display = display && scene !== 'cover' ? 'block' : 'none';
 
       props.selectedPosition.x = textVector.x;
       props.selectedPosition.y = textVector.y;
@@ -385,7 +393,7 @@ export const InteractiveObjectNode = (props) => {
   });
 
   return (
-    <mesh ref={meshRef} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
+    <mesh ref={meshRef} rotation={rotation} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
       <primitive object={(model as Object3D).clone()} position={[0, hovered ? 10 : 0, 370]} />
       <mesh
         position={hitbox.position}
@@ -400,13 +408,14 @@ export const InteractiveObjectNode = (props) => {
           }
         }}
         onClick={() => {
-          if (scene !== "details") {
-            props.setClickedObj(meshRef.current.position);
-            
+          console.log(label);
+          setProject(label);
+          props.setProjectName(`project_${props.indexNr}`);
+          props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
+
+          if (scene !== "details") {           
             setScene("details");
             setActive(true);
-            setProject(label);
-            props.setProjectName(`project_${props.indexNr}`);
           }
         }}
       >
@@ -485,7 +494,7 @@ const Director = ({
   
     constructor() {
       this.orbref = trackerRef;
-      this.autoRotate = false;
+      this.autoRotate = scene === "cover";
       this.clickedObj = clickedObj;
       this.allObj = allObj;
       this.cameraPosition = this.setCameraPositionFromScene();
@@ -500,7 +509,7 @@ const Director = ({
         case "overview":
           return new Vector3(0, 0, 12);
         case "details":
-          return new Vector3(clickedObj.x, clickedObj.y + VIEW_HEIGHT, clickedObj.z + VIEW_DISTANCE);
+          return new Vector3(0, VIEW_HEIGHT, VIEW_DISTANCE);
         default:
           return new Vector3(0, 0, 0);
       }
@@ -545,43 +554,43 @@ const Director = ({
   const objectPositionDirections = {
     markanta: {
       'cover': {
-        position: [-6, 0, -1] as vector,
-        rotation: [0, 0, 0] as vector,
+        position: [3, 0, 2] as vector,
+        rotation: [4, 5, 1] as vector,
       },
       'overview': {
-        position: [4, 2, 0] as vector,
+        position: [5, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [0, 0, 0] as vector,
+        position: [5, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
     motherstructures: {
       'cover': {
-        position: [4, 0, 2] as vector,
+        position: [0, 0, -4] as vector,
         rotation: [8, 0, 4] as vector,
       },
       'overview': {
-        position: [-4, 2, 0] as vector,
+        position: [-5, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [0, 0, 0] as vector,
+        position: [-5, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
     about: {
       'cover': {
-        position: [2, 2, 6] as vector,
+        position: [3, 1, -4] as vector,
         rotation: [2, 2, 0] as vector,
       },
       'overview': {
-        position: [0, -4, 0] as vector,
+        position: [5, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       'details': {
-        position: [0, 0, 0] as vector,
+        position: [5, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       }
     },
@@ -592,7 +601,7 @@ const Director = ({
         scale: 0.01,
       },
       'overview': {
-        position: [0, 0, 0] as vector,
+        position: [0, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
         scale: 1,
       },
@@ -603,6 +612,20 @@ const Director = ({
       }
     },
     tree_g: {
+      'cover': {
+        position: [-1, 3, 0] as vector,
+        rotation: [7, 0, 1] as vector,
+      },
+      'overview': {
+        position: [0, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      },
+      'details': {
+        position: [0, 0, 0] as vector,
+        rotation: [0, 0, 0] as vector,
+      }
+    },
+    tree_g2: {
       'cover': {
         position: [0, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
@@ -631,8 +654,8 @@ const Director = ({
       showInScenes: ["cover", "overview"]
     }),
     new InteractiveObjectProps({
-      modelInfo: { name: "models/tree_q/tree_q.obj", format: "obj" },
-      material: "models/tree_g/tree_q.mtl",
+      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
+      material: "models/tree_g/tree_g.mtl",
       hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
       position: objectPositionDirections.tree_g[scene].position,
       scale: 0.02,
@@ -640,8 +663,17 @@ const Director = ({
       showInScenes: ["cover"]
     }),
     new InteractiveObjectProps({
-      modelInfo: { name: "/models/kaktus_jacob/_kaktus final.obj", format: "obj" },
-      material: "/models/kaktus_jacob/_kaktus.mtl",
+      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
+      material: "models/tree_g/tree_g.mtl",
+      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      position: objectPositionDirections.tree_g2[scene].position,
+      scale: 0.02,
+      rotation: objectPositionDirections.tree_g2[scene].rotation,
+      showInScenes: ["cover"]
+    }),
+    new InteractiveObjectProps({
+      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
+      material: "models/tree_g/tree_g.mtl",
       hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
       position: objectPositionDirections.about[scene].position,
       scale: 0.001,
@@ -650,8 +682,8 @@ const Director = ({
       showInScenes: ["cover", "overview"]
     }),
     new InteractiveObjectProps({
-      modelInfo: { name: "/models/kaktus_jacob/_kaktus final.obj", format: "obj" },
-      material: "/models/kaktus_jacob/_kaktus.mtl",
+      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
+      material: "models/tree_g/tree_g.mtl",
       hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
       position: objectPositionDirections.motherstructures[scene].position,
       scale: 0.001,
@@ -701,6 +733,7 @@ const Director = ({
 export const CanvasUI = () => {
   const [selectedPosition] = useState({ x: 0, y: 0 });
   const [projectName, setProjectName] = useState("");
+  const project = useStore(state => state.project);
   const trackerRef = useRef(null);
   const scene = useStore(state => state.scene);
   const animationReady = useStore(useShallow((state) => state.animationReady));
@@ -725,8 +758,8 @@ export const CanvasUI = () => {
     <div
       className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle}`}
     >
-      <Canvas>
-        <Suspense fallback={Fallback()}>
+      <Canvas fallback={Fallback()}>
+        <Suspense fallback={<mesh><boxGeometry args={[5, 5, 5]} /><meshBasicMaterial /></mesh>}>
           <Director
             selectedPosition={selectedPosition}
             setProjectName={setProjectName}
@@ -735,12 +768,13 @@ export const CanvasUI = () => {
 
         </Suspense>
       </Canvas>
-
-      <ProjectDetailScreen
-        visible={animationReady}
-        title={projectName}
-        selectedPosition={selectedPosition}
-      />
+      {project &&
+        <ProjectDetailScreen
+          visible={animationReady}
+          title={projectName}
+          selectedPosition={selectedPosition}
+        />
+      }
 
       <div
         ref={trackerRef}

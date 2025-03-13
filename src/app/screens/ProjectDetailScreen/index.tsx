@@ -40,7 +40,6 @@ const getRandomAsciiChar = () => {
 };
 
 export const ProjectDetailScreen = (props) => {
-
   const animationReady = useStore(useShallow((state) => state.animationReady));
 
   const project = useStore(useShallow((state) => state.project)).toLowerCase();
@@ -238,7 +237,7 @@ export const ProjectDetailScreen = (props) => {
       <div className={`text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]  ${props.visible ? 'transition-opacity delay-500 duration-500 ease-in-out opacity-100' : 'opacity-0 invisible'}`}>
         <div id="details-screen-l" className="w-1/4 absolute">
           <h2 id="title-l" className="w-full text-4xl font-black underline underline-offset-[0.4em] pb-2" />
-          <h3 id="subtitle-l" className="text-2xl font-semibold pt-[0.3em] font-mono">Subtitle goes here</h3>
+          <h3 id="subtitle-l" className="text-2xl font-semibold pt-[0.3em] font-mono" />
           <pre className="text-md pt-4 text-balance bg-blend-difference" id="text-l" /> 
         </div>
 
