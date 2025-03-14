@@ -809,7 +809,7 @@ export const CanvasUI = () => {
     <div
       className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle}`}
     >
-      <Canvas fallback={Fallback()}>
+      <Canvas fallback={Fallback()} shadows>
         <Suspense fallback={<mesh><boxGeometry args={[5, 5, 5]} /><meshBasicMaterial /></mesh>}>
           <Director
             selectedPosition={selectedPosition}

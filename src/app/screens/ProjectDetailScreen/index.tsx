@@ -25,7 +25,7 @@ const projectMap = {
   },
   "markanta": {
     title: "Markanta",
-    subtitle: "Engineering Consulting",
+    subtitle: "Engineering Consultants",
     text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
     titleR: "About the project",
     description: "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."
@@ -56,10 +56,8 @@ export const ProjectDetailScreen = (props) => {
   const RIGHT_TYPING_SPEED = 10;
 
   const flickerText = (text, element, delay, maxTime) => {
-    const textTemplate = [];
-    for (let i = 0; i < text.length; i++) {
-      textTemplate.push(' ');
-    }
+    const textTemplate = new Array(text.length).fill(" ");
+
 
     setTimeout(() => {
       let i = 0;
@@ -72,7 +70,7 @@ export const ProjectDetailScreen = (props) => {
           setTextLoaded(true);
           clearInterval(j);
         }
-      }, 1);
+      }, 0.01);
     }, maxTime);
 
     const interval = setInterval(() => {
