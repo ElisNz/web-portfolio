@@ -57,7 +57,7 @@ const CameraController = ({
   controls.enableRotate = false;
   controls.enablePan = false;
   controls.enableZoom = false;
-  controls.enableDamping = true;
+  controls.enableDamping = false;
   controls.screenSpacePanning = false;
   controls.zoomToCursor = true;
 
@@ -78,7 +78,7 @@ const CameraController = ({
   }
 
   if (scene === "details") {
-    controls.dampingFactor = 1;
+    // controls.enablePan = true;
     controls.screenSpacePanning = true;
 
     window.addEventListener("pointermove", onPointerMove);
@@ -87,9 +87,8 @@ const CameraController = ({
   useEffect(() => {
     controls.maxPolarAngle = Math.PI / 1.5;
     controls.minPolarAngle = Math.PI / 4;
-
-    controls.enableDamping = true;
-    controls.dampingFactor = 2;
+    // controls.enablePan = true;
+    
 
     return () => {
       controls.dispose();
@@ -128,12 +127,14 @@ const CameraController = ({
     }
     // interactive click-pan
     if (scene === "details") {
+      controls.enableDamping = true;
+      controls.dampingFactor = 2;
       // clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
       controls.object.position.lerp(
         {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
         0.04
       );
-      controls.target.set(0, 2, 0);
+      controls.target.set(cameraPosition.x, cameraPosition.y, cameraPosition.z * 0.8);
     }
 
     if (scene === "details" && !animationReady) {
@@ -144,7 +145,7 @@ const CameraController = ({
       raycaster.setFromCamera(pointer, camera);
       controls.target.lerp(
         raycaster.ray.direction.negate(),
-        0.01,
+        0.005,
       );
     }
 
@@ -173,6 +174,16 @@ const DisplayScreen = (props) => {
   texture2.colorSpace = SRGBColorSpace;
   const texture3 = loader.load( 'https://picsum.photos/1000/300' );
   texture3.colorSpace = SRGBColorSpace;
+
+  const screenPositions = {
+    // '1': {x: 0, y: 0, z: 0},
+    '2': {x: 3, y: 4.2, z: -1},
+    '3': {x: -4, y: -1, z: -2},
+    '4': {x: -3, y: 4, z: -1},
+    '5': {x: -1, y: -4, z: -1.5},
+    '6': {x: -6, y: -4, z: -2},
+    '7': {x: 6.5, y: -3, z: 0},
+  };
 
   const ref = useRef(null);
   const ref2 = useRef(null);
@@ -230,18 +241,17 @@ const DisplayScreen = (props) => {
       ref7.current.material.opacity += 0.01;
     }
 
-    ref2.current.position.lerp({x: 3, y: 4.2, z: -1}, 0.01);
-    ref3.current.position.lerp({x: -4, y: -1, z: -2}, 0.01);
-    ref4.current.position.lerp({x: -3, y: 3.5, z: -1}, 0.01);
-    ref5.current.position.lerp({x: -1, y: -4, z: -1.5}, 0.01);
-    ref6.current.position.lerp({x: -6, y: -4, z: -2}, 0.01);
-    ref7.current.position.lerp({x: 6.5, y: -3, z: 0}, 0.01);
+    ref2.current.position.lerp(screenPositions['2'], 0.01);
+    ref3.current.position.lerp(screenPositions['3'], 0.01);
+    ref4.current.position.lerp(screenPositions['4'], 0.01);
+    ref5.current.position.lerp(screenPositions['5'], 0.01);
+    ref6.current.position.lerp(screenPositions['6'], 0.01);
+    ref7.current.position.lerp(screenPositions['7'], 0.01);
   };
 
 
   useFrame((state, delta) => {
-   
-    console.log(ref2.current);
+
     viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
     viewVector2.set(pointer.x * 0.1, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.x * 0.1);
     viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);

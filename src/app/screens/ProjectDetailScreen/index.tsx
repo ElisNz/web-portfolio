@@ -49,8 +49,8 @@ export const ProjectDetailScreen = (props) => {
 
   const ALLOWED_WIDTH = window.innerWidth - window.innerWidth / 5;
   const ALLOWED_HEIGHT = window.innerHeight - window.innerHeight / 5;
-  const MODEL_WIDTH = 400;
-  const CARD_WIDTH = window.innerWidth / 8;
+  const MODEL_WIDTH = window.innerWidth / 4;
+  const CARD_WIDTH = window.innerWidth / 3.25;
   const MODEL_HEIGHT = window.innerHeight / 2 - 40;
   const LEFT_TYPING_SPEED = 1;
   const RIGHT_TYPING_SPEED = 10;
@@ -133,10 +133,10 @@ export const ProjectDetailScreen = (props) => {
       return;
     }
 
-    const lPosx = window.innerWidth / 2 - MODEL_WIDTH - CARD_WIDTH + props.selectedPosition.x % 10;
+    const lPosx = window.innerWidth / 2 - MODEL_WIDTH + CARD_WIDTH - props.selectedPosition.x;
     const lPosy = props.selectedPosition.y - MODEL_HEIGHT;
 
-    const rPosx = window.innerWidth / 2 + CARD_WIDTH - props.selectedPosition.x % 10;
+    const rPosx = window.innerWidth / 2 + MODEL_WIDTH + CARD_WIDTH - props.selectedPosition.x;
     const rPosy = lPosy;
 
     if (
