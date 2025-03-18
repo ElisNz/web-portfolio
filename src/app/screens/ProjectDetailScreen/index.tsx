@@ -30,6 +30,13 @@ const projectMap = {
     titleR: "About the project",
     description: "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone."
   },
+  "various": {
+    title: "Various",
+    subtitle: "Various projects",
+    text: "I've worked on a variety of projects, ranging from e-commerce platforms to community projects. Each project has its own unique challenges and opportunities. I enjoy working on projects that allow me to explore new ideas and technologies. If you have a project that you'd like to discuss, please get in touch!",
+    titleR: "About the projects",
+    description: "I've worked on a variety of projects, ranging from e-commerce platforms to community projects. Each project has its own unique challenges and opportunities. I enjoy working on projects that allow me to explore new ideas and technologies. If you have a project that you'd like to discuss, please get in touch!"
+  }
 };
 
 const getRandomAsciiChar = () => {
