@@ -1,6 +1,6 @@
 "use client";
 // Tree test component using three.js with react-three-fiber
-import { useEffect, useRef, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense, act } from "react";
 import { useFrame, Canvas, useLoader, useThree } from "@react-three/fiber";
 
 import {
@@ -162,11 +162,11 @@ const CameraController = ({
 };
 
 const DisplayScreen = (props) => {
-  const screens = [2, 3, 4, 5, 6, 7];
+  const screens = [1, 2, 3, 4, 5, 6, 7];
   const scene = useStore(state => state.scene);
   const project = useStore(state => state.project);
   const [animationFinished, setAnimationFinished] = useState(false);
-  const [activeScreen, setActiveScreen] = useState(screens[0]);
+  let activeScreen = screens[0];
   const display = props.showInScenes.includes(scene) || props.showInScenes.includes('all');
   const { pointer } = useThree();
   
@@ -179,14 +179,17 @@ const DisplayScreen = (props) => {
   texture3.colorSpace = SRGBColorSpace;
 
   const screenPositions = {
-    // '1': {x: 0, y: 0, z: 0},
-    '2': {x: 3, y: 4.2, z: -1},
-    '3': {x: -4, y: -1, z: -2},
-    '4': {x: -3, y: 4, z: -1},
-    '5': {x: -1, y: -4, z: -1.5},
-    '6': {x: -6, y: -4, z: -2},
-    '7': {x: 6.5, y: -3, z: 0},
+    '1': {x: 12, y: 0, z: 0},
+    '2': {x: 6, y: 4.2, z: -6},
+    '3': {x: -8, y: -1, z: -6},
+    '4': {x: -6, y: 4, z: -4},
+    '5': {x: -2, y: -4, z: -3},
+    '6': {x: -20, y: -4, z: -12},
+    '7': {x: 6.5, y: -3, z: -3},
   };
+
+  const moveToScreenPositions = Object.assign({}, screenPositions);
+  moveToScreenPositions['1'] = { x: 0, y: 0, z: 0 };
 
   const ref = useRef(null);
   const ref2 = useRef(null);
@@ -196,13 +199,24 @@ const DisplayScreen = (props) => {
   const ref6 = useRef(null);
   const ref7 = useRef(null);
 
-  const viewVector = new Vector3();
+  const screenMap = {
+    '1': ref,
+    '2': ref2,
+    '3': ref3,
+    '4': ref4,
+    '5': ref5,
+    '6': ref6,
+    '7': ref7,
+  };
+
+/*   const viewVector = new Vector3();
   const viewVector2 = new Vector3();
   const viewVector3 = new Vector3();
   const viewVector4 = new Vector3();
   const viewVector5 = new Vector3();
   const viewVector6 = new Vector3();
-  const viewVector7 = new Vector3();
+  const viewVector7 = new Vector3(); */
+
 
   useEffect(() => {
     ref.current.material.opacity = 0;
@@ -223,39 +237,57 @@ const DisplayScreen = (props) => {
     setAnimationFinished(false);
   }, [scene]);
 
-  const openAnimation = () => {
+  useEffect(() => {
+    window.addEventListener('wheel', (e) => scrollImage(e));
+
+    return () => {
+      window.removeEventListener('wheel', (e) => scrollImage(e));
+    };
+  }, [animationFinished]);
+
+  const animate = () => {
+    if (!animationFinished) {
+      if (ref.current.material.opacity < 1) {
+        ref.current.material.opacity += 0.05;
+      }
+      if (ref2.current.material.opacity < 1) {
+        ref2.current.material.opacity += 0.01;
+      }
+      if (ref3.current.material.opacity < 1) {
+        ref3.current.material.opacity += 0.01;
+      }
+      if (ref4.current.material.opacity < 1) {
+        ref4.current.material.opacity += 0.01;
+      }
+      if (ref5.current.material.opacity < 1) {
+        ref5.current.material.opacity += 0.01;
+      }
+      if (ref6.current.material.opacity < 1) {
+        ref6.current.material.opacity += 0.01;
+      }
+      if (ref7.current.material.opacity < 1) {
+        ref7.current.material.opacity += 0.01;
+      }
+    }
+
+    if (!animationFinished) {
+      ref2.current.position.lerp(screenPositions['2'], 0.1);
+      ref3.current.position.lerp(screenPositions['3'], 0.1);
+      ref4.current.position.lerp(screenPositions['4'], 0.1);
+      ref5.current.position.lerp(screenPositions['5'], 0.1);
+      ref6.current.position.lerp(screenPositions['6'], 0.1);
+      ref7.current.position.lerp(screenPositions['7'], 0.1);
+    }
+
     if (animationFinished) {
-      return;
+      ref.current.position.lerp(moveToScreenPositions['1'], 0.1);
+      ref2.current.position.lerp(moveToScreenPositions['2'], 0.1);
+      ref3.current.position.lerp(moveToScreenPositions['3'], 0.1);
+      ref4.current.position.lerp(moveToScreenPositions['4'], 0.1);
+      ref5.current.position.lerp(moveToScreenPositions['5'], 0.1);
+      ref6.current.position.lerp(moveToScreenPositions['6'], 0.1);
+      ref7.current.position.lerp(moveToScreenPositions['7'], 0.1);
     }
-
-    if (ref.current.material.opacity < 1) {
-      ref.current.material.opacity += 0.05;
-    }
-    if (ref2.current.material.opacity < 0.5) {
-      ref2.current.material.opacity += 0.01;
-    }
-    if (ref3.current.material.opacity < 0.3) {
-      ref3.current.material.opacity += 0.01;
-    }
-    if (ref4.current.material.opacity < 0.7) {
-      ref4.current.material.opacity += 0.01;
-    }
-    if (ref5.current.material.opacity < 0.4) {
-      ref5.current.material.opacity += 0.01;
-    }
-    if (ref6.current.material.opacity < 0.3) {
-      ref6.current.material.opacity += 0.01;
-    }
-    if (ref7.current.material.opacity < 0.5) {
-      ref7.current.material.opacity += 0.01;
-    }
-
-    ref2.current.position.lerp(screenPositions['2'], 0.01);
-    ref3.current.position.lerp(screenPositions['3'], 0.01);
-    ref4.current.position.lerp(screenPositions['4'], 0.01);
-    ref5.current.position.lerp(screenPositions['5'], 0.01);
-    ref6.current.position.lerp(screenPositions['6'], 0.01);
-    ref7.current.position.lerp(screenPositions['7'], 0.01);
 
     if (ref7.current.position.distanceTo(screenPositions['7']) < 0.1) {
       setAnimationFinished(true);
@@ -263,93 +295,133 @@ const DisplayScreen = (props) => {
   };
 
   const scrollImage = (e) => {
+    e.preventDefault();
 
-    const screenMap = {
-      '2': ref2,
-      '3': ref3,
-      '4': ref4,
-      '5': ref5,
-      '6': ref6,
-      '7': ref7,
-    };
-
-    if (e.deltaY > 0) {
-      screenMap[activeScreen].current.position.set(screenPositions[(activeScreen + 1).toString()]);
-      screenMap[activeScreen + 1].current.position.set(2, 2, 2);
-      setActiveScreen((activeScreen) + 1);
+    if (!animationFinished) {
+      return;
     }
 
-/*     if (e.deltaY < 0) {
-      screenMap[activeScreen].current.position.set(screenPositions[(activeScreen - 1).toString()]);
-      setActiveScreen((activeScreen - 1));
-    } */
+    if (e.wheelDelta > 0 && activeScreen === screens[screens.length - 1]) {
+      const targetScreen = screens[0];
 
-    if (e.deltaY > 0 && activeScreen === 7) {
-      screenMap[activeScreen].current.position.lerp(screenPositions['2'], 0.01);
-      setActiveScreen(2);
+      moveToScreenPositions[activeScreen.toString()] = screenPositions['1']; //TODO: copy over screenPositions to moveToScreenPositions here to reset
+      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+
+      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
+      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
+
+      activeScreen = screens[0];
+      return;
     }
 
-    if (e.deltaY < 0 && activeScreen === 2) {
-      screenMap[activeScreen].current.position.lerp(screenPositions[activeScreen], 0.01);
-      setActiveScreen(7);
+    if (e.wheelDelta < 0 && activeScreen === screens[0]) {
+      const targetScreen = screens[screens.length - 1];
+
+      moveToScreenPositions[activeScreen.toString()] = screenPositions['7']; //TODO: copy over screenPositions to moveToScreenPositions here to reset
+      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+
+      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
+      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
+
+      activeScreen = screens[screens.length - 1];
+      return;
+    }
+
+    if (e.wheelDelta > 0) {
+      const targetScreen = (activeScreen + 1);
+
+      moveToScreenPositions[activeScreen.toString()] = { x: screenPositions[targetScreen.toString()].x, y: screenPositions[targetScreen.toString()].y, z: screenPositions[targetScreen.toString()].z };
+      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+      // screenMap[activeScreen.toString()].current.rotation.set(screenMap[targetScreen.toString()].current.rotation);
+
+      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
+
+      // screenMap[targetScreen.toString()].current.height = 4;
+      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
+      console.log(screenMap[targetScreen.toString()].current);
+      activeScreen = targetScreen;
+    }
+
+    if (e.wheelDelta < 0) {
+      const targetScreen = activeScreen - 1;
+
+      moveToScreenPositions[activeScreen.toString()] = { x: screenPositions[targetScreen.toString()].x, y: screenPositions[targetScreen.toString()].y, z: screenPositions[targetScreen.toString()].z };
+      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+      // screenMap[activeScreen.toString()].current.rotation.set(screenMap[targetScreen.toString()].current.rotation);
+
+      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
+
+      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
+
+      activeScreen = targetScreen;
     }
   };
 
 
   useFrame((state, delta) => {
 
-    viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
+/*     viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
     viewVector2.set(pointer.x * 0.1, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.x * 0.1);
     viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);
     viewVector4.set(ref4.current.position.x + pointer.x * 0.1, ref4.current.position.y + pointer.y * 0.1, state.camera.position.z).addScalar(ref4.current.position.z * 0.1);
     viewVector5.set(-ref5.current.position.x + pointer.x, -ref5.current.position.y + pointer.y, state.camera.position.z * 2).addScalar(ref5.current.position.x * 0.1);
     viewVector6.set(state.camera.position.z + pointer.x, -ref6.current.position.y + pointer.y * 0.1, state.camera.position.z * 2).addScalar(ref6.current.position.x * 0.1);
-    viewVector7.set(-state.camera.position.z + pointer.x, pointer.y, state.camera.position.z * 2);
+    viewVector7.set(-state.camera.position.z + pointer.x, pointer.y, state.camera.position.z * 2); */
 
     if (display) {
-      ref.current.lookAt(viewVector);
+      for(let i = 1; i < screens.length + 1; i++) {
+        if (activeScreen !== i) {
+
+          screenMap[i.toString()].current.lookAt(pointer.x, pointer.y, state.camera.position.z);
+        }
+      }
+/*       ref.current.lookAt(viewVector);
       ref2.current.lookAt(viewVector2);
       ref3.current.lookAt(viewVector3);
-      ref4.current.lookAt(viewVector4);
+      // ref4.current.lookAt(viewVector4); //TODO: ex. disable this for the active screen to prevent the rotation
       ref5.current.lookAt(viewVector5);
       ref6.current.lookAt(viewVector6);
-      ref7.current.lookAt(viewVector7);
+      ref7.current.lookAt(viewVector7); */
     }
 
-    if (display && !animationFinished) {
-      openAnimation();
+    if (display) {
+      animate();
     }
   });
 
   return (
-    <group {...props} visible={display} onWheel={(e) => scrollImage(e)}>
-      <mesh ref={ref2}>
-        <meshBasicMaterial color={0x40E0D0} transparent={true} map={texture2}/>
-        <planeGeometry args={[3, 3]} />
-      </mesh>
-      <mesh ref={ref}>
-        <meshPhongMaterial reflectivity={1} transparent={true} opacity={1} map={texture2}/>
+    <group {...props} visible={display}>
+      <mesh ref={ref2} castShadow receiveShadow>
+        <meshBasicMaterial color={0x40E0D0} transparent map={texture2}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh ref={ref3}>
-        <meshBasicMaterial color={0xFF69B4} transparent={true} opacity={0.3} map={texture}/>
-        <planeGeometry args={[1, 1]} />
+      <mesh ref={ref} castShadow receiveShadow>
+        <meshPhongMaterial transparent map={texture2}/>
+        <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh ref={ref4}>
-        <meshPhongMaterial reflectivity={1} color={0xFF69B4} transparent={true} opacity={0.7} map={texture3}/>
-        <planeGeometry args={[6, 3]} />
+      <mesh ref={ref3} castShadow receiveShadow>
+        <meshBasicMaterial color={0xFF69B4} transparent map={texture}/>
+        <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh ref={ref5}>
-        <meshBasicMaterial color={0x8B008B} transparent={true} opacity={0.4} map={texture}/>
-        <planeGeometry args={[2, 2]} />
+      <mesh ref={ref4} castShadow receiveShadow>
+        <meshPhongMaterial color={0xFF69B4} transparent map={texture3}/>
+        <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh ref={ref6}>
-        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.3} map={texture2}/>
-        <planeGeometry args={[4, 4]} />
+      <mesh ref={ref5} castShadow receiveShadow>
+        <meshBasicMaterial color={0x8B008B} transparent map={texture}/>
+        <planeGeometry args={[5, 5]} />
       </mesh>
-      <mesh ref={ref7}>
-        <meshBasicMaterial color={0x7FFF00} transparent={true} opacity={0.5} map={texture3}/>
-        <planeGeometry args={[6, 3]} />
+      <mesh ref={ref6} castShadow receiveShadow>
+        <meshBasicMaterial color={0x7FFF00} transparent map={texture2}/>
+        <planeGeometry args={[5, 5]} />
+      </mesh>
+      <mesh ref={ref7} castShadow receiveShadow>
+        <meshBasicMaterial color={0x7FFF00} transparent map={texture3}/>
+        <planeGeometry args={[5, 5]} />
       </mesh>
     </group>
   )
@@ -399,18 +471,18 @@ export const InteractiveObjectNode = (props) => {
   }
   
 
-  const openAnimation = () => {
+  const animate = () => {
 
     if (screenPlaneRef.current.scale.y < 0.99) {
-      screenPlaneRef.current.scale.x += (1 - screenPlaneRef.current.scale.x) * 0.05;
-      screenPlaneRef.current.scale.y += (1 - screenPlaneRef.current.scale.y) * 0.03;
+      screenPlaneRef.current.scale.x += (1 - screenPlaneRef.current.scale.x) * 0.08;
+      screenPlaneRef.current.scale.y += (1 - screenPlaneRef.current.scale.y) * 0.05;
     } else {
       screenPlaneRef.current.scale.set(1, 1, 1);
       // setAnimationFinished(true);
     }
 
     if (screenPlaneRef.current.rotation.y < 0) {
-      screenPlaneRef.current.rotation.y += 0.03;
+      screenPlaneRef.current.rotation.y += 0.05;
     } else {
       screenPlaneRef.current.rotation.set(0, 0, 0);
       // setAnimationFinished(true);
@@ -501,7 +573,7 @@ export const InteractiveObjectNode = (props) => {
     } 
 
     if (scene === "overview" && !animationFinished) {
-      openAnimation();
+      animate();
     }
 
     const widthHalf = state.size.width / 2;
@@ -538,7 +610,6 @@ export const InteractiveObjectNode = (props) => {
       props.selectedPosition.x = textVector.x;
       props.selectedPosition.y = textVector.y;
     }
-    console.log(screenPlaneRef.current.material);
   });
 
   return (
@@ -913,13 +984,14 @@ const Director = ({
       {/* <ambientLight intensity={2} visible={scene !== "cover"} /> */}
       {/* <directionalLight position={[0, 10, 7]} intensity={4} visible={scene === "overview"} /> */}
       {/* <fog attach="fog" args={["coral", 6, 14]} /> */}
-      <directionalLight position={[0, 0, 2]} intensity={10} visible={scene === "details"} />
+      {/* <pointLight position={[-3, 2, 1]} intensity={4} visible={scene === "details"} /> */}
+      <directionalLight position={[4, 0, 2]} intensity={4} visible={scene === "details"} />
 
       {interactiveObjects.map((props, key) => 
         <InteractiveObjectNode key={key} {...props} />
       )}
       
-      <DisplayScreen {...display_screens_props} />
+      <DisplayScreen {...display_screens_props} />  
     </>
   );
 };
