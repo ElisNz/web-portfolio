@@ -189,7 +189,7 @@ const DisplayScreen = (props) => {
   };
 
   const moveToScreenPositions = Object.assign({}, screenPositions);
-  moveToScreenPositions['1'] = { x: 0, y: 0, z: 0 };
+  moveToScreenPositions['1'] = { x: 0, y: 0, z: 0 }; // avoid putting two separate objects in the same position at 0,0,0
 
   const ref = useRef(null);
   const ref2 = useRef(null);
@@ -233,6 +233,13 @@ const DisplayScreen = (props) => {
     ref5.current.position.set(0, 0, 0);
     ref6.current.position.set(0, 0, 0);
     ref7.current.position.set(0, 0, 0);
+
+    ref2.current.material.color = new Color().setHex(0x40E0D0);
+    ref3.current.material.color = new Color().setHex(0xFF69B4);
+    ref4.current.material.color = new Color().setHex(0xFF69B4);
+    ref5.current.material.color = new Color().setHex(0x00FF00);
+    ref6.current.material.color = new Color().setHex(0x0000FF);
+    ref7.current.material.color = new Color().setHex(0xFFD700);
 
     setAnimationFinished(false);
   }, [scene]);
@@ -329,36 +336,22 @@ const DisplayScreen = (props) => {
       return;
     }
 
-    if (e.wheelDelta > 0) {
-      const targetScreen = (activeScreen + 1);
+
+      const targetScreen = e.wheelDelta > 0 ? activeScreen + 1 : activeScreen - 1;
 
       moveToScreenPositions[activeScreen.toString()] = { x: screenPositions[targetScreen.toString()].x, y: screenPositions[targetScreen.toString()].y, z: screenPositions[targetScreen.toString()].z };
       screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+      screenMap[activeScreen.toString()].current.material.color = screenMap[targetScreen.toString()].current.material.color;
       // screenMap[activeScreen.toString()].current.rotation.set(screenMap[targetScreen.toString()].current.rotation);
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
 
       // screenMap[targetScreen.toString()].current.height = 4;
       screenMap[targetScreen.toString()].current.material.opacity = 1;
-      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
-      console.log(screenMap[targetScreen.toString()].current);
-      activeScreen = targetScreen;
-    }
-
-    if (e.wheelDelta < 0) {
-      const targetScreen = activeScreen - 1;
-
-      moveToScreenPositions[activeScreen.toString()] = { x: screenPositions[targetScreen.toString()].x, y: screenPositions[targetScreen.toString()].y, z: screenPositions[targetScreen.toString()].z };
-      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
-      // screenMap[activeScreen.toString()].current.rotation.set(screenMap[targetScreen.toString()].current.rotation);
-
-      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
-
-      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      screenMap[targetScreen.toString()].current.material.color = new Color();
       screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
 
       activeScreen = targetScreen;
-    }
   };
 
 
@@ -396,7 +389,7 @@ const DisplayScreen = (props) => {
   return (
     <group {...props} visible={display}>
       <mesh ref={ref2} castShadow receiveShadow>
-        <meshBasicMaterial color={0x40E0D0} transparent map={texture2}/>
+        <meshBasicMaterial transparent map={texture2}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref} castShadow receiveShadow>
@@ -404,23 +397,23 @@ const DisplayScreen = (props) => {
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref3} castShadow receiveShadow>
-        <meshBasicMaterial color={0xFF69B4} transparent map={texture}/>
+        <meshBasicMaterial transparent map={texture}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref4} castShadow receiveShadow>
-        <meshPhongMaterial color={0xFF69B4} transparent map={texture3}/>
+        <meshPhongMaterial transparent map={texture3}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref5} castShadow receiveShadow>
-        <meshBasicMaterial color={0x8B008B} transparent map={texture}/>
+        <meshBasicMaterial transparent map={texture}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref6} castShadow receiveShadow>
-        <meshBasicMaterial color={0x7FFF00} transparent map={texture2}/>
+        <meshBasicMaterial transparent map={texture2}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref7} castShadow receiveShadow>
-        <meshBasicMaterial color={0x7FFF00} transparent map={texture3}/>
+        <meshBasicMaterial transparent map={texture3}/>
         <planeGeometry args={[5, 5]} />
       </mesh>
     </group>
