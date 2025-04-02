@@ -1,14 +1,17 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface storeTypes {
   scene: string;
   animationReady: boolean;
   project: string;
-};
+}
 
 type scenes = "cover" | "overview" | "details";
+type preferences = "no-preference" | "reduce";
 
 class Store implements storeTypes {
+  prefers: preferences;
+  setPrefers: (theme: "no-preference" | "reduce") => void;
   scene: scenes;
   setScene: (scene: scenes) => void;
   showLoader: boolean;
@@ -19,9 +22,11 @@ class Store implements storeTypes {
   setProject: (projectName: string) => void;
   startInterpolation: boolean;
   setStartInterpolation: (start: boolean) => void;
-};
+}
 
 export const useStore = create<Store>((set) => ({
+  prefers: "no-preference",
+  setPrefers: (preference) => set({ prefers: preference }),
   scene: "cover",
   setScene: (scene) => set({ scene }),
   showLoader: false,

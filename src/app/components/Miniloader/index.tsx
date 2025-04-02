@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 export const Miniloader = () => {
-  const loadingSequence = ['▙', '▚', '▛', '▞', '▜', '▚', '▟', '▞',];
+  const loadingSequence = ["▙", "▚", "▛", "▞", "▜", "▚", "▟", "▞"];
   useEffect(() => {
     const loader = document.getElementById("loader");
     let i = 0;

@@ -1,10 +1,11 @@
 "use client";
-// Tree test component using three.js with react-three-fiber
+
 import { useEffect, useRef, useState, Suspense, act } from "react";
 import { useFrame, Canvas, useLoader, useThree } from "@react-three/fiber";
 
 import {
   MeshStandardMaterial,
+  MeshBasicMaterial,
   Color,
   Mesh,
   Vector3,
@@ -19,25 +20,19 @@ import { MTLLoader } from "three/examples/jsm/Addons.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { useStore } from "@/app/Store";
-import { useShallow } from 'zustand/react/shallow'
+import { useShallow } from "zustand/react/shallow";
 import { ProjectDetailScreen } from "@/app/screens";
-import { rand } from "three/webgpu";
-
 
 const Fallback = () => {
-  return (
-    <>
-    </>
-  );
-}
-
+  return <></>;
+};
 
 const CameraController = ({
   cameraPosition,
   orbref,
   autoRotate,
   clickedObj,
-} : {
+}: {
   cameraPosition: Vector3;
   orbref: React.MutableRefObject<any>;
   autoRotate: boolean;
@@ -50,7 +45,6 @@ const CameraController = ({
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
 
-
   controls.autoRotate = autoRotate;
   controls.autoRotateSpeed = 4;
 
@@ -61,10 +55,9 @@ const CameraController = ({
   controls.screenSpacePanning = false;
   controls.zoomToCursor = true;
 
-/*   if (scene === "details") {
+  /*   if (scene === "details") {
     controls.object.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
   } */
-  
 
   function onPointerMove(event) {
     // calculate pointer position in normalized device coordinates
@@ -88,7 +81,6 @@ const CameraController = ({
     controls.maxPolarAngle = Math.PI / 1.5;
     controls.minPolarAngle = Math.PI / 4;
     // controls.enablePan = true;
-    
 
     return () => {
       controls.dispose();
@@ -112,8 +104,16 @@ const CameraController = ({
 
     // let currentPos = new Vector3().copy(camera.position);
     if (scene === "cover") {
-      controls.object.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-      controls.target.set(cameraPosition.x, cameraPosition.y, cameraPosition.z - 1);
+      controls.object.position.set(
+        cameraPosition.x,
+        cameraPosition.y,
+        cameraPosition.z,
+      );
+      controls.target.set(
+        cameraPosition.x,
+        cameraPosition.y,
+        cameraPosition.z - 1,
+      );
     }
 
     if (scene !== "details") {
@@ -122,8 +122,11 @@ const CameraController = ({
     }
     // initial pan to object position
     if (scene === "overview") {
-      controls.object.position.lerp({x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z}, 0.05);
-      controls.target.lerp({x: 0, y: 0, z: 0}, 0.05);
+      controls.object.position.lerp(
+        { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z },
+        0.05,
+      );
+      controls.target.lerp({ x: 0, y: 0, z: 0 }, 0.05);
     }
     // interactive click-pan
     if (scene === "details") {
@@ -131,22 +134,23 @@ const CameraController = ({
       controls.dampingFactor = 2;
       // clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
       controls.object.position.lerp(
-        {x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z},
-        0.04
+        { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z },
+        0.04,
       );
-      controls.target.set(cameraPosition.x, cameraPosition.y, cameraPosition.z * 0.8);
+      controls.target.set(
+        cameraPosition.x,
+        cameraPosition.y,
+        cameraPosition.z * 0.8,
+      );
     }
 
     if (scene === "details" && !animationReady) {
       setAnimationReady(true);
     }
     // interactive pan (move camera from cursor)
-    if (scene === 'details' && animationReady) {
+    if (scene === "details" && animationReady) {
       raycaster.setFromCamera(pointer, camera);
-      controls.target.lerp(
-        raycaster.ray.direction.negate(),
-        0.005,
-      );
+      controls.target.lerp(raycaster.ray.direction.negate(), 0.005);
     }
 
     controls.cursor.addVectors(controls.target, controls.object.position);
@@ -163,33 +167,12 @@ const CameraController = ({
 
 const DisplayScreen = (props) => {
   const screens = [1, 2, 3, 4, 5, 6, 7];
-  const scene = useStore(state => state.scene);
-  const project = useStore(state => state.project);
+  const scene = useStore((state) => state.scene);
+  const project = useStore((state) => state.project);
   const [animationFinished, setAnimationFinished] = useState(false);
-  let activeScreen = screens[0];
-  const display = props.showInScenes.includes(scene) || props.showInScenes.includes('all');
-  const { pointer } = useThree();
-  
   const loader = new TextureLoader();
-  const texture = loader.load( 'https://picsum.photos/300' );
-  texture.colorSpace = SRGBColorSpace;
-  const texture2 = loader.load( 'https://picsum.photos/1000' );
-  texture2.colorSpace = SRGBColorSpace;
-  const texture3 = loader.load( 'https://picsum.photos/1000/300' );
-  texture3.colorSpace = SRGBColorSpace;
 
-  const screenPositions = {
-    '1': {x: 12, y: 0, z: 0},
-    '2': {x: 6, y: 4.2, z: -6},
-    '3': {x: -8, y: -1, z: -6},
-    '4': {x: -6, y: 4, z: -4},
-    '5': {x: -2, y: -4, z: -3},
-    '6': {x: -20, y: -4, z: -12},
-    '7': {x: 6.5, y: -3, z: -3},
-  };
-
-  const moveToScreenPositions = Object.assign({}, screenPositions);
-  moveToScreenPositions['1'] = { x: 0, y: 0, z: 0 }; // avoid putting two separate objects in the same position at 0,0,0
+  //const loadingImage = new VideoTexture(document.getElementById('video') as HTMLVideoElement);
 
   const ref = useRef(null);
   const ref2 = useRef(null);
@@ -199,24 +182,108 @@ const DisplayScreen = (props) => {
   const ref6 = useRef(null);
   const ref7 = useRef(null);
 
-  const screenMap = {
-    '1': ref,
-    '2': ref2,
-    '3': ref3,
-    '4': ref4,
-    '5': ref5,
-    '6': ref6,
-    '7': ref7,
+  let activeScreen = screens[0];
+  const display =
+    props.showInScenes.includes(scene) || props.showInScenes.includes("all");
+  const { pointer } = useThree();
+
+  const screenPositions = {
+    "1": { x: 12, y: 0, z: 0 },
+    "2": { x: 6, y: 4.2, z: -6 },
+    "3": { x: -8, y: -1, z: -6 },
+    "4": { x: -6, y: 4, z: -4 },
+    "5": { x: -2, y: -4, z: -3 },
+    "6": { x: -20, y: -4, z: -12 },
+    "7": { x: 6.5, y: -3, z: -3 },
   };
 
-/*   const viewVector = new Vector3();
-  const viewVector2 = new Vector3();
-  const viewVector3 = new Vector3();
-  const viewVector4 = new Vector3();
-  const viewVector5 = new Vector3();
-  const viewVector6 = new Vector3();
-  const viewVector7 = new Vector3(); */
+  const moveToScreenPositions = Object.assign({}, screenPositions);
+  moveToScreenPositions["1"] = { x: 0, y: 0, z: 0 }; // avoid putting two separate objects in the same position at 0,0,0
 
+  const screenMap = {
+    "1": ref,
+    "2": ref2,
+    "3": ref3,
+    "4": ref4,
+    "5": ref5,
+    "6": ref6,
+    "7": ref7,
+  };
+
+  const loadImages = async () => {
+    loader.load("https://picsum.photos/3000", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 1,
+      });
+    });
+
+    loader.load("https://picsum.photos/500", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref2.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0x40e0d0,
+        opacity: 0.5,
+      });
+    });
+
+    loader.load("https://picsum.photos/400", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref3.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0xff69b4,
+        opacity: 0.5,
+      });
+    });
+
+    loader.load("https://picsum.photos/600", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref4.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0xff69b4,
+        opacity: 0.5,
+      });
+    });
+
+    loader.load("https://picsum.photos/700", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref5.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0x00ff00,
+        opacity: 0.5,
+      });
+    });
+
+    loader.load("https://picsum.photos/800", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref6.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0x0000ff,
+        opacity: 0.5,
+      });
+    });
+
+    loader.load("https://picsum.photos/900", (texture) => {
+      texture.colorSpace = SRGBColorSpace;
+      ref7.current.material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        color: 0xffd700,
+        opacity: 0.5,
+      });
+    });
+  };
+
+  useEffect(() => {
+    loadImages();
+  }, []);
 
   useEffect(() => {
     ref.current.material.opacity = 0;
@@ -234,69 +301,69 @@ const DisplayScreen = (props) => {
     ref6.current.position.set(0, 0, 0);
     ref7.current.position.set(0, 0, 0);
 
-    ref2.current.material.color = new Color().setHex(0x40E0D0);
-    ref3.current.material.color = new Color().setHex(0xFF69B4);
-    ref4.current.material.color = new Color().setHex(0xFF69B4);
-    ref5.current.material.color = new Color().setHex(0x00FF00);
-    ref6.current.material.color = new Color().setHex(0x0000FF);
-    ref7.current.material.color = new Color().setHex(0xFFD700);
+    ref2.current.material.color = new Color().setHex(0x40e0d0);
+    ref3.current.material.color = new Color().setHex(0xff69b4);
+    ref4.current.material.color = new Color().setHex(0xff69b4);
+    ref5.current.material.color = new Color().setHex(0x00ff00);
+    ref6.current.material.color = new Color().setHex(0x0000ff);
+    ref7.current.material.color = new Color().setHex(0xffd700);
 
     setAnimationFinished(false);
   }, [scene]);
 
   useEffect(() => {
-    window.addEventListener('wheel', (e) => scrollImage(e));
+    window.addEventListener("wheel", (e) => scrollImage(e));
 
     return () => {
-      window.removeEventListener('wheel', (e) => scrollImage(e));
+      window.removeEventListener("wheel", (e) => scrollImage(e));
     };
   }, [animationFinished]);
 
   const animate = () => {
     if (!animationFinished) {
-      if (ref.current.material.opacity < 1) {
+      if (ref.current.material.opacity < 0.5) {
         ref.current.material.opacity += 0.05;
       }
-      if (ref2.current.material.opacity < 1) {
+      if (ref2.current.material.opacity < 0.5) {
         ref2.current.material.opacity += 0.01;
       }
-      if (ref3.current.material.opacity < 1) {
+      if (ref3.current.material.opacity < 0.5) {
         ref3.current.material.opacity += 0.01;
       }
-      if (ref4.current.material.opacity < 1) {
+      if (ref4.current.material.opacity < 0.5) {
         ref4.current.material.opacity += 0.01;
       }
-      if (ref5.current.material.opacity < 1) {
+      if (ref5.current.material.opacity < 0.5) {
         ref5.current.material.opacity += 0.01;
       }
-      if (ref6.current.material.opacity < 1) {
+      if (ref6.current.material.opacity < 0.5) {
         ref6.current.material.opacity += 0.01;
       }
-      if (ref7.current.material.opacity < 1) {
+      if (ref7.current.material.opacity < 0.5) {
         ref7.current.material.opacity += 0.01;
       }
     }
 
     if (!animationFinished) {
-      ref2.current.position.lerp(screenPositions['2'], 0.1);
-      ref3.current.position.lerp(screenPositions['3'], 0.1);
-      ref4.current.position.lerp(screenPositions['4'], 0.1);
-      ref5.current.position.lerp(screenPositions['5'], 0.1);
-      ref6.current.position.lerp(screenPositions['6'], 0.1);
-      ref7.current.position.lerp(screenPositions['7'], 0.1);
+      ref2.current.position.lerp(screenPositions["2"], 0.1);
+      ref3.current.position.lerp(screenPositions["3"], 0.1);
+      ref4.current.position.lerp(screenPositions["4"], 0.1);
+      ref5.current.position.lerp(screenPositions["5"], 0.1);
+      ref6.current.position.lerp(screenPositions["6"], 0.1);
+      ref7.current.position.lerp(screenPositions["7"], 0.1);
     }
 
     if (animationFinished) {
-      ref.current.position.lerp(moveToScreenPositions['1'], 0.1);
-      ref2.current.position.lerp(moveToScreenPositions['2'], 0.1);
-      ref3.current.position.lerp(moveToScreenPositions['3'], 0.1);
-      ref4.current.position.lerp(moveToScreenPositions['4'], 0.1);
-      ref5.current.position.lerp(moveToScreenPositions['5'], 0.1);
-      ref6.current.position.lerp(moveToScreenPositions['6'], 0.1);
-      ref7.current.position.lerp(moveToScreenPositions['7'], 0.1);
+      ref.current.position.lerp(moveToScreenPositions["1"], 0.1);
+      ref2.current.position.lerp(moveToScreenPositions["2"], 0.1);
+      ref3.current.position.lerp(moveToScreenPositions["3"], 0.1);
+      ref4.current.position.lerp(moveToScreenPositions["4"], 0.1);
+      ref5.current.position.lerp(moveToScreenPositions["5"], 0.1);
+      ref6.current.position.lerp(moveToScreenPositions["6"], 0.1);
+      ref7.current.position.lerp(moveToScreenPositions["7"], 0.1);
     }
 
-    if (ref7.current.position.distanceTo(screenPositions['7']) < 0.1) {
+    if (ref7.current.position.distanceTo(screenPositions["7"]) < 0.1) {
       setAnimationFinished(true);
     }
   };
@@ -311,8 +378,9 @@ const DisplayScreen = (props) => {
     if (e.wheelDelta > 0 && activeScreen === screens[screens.length - 1]) {
       const targetScreen = screens[0];
 
-      moveToScreenPositions[activeScreen.toString()] = screenPositions['1']; //TODO: copy over screenPositions to moveToScreenPositions here to reset
-      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+      moveToScreenPositions[activeScreen.toString()] = screenPositions["1"]; //TODO: copy over screenPositions to moveToScreenPositions here to reset
+      screenMap[activeScreen.toString()].current.material.opacity =
+        screenMap[targetScreen.toString()].current.material.opacity;
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
       screenMap[targetScreen.toString()].current.material.opacity = 1;
@@ -325,8 +393,9 @@ const DisplayScreen = (props) => {
     if (e.wheelDelta < 0 && activeScreen === screens[0]) {
       const targetScreen = screens[screens.length - 1];
 
-      moveToScreenPositions[activeScreen.toString()] = screenPositions['7']; //TODO: copy over screenPositions to moveToScreenPositions here to reset
-      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
+      moveToScreenPositions[activeScreen.toString()] = screenPositions["7"]; //TODO: copy over screenPositions to moveToScreenPositions here to reset
+      screenMap[activeScreen.toString()].current.material.opacity =
+        screenMap[targetScreen.toString()].current.material.opacity;
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
       screenMap[targetScreen.toString()].current.material.opacity = 1;
@@ -336,49 +405,38 @@ const DisplayScreen = (props) => {
       return;
     }
 
+    const targetScreen = e.wheelDelta > 0 ? activeScreen + 1 : activeScreen - 1;
 
-      const targetScreen = e.wheelDelta > 0 ? activeScreen + 1 : activeScreen - 1;
+    moveToScreenPositions[activeScreen.toString()] = {
+      x: screenPositions[targetScreen.toString()].x,
+      y: screenPositions[targetScreen.toString()].y,
+      z: screenPositions[targetScreen.toString()].z,
+    };
+    screenMap[activeScreen.toString()].current.material.opacity =
+      screenMap[targetScreen.toString()].current.material.opacity;
+    screenMap[activeScreen.toString()].current.material.color =
+      screenMap[targetScreen.toString()].current.material.color;
 
-      moveToScreenPositions[activeScreen.toString()] = { x: screenPositions[targetScreen.toString()].x, y: screenPositions[targetScreen.toString()].y, z: screenPositions[targetScreen.toString()].z };
-      screenMap[activeScreen.toString()].current.material.opacity = screenMap[targetScreen.toString()].current.material.opacity;
-      screenMap[activeScreen.toString()].current.material.color = screenMap[targetScreen.toString()].current.material.color;
-      // screenMap[activeScreen.toString()].current.rotation.set(screenMap[targetScreen.toString()].current.rotation);
+    moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
+    screenMap[targetScreen.toString()].current.material.opacity = 1;
+    screenMap[targetScreen.toString()].current.material.color = new Color();
+    screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
 
-      moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
-
-      // screenMap[targetScreen.toString()].current.height = 4;
-      screenMap[targetScreen.toString()].current.material.opacity = 1;
-      screenMap[targetScreen.toString()].current.material.color = new Color();
-      screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
-
-      activeScreen = targetScreen;
+    activeScreen = targetScreen;
   };
 
-
   useFrame((state, delta) => {
-
-/*     viewVector.set(state.camera.position.x + pointer.x * 0.1, state.camera.position.y + pointer.y * 0.1, state.camera.position.z);
-    viewVector2.set(pointer.x * 0.1, ref2.current.position.y + pointer.y, state.camera.position.z + pointer.x).addScalar(ref2.current.position.x * 0.1);
-    viewVector3.set(-ref3.current.position.x + pointer.x, -ref3.current.position.y + pointer.y, state.camera.position.z).addScalar(ref3.current.position.z * 0.1);
-    viewVector4.set(ref4.current.position.x + pointer.x * 0.1, ref4.current.position.y + pointer.y * 0.1, state.camera.position.z).addScalar(ref4.current.position.z * 0.1);
-    viewVector5.set(-ref5.current.position.x + pointer.x, -ref5.current.position.y + pointer.y, state.camera.position.z * 2).addScalar(ref5.current.position.x * 0.1);
-    viewVector6.set(state.camera.position.z + pointer.x, -ref6.current.position.y + pointer.y * 0.1, state.camera.position.z * 2).addScalar(ref6.current.position.x * 0.1);
-    viewVector7.set(-state.camera.position.z + pointer.x, pointer.y, state.camera.position.z * 2); */
-
     if (display) {
-      for(let i = 1; i < screens.length + 1; i++) {
-        if (activeScreen !== i) {
-
-          screenMap[i.toString()].current.lookAt(pointer.x, pointer.y, state.camera.position.z);
+      for (let i = 1; i < screens.length + 1; i++) {
+        if (activeScreen === i) {
+          continue;
         }
+        screenMap[i.toString()].current.lookAt(
+          pointer.x,
+          pointer.y,
+          state.camera.position.z,
+        );
       }
-/*       ref.current.lookAt(viewVector);
-      ref2.current.lookAt(viewVector2);
-      ref3.current.lookAt(viewVector3);
-      // ref4.current.lookAt(viewVector4); //TODO: ex. disable this for the active screen to prevent the rotation
-      ref5.current.lookAt(viewVector5);
-      ref6.current.lookAt(viewVector6);
-      ref7.current.lookAt(viewVector7); */
     }
 
     if (display) {
@@ -389,37 +447,36 @@ const DisplayScreen = (props) => {
   return (
     <group {...props} visible={display}>
       <mesh ref={ref2} castShadow receiveShadow>
-        <meshBasicMaterial transparent map={texture2}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref} castShadow receiveShadow>
-        <meshPhongMaterial transparent map={texture2}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref3} castShadow receiveShadow>
-        <meshBasicMaterial transparent map={texture}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref4} castShadow receiveShadow>
-        <meshPhongMaterial transparent map={texture3}/>
+        <meshPhongMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref5} castShadow receiveShadow>
-        <meshBasicMaterial transparent map={texture}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref6} castShadow receiveShadow>
-        <meshBasicMaterial transparent map={texture2}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
       <mesh ref={ref7} castShadow receiveShadow>
-        <meshBasicMaterial transparent map={texture3}/>
+        <meshBasicMaterial transparent />
         <planeGeometry args={[5, 5]} />
       </mesh>
     </group>
-  )
+  );
 };
-
 
 export const InteractiveObjectNode = (props) => {
   const [hovered, hover] = useState(false);
@@ -427,13 +484,20 @@ export const InteractiveObjectNode = (props) => {
   const [animationFinished, setAnimationFinished] = useState(false);
   const [active, setActive] = useState(false);
   const [clicked, setClicked] = useState(false);
-  const scene = useStore(state => state.scene);
-  const setScene = useStore(state => state.setScene);
-  const setProject = useStore(state => state.setProject);
+  const scene = useStore((state) => state.scene);
+  const setScene = useStore((state) => state.setScene);
+  const setProject = useStore((state) => state.setProject);
   const loader = new TextureLoader();
 
-
-  const { modelInfo, material, hitbox, position, showInScenes, label, rotation } = props;
+  const {
+    modelInfo,
+    material,
+    hitbox,
+    position,
+    showInScenes,
+    label,
+    rotation,
+  } = props;
 
   const textVector = new Vector3();
   // const rotationVector = new Vector3(rotation[0], rotation[1], rotation[2]);
@@ -442,33 +506,30 @@ export const InteractiveObjectNode = (props) => {
 
   const AUTO_ROTATION_SPEED = 0.05;
   const MAX_ANGLE = 0.03;
-  
-  let display = showInScenes.includes(scene) || showInScenes.includes('all');
 
-  if (scene === 'details' && !active) { // necessary since the label is linked to this object
-   display = false;
+  let display = showInScenes.includes(scene) || showInScenes.includes("all");
+
+  if (scene === "details" && !active) {
+    // necessary since the label is linked to this object
+    display = false;
   }
 
   let model = null;
   if (modelInfo) {
-    model = useLoader(
-      OBJLoader,
-      modelInfo.name,
-      (loader) => {
-        const mtlLoader = new MTLLoader();
-        mtlLoader.load(material, (materials) => {
-          loader.setMaterials(materials);
-        });
-      },
-    );
+    model = useLoader(OBJLoader, modelInfo.name, (loader) => {
+      const mtlLoader = new MTLLoader();
+      mtlLoader.load(material, (materials) => {
+        loader.setMaterials(materials);
+      });
+    });
   }
-  
 
   const animate = () => {
-
     if (screenPlaneRef.current.scale.y < 0.99) {
-      screenPlaneRef.current.scale.x += (1 - screenPlaneRef.current.scale.x) * 0.08;
-      screenPlaneRef.current.scale.y += (1 - screenPlaneRef.current.scale.y) * 0.05;
+      screenPlaneRef.current.scale.x +=
+        (1 - screenPlaneRef.current.scale.x) * 0.08;
+      screenPlaneRef.current.scale.y +=
+        (1 - screenPlaneRef.current.scale.y) * 0.05;
     } else {
       screenPlaneRef.current.scale.set(1, 1, 1);
       // setAnimationFinished(true);
@@ -495,19 +556,19 @@ export const InteractiveObjectNode = (props) => {
     objectLabel.style.fontWeight = "bold";
     objectLabel.style.overflow = "hidden";
     objectLabel.style.textShadow = "0.3px 0.3px 2px rgba(255, 255, 255, 1)";
-    objectLabel.innerHTML = `<h3 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">${label || ''}</h3>`;
+    objectLabel.innerHTML = `<h3 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">${label || ""}</h3>`;
 
     // objectLabel.innerHTML = `<Image src="/images/texture_text_test.png" width={100} height={50} alt="text" />`;
 
     document.body.appendChild(objectLabel);
-
   }, []);
 
   useEffect(() => {
-    const texture = loader.load( 'https://picsum.photos/300');
+    const texture = loader.load("https://picsum.photos/300");
     screenPlaneRef.current.material.map = texture;
-    
-    if (scene === "cover") { // set initial position pre-lerp
+
+    if (scene === "cover") {
+      // set initial position pre-lerp
       meshRef.current.position.set(position[0], position[1], position[2]);
     }
     if (scene !== "details") {
@@ -516,14 +577,14 @@ export const InteractiveObjectNode = (props) => {
     if (scene === "details") {
       meshRef.current.position.set(0, 0, 0);
     }
-    
+
     screenPlaneRef.current.scale.set(0, 0, 0);
     screenPlaneRef.current.rotation.set(0, -2, 0);
     // setAnimationFinished(false);
   }, [scene]);
 
   // Change color of the model by traversing meshes and assigning a random color
-  
+
   useEffect(() => {
     (model as Object3D).traverse((child) => {
       if (child.type === "Mesh") {
@@ -544,26 +605,31 @@ export const InteractiveObjectNode = (props) => {
     textVector.project(state.camera);
 
     if (hovered || active) {
-      meshRef.current.rotation.y = (Math.sin(state.clock.elapsedTime - delta) * 5) * MAX_ANGLE;
+      meshRef.current.rotation.y =
+        Math.sin(state.clock.elapsedTime - delta) * 5 * MAX_ANGLE;
     }
 
     if (!hovered) {
       meshRef.current.rotation.y = 0;
     }
-    
+
     const textElement = document.getElementById(label);
-    
+
     if (scene === "cover") {
-      meshRef.current.position.y = Math.sin((state.clock.getElapsedTime() - delta)) * AUTO_ROTATION_SPEED;
+      meshRef.current.position.y =
+        Math.sin(state.clock.getElapsedTime() - delta) * AUTO_ROTATION_SPEED;
       meshRef.current.rotation.x += delta * AUTO_ROTATION_SPEED;
       meshRef.current.rotation.z += delta * AUTO_ROTATION_SPEED;
     }
-    
-    if(scene === "overview") {
-      meshRef.current.position.lerp({x: position[0], y: position[1], z: position[2]}, 0.05);
+
+    if (scene === "overview") {
+      meshRef.current.position.lerp(
+        { x: position[0], y: position[1], z: position[2] },
+        0.05,
+      );
       // rotationVector.lerp({x: rotation[0], y: rotation[1], z: rotation[2]}, 0.05);
       // meshRef.current.rotation.lerp({x: rotation[0], y: rotation[1], z: rotation[2]}, 0.01);
-    } 
+    }
 
     if (scene === "overview" && !animationFinished) {
       animate();
@@ -596,9 +662,11 @@ export const InteractiveObjectNode = (props) => {
       textElement.style.fontWeight = "200";
       textElement.style.fontKerning = "wide";
       textElement.style.color = "white";
-      textElement.style.textShadow = "0.8px 0.8px 0.2px rgba(99, 102, 241, 0.8)";
+      textElement.style.textShadow =
+        "0.8px 0.8px 0.2px rgba(99, 102, 241, 0.8)";
       textElement.style.textAlign = "center";
-      textElement.style.display = display && scene !== 'cover' ? 'block' : 'none';
+      textElement.style.display =
+        display && scene !== "cover" ? "block" : "none";
 
       props.selectedPosition.x = textVector.x;
       props.selectedPosition.y = textVector.y;
@@ -606,37 +674,44 @@ export const InteractiveObjectNode = (props) => {
   });
 
   return (
-    <mesh ref={meshRef} rotation={rotation} visible={display} scale={hovered ? props.scale * 1.1 : props.scale}>
-      <mesh position={[0, hovered ? 10 : 0, 370]} visible={scene === 'cover'}>
+    <mesh
+      ref={meshRef}
+      rotation={rotation}
+      visible={display}
+      scale={hovered ? props.scale * 1.1 : props.scale}
+    >
+      <mesh position={[0, hovered ? 10 : 0, 370]} visible={scene === "cover"}>
         <primitive object={(model as Object3D).clone()} />
       </mesh>
-      <mesh 
+      <mesh
         ref={screenPlaneRef}
-        visible={scene === 'overview'} 
+        visible={scene === "overview"}
         position={[0, 2000, 0]}
         onPointerOver={() => {
-            hover(true);
+          hover(true);
         }}
         onPointerOut={() => {
-            hover(false);
+          hover(false);
         }}
         onClick={() => {
-          if (scene !== "details") { 
+          if (scene !== "details") {
             setClicked(true);
             setProject(label);
             props.setProjectName(`project_${props.indexNr}`);
             props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
-    
+
             setScene("details");
             setActive(true);
             setClicked(false);
           }
         }}
       >
-        <planeGeometry args={[5 * window.innerWidth * 0.7, 4 * window.innerWidth * 0.7]} />
-        <meshBasicMaterial color={0x40E0D0} transparent opacity={1} />
+        <planeGeometry
+          args={[5 * window.innerWidth * 0.7, 4 * window.innerWidth * 0.7]}
+        />
+        <meshBasicMaterial color={0x40e0d0} transparent opacity={1} />
       </mesh>
-{/*       <mesh
+      {/*       <mesh
         position={hitbox.position}
         onPointerOver={() => {
           if (scene !== "details") {
@@ -685,9 +760,8 @@ type ImportModel = {
 type HitBox = {
   size: [number, number, number];
   position: Vector3;
-  geometry: 'box' | 'sphere' | 'cone';
+  geometry: "box" | "sphere" | "cone";
 };
-
 
 class BaseObject {
   modelInfo?: ImportModel;
@@ -696,7 +770,7 @@ class BaseObject {
   position?: Vector3 | [number, number, number];
   scale: number;
   rotation?: Vector3 | [number, number, number];
-  showInScenes?: string[]
+  showInScenes?: string[];
 
   constructor(
     modelInfo: ImportModel,
@@ -705,7 +779,7 @@ class BaseObject {
     position: Vector3 | [number, number, number],
     scale: number,
     rotation: Vector3 | [number, number, number],
-    showInScenes: string[]
+    showInScenes: string[],
   ) {
     this.modelInfo = modelInfo;
     this.material = material;
@@ -715,18 +789,12 @@ class BaseObject {
     this.rotation = rotation;
     this.showInScenes = showInScenes;
   }
-};
+}
 
-
-const Director = ({
-  selectedPosition,
-  setProjectName,
-  trackerRef,
-}) => {
+const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
   const [clickedObj, setClickedObj] = useState(new Vector3(0, 0, 4));
   const [allObj, setAllObj] = useState([]);
-  const scene = useStore(state => state.scene);
-
+  const scene = useStore((state) => state.scene);
 
   class CameraProps {
     cameraPosition: Vector3;
@@ -734,7 +802,7 @@ const Director = ({
     autoRotate: boolean;
     clickedObj: Vector3;
     allObj: Vector3[];
-  
+
     constructor() {
       this.orbref = trackerRef;
       this.autoRotate = scene === "cover";
@@ -757,10 +825,10 @@ const Director = ({
           return new Vector3(0, 0, 0);
       }
     }
-  };
+  }
 
   const cameraProps = new CameraProps();
-  
+
   class InteractiveObjectProps extends BaseObject {
     setClickedObj: (position: Vector3) => void;
     setAllObj: (interactiveObjects: Vector3[]) => void;
@@ -772,17 +840,24 @@ const Director = ({
     node: JSX.Element;
 
     constructor(props: {
-        modelInfo?: ImportModel,
-        material?: string,
-        label?: string,
-        hitbox?: HitBox,
-        position: Vector3 | [number, number, number],
-        scale: number,
-        rotation: Vector3 | [number, number, number],
-        showInScenes: string[]
-      }
-    ) {
-      super(props.modelInfo, props.material, props.hitbox, props.position, props.scale, props.rotation, props.showInScenes);
+      modelInfo?: ImportModel;
+      material?: string;
+      label?: string;
+      hitbox?: HitBox;
+      position: Vector3 | [number, number, number];
+      scale: number;
+      rotation: Vector3 | [number, number, number];
+      showInScenes: string[];
+    }) {
+      super(
+        props.modelInfo,
+        props.material,
+        props.hitbox,
+        props.position,
+        props.scale,
+        props.rotation,
+        props.showInScenes,
+      );
       this.label = props.label;
       this.setClickedObj = setClickedObj;
       this.setAllObj = setAllObj;
@@ -790,111 +865,111 @@ const Director = ({
       this.setProjectName = setProjectName;
       this.node = <InteractiveObjectNode key={props.label} {...this} />;
     }
-  };
+  }
 
   type vector = [number, number, number];
 
   const objectPositionDirections = {
     markanta: {
-      'cover': {
+      cover: {
         position: [3, 0, 1] as vector,
         rotation: [4, 5, 1] as vector,
       },
-      'overview': {
+      overview: {
         position: [5, 3, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
+      details: {
         position: [5, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
     motherstructures: {
-      'cover': {
+      cover: {
         position: [0, 0, -4] as vector,
         rotation: [8, 0, 4] as vector,
       },
-      'overview': {
+      overview: {
         position: [-5, 3.5, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
+      details: {
         position: [-5, 4, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
     about: {
-      'cover': {
+      cover: {
         position: [3, 1, -6] as vector,
         rotation: [2, 2, 0] as vector,
       },
-      'overview': {
+      overview: {
         position: [5, -5, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
+      details: {
         position: [5, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
     various: {
-      'cover': {
+      cover: {
         position: [3, 1, -6] as vector,
         rotation: [2, 2, 0] as vector,
       },
-      'overview': {
+      overview: {
         position: [-5, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
-        position: [-5, -4, 0]as vector,
+      details: {
+        position: [-5, -4, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
     display_screens: {
-      'cover': {
+      cover: {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
         scale: 0.01,
       },
-      'overview': {
+      overview: {
         position: [0, 2, 0] as vector,
         rotation: [0, 0, 0] as vector,
         scale: 1,
       },
-      'details': {
+      details: {
         position: [0, 2, 0] as vector,
         rotation: [0.01, 0, 0] as vector,
         scale: 1,
-      }
+      },
     },
     tree_g: {
-      'cover': {
+      cover: {
         position: [2, 0, 0] as vector,
         rotation: [7, 0, 1] as vector,
       },
-      'overview': {
+      overview: {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
+      details: {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
     tree_g2: {
-      'cover': {
+      cover: {
         position: [-1, -4, -3] as vector,
         rotation: [4, 0, 0] as vector,
       },
-      'overview': {
+      overview: {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
-      'details': {
+      details: {
         position: [0, 0, 0] as vector,
         rotation: [0, 0, 0] as vector,
-      }
+      },
     },
   };
 
@@ -903,12 +978,16 @@ const Director = ({
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
-      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      hitbox: {
+        size: [2000, 4000, 2000],
+        position: new Vector3(0, 2000, 0),
+        geometry: "box",
+      },
       position: objectPositionDirections.markanta[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.markanta[scene].rotation,
-      label: 'markanta',
-      showInScenes: ["cover", "overview"]
+      label: "markanta",
+      showInScenes: ["cover", "overview"],
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
@@ -916,39 +995,51 @@ const Director = ({
       position: objectPositionDirections.various[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.various[scene].rotation,
-      label: 'various',
-      showInScenes: ["cover", "overview"]
+      label: "various",
+      showInScenes: ["cover", "overview"],
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
-      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      hitbox: {
+        size: [2000, 4000, 2000],
+        position: new Vector3(0, 2000, 0),
+        geometry: "box",
+      },
       position: objectPositionDirections.tree_g2[scene].position,
       scale: 0.002,
       rotation: objectPositionDirections.tree_g2[scene].rotation,
-      showInScenes: ["cover"]
+      showInScenes: ["cover"],
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
-      hitbox: { size: [2000, 4000, 2000], position: new Vector3(0, 2000, 0), geometry: 'box' },
+      hitbox: {
+        size: [2000, 4000, 2000],
+        position: new Vector3(0, 2000, 0),
+        geometry: "box",
+      },
       position: objectPositionDirections.about[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.about[scene].rotation,
-      label: 'about_me',
-      showInScenes: ["cover", "overview"]
+      label: "about_me",
+      showInScenes: ["cover", "overview"],
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
-      hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
+      hitbox: {
+        size: [2000, 8000, 2000],
+        position: new Vector3(0, 2000, 500),
+        geometry: "cone",
+      },
       position: objectPositionDirections.motherstructures[scene].position,
       scale: 0.001,
       rotation: objectPositionDirections.motherstructures[scene].rotation,
-      label: 'motherstructures',
-      showInScenes: ["cover", "overview"]
+      label: "motherstructures",
+      showInScenes: ["cover", "overview"],
     }),
-/*     new InteractiveObjectProps({
+    /*     new InteractiveObjectProps({
       modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
       material: "models/_gran/__gran_final.mtl",
       hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
@@ -964,27 +1055,32 @@ const Director = ({
     position: objectPositionDirections.display_screens[scene].position,
     scale: objectPositionDirections.display_screens[scene].scale,
     rotation: objectPositionDirections.display_screens[scene].rotation,
-    showInScenes: ["details"]
+    showInScenes: ["details"],
   });
-
 
   return (
     <>
-      <CameraController
-        {...cameraProps}
+      <CameraController {...cameraProps} />
+      <ambientLight
+        position={[1, 10, 0]}
+        intensity={1}
+        visible={scene !== "details"}
       />
-      <ambientLight position={[1, 10, 0]} intensity={1} visible={scene !== "details"} />
       {/* <ambientLight intensity={2} visible={scene !== "cover"} /> */}
       {/* <directionalLight position={[0, 10, 7]} intensity={4} visible={scene === "overview"} /> */}
       {/* <fog attach="fog" args={["coral", 6, 14]} /> */}
       {/* <pointLight position={[-3, 2, 1]} intensity={4} visible={scene === "details"} /> */}
-      <directionalLight position={[4, 0, 2]} intensity={4} visible={scene === "details"} />
+      <directionalLight
+        position={[4, 0, 2]}
+        intensity={4}
+        visible={scene === "details"}
+      />
 
-      {interactiveObjects.map((props, key) => 
+      {interactiveObjects.map((props, key) => (
         <InteractiveObjectNode key={key} {...props} />
-      )}
-      
-      <DisplayScreen {...display_screens_props} />  
+      ))}
+
+      <DisplayScreen {...display_screens_props} />
     </>
   );
 };
@@ -992,25 +1088,25 @@ const Director = ({
 export const CanvasUI = () => {
   const [selectedPosition] = useState({ x: 0, y: 0 });
   const [projectName, setProjectName] = useState("");
-  const project = useStore(state => state.project);
+  const project = useStore((state) => state.project);
   const trackerRef = useRef(null);
-  const scene = useStore(state => state.scene);
+  const scene = useStore((state) => state.scene);
   const animationReady = useStore(useShallow((state) => state.animationReady));
 
-  let backgroundStyle = '';
+  let backgroundStyle = "";
 
   switch (scene) {
     case "cover":
-      backgroundStyle = 'bg-transparent';
+      backgroundStyle = "bg-transparent";
       break;
     case "overview":
-      backgroundStyle = 'bg-gradient-to-r from-[pink] to-[white]/60';
+      backgroundStyle = "bg-gradient-to-r from-[pink] to-[white]/60";
       break;
     case "details":
-      backgroundStyle = 'bg-gradient-to-r from-[pink] to-pink-200/60';
+      backgroundStyle = "bg-gradient-to-r from-[pink] to-pink-200/60";
       break;
     default:
-      backgroundStyle = 'bg-transparent';
+      backgroundStyle = "bg-transparent";
   }
 
   return (
@@ -1018,27 +1114,36 @@ export const CanvasUI = () => {
       className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle}`}
     >
       <Canvas fallback={Fallback()} shadows>
-        <Suspense fallback={<mesh><boxGeometry args={[5, 5, 5]} /><meshBasicMaterial /></mesh>}>
+        <Suspense
+          fallback={
+            <mesh>
+              <boxGeometry args={[5, 5, 5]} />
+              <meshBasicMaterial />
+            </mesh>
+          }
+        >
           <Director
             selectedPosition={selectedPosition}
             setProjectName={setProjectName}
             trackerRef={trackerRef}
           />
-
         </Suspense>
       </Canvas>
-      {project &&
+
+      {project && (
         <ProjectDetailScreen
           visible={animationReady}
           title={projectName}
           selectedPosition={selectedPosition}
         />
-      }
+      )}
 
       <div
         ref={trackerRef}
-        className={`fixed bottom-4 left-0 text-2xl ${scene === 'cover' ? 'text-foreground' : 'text-background'} p-2 z-10 [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]`}
+        className={`fixed bottom-4 left-0 text-2xl ${scene === "cover" ? "text-foreground" : "text-background"} p-2 z-10 [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]`}
       />
+
+      {/* <video src="/svg/spinner.gif" autoPlay loop muted className="hidden" id="video" /> */}
     </div>
   );
 };

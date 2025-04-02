@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       scrollbar: {
-        hide: 'scrollbar-width: none; -ms-overflow-style: none;',
+        hide: "scrollbar-width: none; -ms-overflow-style: none;",
       },
       colors: {
         background: "var(--background)",
@@ -17,17 +17,22 @@ const config: Config = {
       },
       cursor: {
         fancy: "url(/cursor/cursor-default.png), auto",
-      }
+      },
+      padding: {
+        sm: "1rem",
+        md: "2rem",
+        lg: "3rem",
+      },
     },
   },
   plugins: [
     function ({ addUtilities }) {
       addUtilities({
-        '.scrollbar-hide': {
-          'scrollbar-width': 'none', /* Firefox */
-          '-ms-overflow-style': 'none', /* IE 10+ */
-          '&::-webkit-scrollbar': {
-            display: 'none', /* Safari and Chrome */
+        ".scrollbar-hide": {
+          "scrollbar-width": "none" /* Firefox */,
+          "-ms-overflow-style": "none" /* IE 10+ */,
+          "&::-webkit-scrollbar": {
+            display: "none" /* Safari and Chrome */,
           },
         },
       });
