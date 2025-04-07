@@ -12,6 +12,7 @@ export const Chevron = ({
       <svg
         width={width}
         height={height}
+        filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
         transform={`rotate(${rotate})`}
         viewBox="0 0 20 20"
         fill="none"
@@ -42,6 +43,7 @@ export const UpArrow = ({
       <svg
         width={width}
         height={height}
+        filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
         transform={`rotate(${rotate})`}
         viewBox="0 0 16 16"
         fill="none"
@@ -68,6 +70,7 @@ export const Settings = ({
     <svg
       width={width}
       height={height}
+      filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

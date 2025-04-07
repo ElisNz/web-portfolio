@@ -34,7 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" title="cactus-cat webdev">
+    <html lang="en">
+      <meta name="viewport" title="cactus-cat webdev" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >

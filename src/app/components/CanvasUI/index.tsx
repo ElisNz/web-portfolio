@@ -369,7 +369,6 @@ const DisplayScreen = (props) => {
   };
 
   const scrollImage = (e) => {
-    e.preventDefault();
 
     if (!animationFinished) {
       return;
@@ -1111,7 +1110,7 @@ export const CanvasUI = () => {
 
   return (
     <div
-      className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle}`}
+      className={`transition-all duration-800 ease-in fixed w-full h-full ${backgroundStyle} ${scene === "cover" ? "blur-[2px]" : ""}`}
     >
       <Canvas fallback={Fallback()} shadows>
         <Suspense
