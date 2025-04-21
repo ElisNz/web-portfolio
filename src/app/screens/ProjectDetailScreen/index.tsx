@@ -8,7 +8,8 @@ import { useShallow } from "zustand/react/shallow";
 import { Miniloader } from "@/app/components/Miniloader";
 import { Chevron } from "@/app/components/svg";
 
-const projectMap = {
+
+const projectMap = process.env.NODE_ENV === "development" ? {
   about_me: {
     title: "Elis Nilzen",
     subtitle: "Web designer",
@@ -41,7 +42,7 @@ const projectMap = {
     description:
       "I've worked on a variety of projects, ranging from e-commerce platforms to community projects. Each project has its own unique challenges and opportunities. I enjoy working on projects that allow me to explore new ideas and technologies. If you have a project that you'd like to discuss, please get in touch!",
   },
-};
+} : {};
 
 const getRandomAsciiChar = () => {
   const asciiStart = 32; // Space character
@@ -53,8 +54,8 @@ const getRandomAsciiChar = () => {
 
 export const ProjectDetailScreen = (props) => {
   const animationReady = useStore(useShallow((state) => state.animationReady));
-
-  const project = useStore(useShallow((state) => state.project)).toLowerCase();
+  const scene = useStore(useShallow((state) => state.scene));
+  const project = useStore(useShallow((state) => state.project));
 
   const [textLoaded, setTextLoaded] = useState(false);
   const [showArrow, setShowArrow] = useState({ up: false, down: false });
@@ -66,6 +67,8 @@ export const ProjectDetailScreen = (props) => {
   const MODEL_HEIGHT = window.innerHeight / 2 - 40;
   const LEFT_TYPING_SPEED = 1;
   const RIGHT_TYPING_SPEED = 10;
+
+
 
   const flickerText = (text, element, delay, maxTime) => {
     const textTemplate = new Array(text.length).fill(" ");
@@ -113,29 +116,6 @@ export const ProjectDetailScreen = (props) => {
     }, delay);
   };
 
-  const typeText = (text, element, delay) => {
-    const textArr = text.split("");
-    element.innerHTML = "";
-    let i = 0;
-
-    const interval = setInterval(() => {
-      if (i < textArr.length) {
-        setTextLoaded(false);
-
-        if (element.innerHTML[element.innerHTML.length - 1] === "▓") {
-          element.innerHTML = element.innerHTML.slice(0, -2);
-        }
-
-        element.innerHTML += textArr[i];
-        element.innerHTML += " ▓";
-        i++;
-      } else {
-        clearInterval(interval);
-        element.innerHTML = element.innerHTML.slice(0, -2);
-        setTextLoaded(true);
-      }
-    }, delay);
-  };
 
   const setDetailsScreenPosition = () => {
     const detailsL = document.getElementById("details-screen-l");
@@ -281,7 +261,7 @@ export const ProjectDetailScreen = (props) => {
   return (
     <>
       <div
-        className={`text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]  ${props.visible ? "transition-opacity delay-500 duration-500 ease-in-out opacity-100" : "opacity-0 invisible"}`}
+        className={`text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]  ${scene === 'details' ? "transition-opacity delay-500 duration-500 ease-in-out opacity-100" : "opacity-0 invisible"}`}
       >
         <div id="details-screen-l" className="w-1/4 absolute">
           <h2
@@ -381,7 +361,7 @@ export const ProjectDetailScreen = (props) => {
         </div>
       </div>
 
-      {props.visible && !textLoaded && (
+      {scene === 'details' && !textLoaded && (
         <div className="absolute bottom-10 right-10">
           <Miniloader />
         </div>

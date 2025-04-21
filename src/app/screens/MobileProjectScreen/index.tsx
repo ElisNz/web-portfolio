@@ -1,57 +1,23 @@
-import { Suspense } from "react";
-
-import { useStore } from "@/app/Store";
+import { Suspense, useMemo } from "react";
 import Image from "next/image";
 
-const projects = [
-  {
-    title: "",
-    subtitle: "",
-    text: "",
-    images: ["/images/texture_text_test.png"],
-    description: "",
-  },
-  {
-    title: "Motherstructures",
-    subtitle: "Urban greenspaces",
-    text: "Motherstructures is a New York based company that aims to create urban greenspaces from simple, easily reusable materials. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know! please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!please let us know!",
-    images: ["https://picsum.photos/200"],
-    description:
-      "I was approached to replace a website for a local community project. The project aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
-  },
-  {
-    title: "Project 2",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    images: ["https://picsum.photos/100"],
-  },
-  {
-    title: "Project 3",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    images: ["https://picsum.photos/400"],
-  },
-  {
-    title: "Project 4",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    images: ["https://picsum.photos/100"],
-  },
-  {
-    title: "Project 5",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    images: ["https://picsum.photos/300"],
-  },
-];
+import { useStore } from "@/app/Store";
+import { getDataUtility } from "@/app/files";
+
 
 export default function MobileProjectScreen() {
   const store = useStore((state) => state);
   const { scene, setScene, project, setProject } = store;
+  const projects = useMemo(() => getDataUtility("projects"), []);
+
 
   const ProjectCard = ({ title, images }) => (
-    <button type="button" title={title} className="h-[10rem] w-[20vw] flex flex-col text-center items-center justify-start" onClick={() => {
+    <button type="button" title={title} className="flex flex-col text-center items-center justify-start" onClick={() => {
       setProject(title);
       setScene('details');}}
     >
-      <div className="content-center h-20 w-20 bg-[white]/20">
-        <Image src={images[0]} alt={title} width={100} height={100} />
+      <div className="relative size-full content-center bg-[white]/20">
+        <Image src={images[0]} alt={title} width={200} height={200} />
       </div>
       <h2 className="pt-2 break-all">{title}</h2>
     </button>
@@ -75,12 +41,12 @@ export default function MobileProjectScreen() {
   }
 
   return (
-    <>
+    <div className={`fixed w-full h-full ${backgroundStyle} text-background`}>
       <div
-        className={`fixed w-full h-full ${backgroundStyle} ${scene === "overview" ? "opacity-100" : "hidden opacity-0"} transition-all duration-500`}
+        className={`fixed w-full h-full ${scene === "overview" ? "opacity-100" : "hidden opacity-0"} transition-all duration-500 overflow-hidden`}
       >
-        <div className="h-full flex flex-wrap items-center justify-evenly py-[15vh] gap-4 p-md">
-          {projects.map((project, index) => (
+        <div className="h-[70vh] grid grid-cols-2 items-center justify-center mt-[15vh] gap-4 px-md overflow-auto">
+          {projects?.map((project, index) => (
             project.title ? <ProjectCard key={index} {...project} /> : null
           ))}
         </div>
@@ -88,7 +54,7 @@ export default function MobileProjectScreen() {
 
       {scene !== "cover" && 
         <div
-          className={`fixed w-full h-full pt-[10vh] pb-[20vh] overflow-scroll ${backgroundStyle} ${scene === "details" ? "opacity-100" : "opacity-0 -z-50"} transition-all duration-500`}
+          className={`fixed w-full h-[85vh] pt-[10vh] pb-[20vh] overflow-scroll ${scene === "details" ? "opacity-100" : "opacity-0 -z-50"} transition-all duration-500 overflow-auto`}
         >
           <div className="flex flex-col">
             <h1 className="text-4xl text-left p-md [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)] font-black">{project}</h1>
@@ -119,6 +85,6 @@ export default function MobileProjectScreen() {
           </div>
         </div>
       }
-    </>
+    </div>
   );
 }

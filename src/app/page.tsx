@@ -24,7 +24,7 @@ export default function Home() {
         <span className="max-md:hidden">
           <Chevron width={40} height={40} />
         </span>
-        <h2 className="text-center text-black/70 dark:text-white/90 w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+        <h2 className="text-center w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
           {text}
         </h2>
       </div>
@@ -40,17 +40,21 @@ export default function Home() {
 
   return (
     <>
-      <div
-        className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
-      >
-        <CanvasUI />
-      </div>
+      {prefers === "no-preference" && 
+        <div
+          className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
+        >
+          <CanvasUI />
+        </div>
+      }
 
-      <div
-        className={`fixed ${prefers === "reduce" ? "" : "hidden"} ${scene === "cover" ? "-z-50" : ""}`}
-      >
-        <MobileProjectScreen />
-      </div>
+      {prefers === "reduce" &&
+        <div
+          className={`fixed ${prefers === "reduce" ? "" : "hidden"} ${scene === "cover" ? "-z-50" : ""}`}
+        >
+          <MobileProjectScreen />
+        </div>
+      }
 
       <div
         className={`${scene === "cover" ? "opacity-100" : "transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
@@ -63,12 +67,12 @@ export default function Home() {
             <h2 className="text-4xl font-bold [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               I'm a web designer.
             </h2>
-            <p className="dark:opacity-80 text-lg pt-[1.5rem] text-balance bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <p className="text-lg pt-[1.5rem] text-balance bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               I specialize in creating web experiences with robust design and
               typography for businesses and individuals.
             </p>
             <br />
-            <p className="dark:opacity-80 text-lg text-pretty font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_8px_rgb(99_102_241_/_0.8)]">
+            <p className="text-lg text-pretty bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               This is a site for my projects, and a design playground.
             </p>
           </div>
@@ -77,12 +81,12 @@ export default function Home() {
               text="About" 
               onClick={() => setScene("overview")} 
             />
-            <span className="text-[2rem]">|</span>
+            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">|</span>
             <ActionButton
               text="Projects"
               onClick={() => setScene("overview")}
             />
-            <span className="text-[2rem]">|</span>
+            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">|</span>
             <ActionButton 
               text="Contact" 
               onClick={() => setScene("overview")} 
@@ -102,7 +106,7 @@ export default function Home() {
               <span className="max-md:hidden">
                 <Chevron width={40} height={40} />
               </span>
-              <h2 className="text-center text-black/70 w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]">
+              <h2 className="text-center w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
                 Overview
               </h2>
             </div>
@@ -111,23 +115,23 @@ export default function Home() {
       }
       
       <div
-        className={`w-full flex flex-row fixed bottom-[3%] justify-center transition-all duration-100 ${scene !== "cover" ? "opacity-100" : "opacity-0 invisible pointer-events-none"}`}
+        className={`w-full flex flex-row fixed bottom-[3%] justify-center ${scene !== "cover" ? "opacity-100 transition-all duration-300" : "opacity-0 invisible pointer-events-none"}`}
       >
         <button
           className="w-fit hover:scale-110 transition-size duration-300"
           type="button"
           onClick={() => {
             if (scene === "overview") {
+              router.push("/", { scroll: false });
               setScene("cover");
             } else {
               setScene("overview");
-              router.push("/", { scroll: false });
             }
           }}
         >
-          <div className="flex flex-col items-center">
+          <div className="max-lg:h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
-            <h2 className="w-fit text-2xl font-mono text-[black] [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <h2 className="w-fit text-2xl font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               {scene === "overview" ? "Home" : "Overview"}
             </h2>
           </div>

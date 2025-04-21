@@ -22,6 +22,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
 import { ProjectDetailScreen } from "@/app/screens";
+import { set } from "mongoose";
 
 const Fallback = () => {
   return <></>;
@@ -40,7 +41,6 @@ const CameraController = ({
 }) => {
   const { camera, gl, raycaster, pointer } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
-  const project = useStore((state) => state.project);
   const scene = useStore((state) => state.scene);
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
@@ -102,7 +102,6 @@ const CameraController = ({
   useFrame((state, delta) => {
     state.scene.name = scene;
 
-    // let currentPos = new Vector3().copy(camera.position);
     if (scene === "cover") {
       controls.object.position.set(
         cameraPosition.x,
@@ -486,6 +485,7 @@ export const InteractiveObjectNode = (props) => {
   const scene = useStore((state) => state.scene);
   const setScene = useStore((state) => state.setScene);
   const setProject = useStore((state) => state.setProject);
+  const setAnimationReady = useStore((state) => state.setAnimationReady);
   const loader = new TextureLoader();
 
   const {
@@ -575,6 +575,7 @@ export const InteractiveObjectNode = (props) => {
     }
     if (scene === "details") {
       meshRef.current.position.set(0, 0, 0);
+      setAnimationReady(true);
     }
 
     screenPlaneRef.current.scale.set(0, 0, 0);
@@ -1129,13 +1130,13 @@ export const CanvasUI = () => {
         </Suspense>
       </Canvas>
 
-      {project && (
-        <ProjectDetailScreen
-          visible={animationReady}
-          title={projectName}
-          selectedPosition={selectedPosition}
-        />
-      )}
+
+      <ProjectDetailScreen
+        visible={scene === "details"}
+        title={projectName}
+        selectedPosition={selectedPosition}
+      />
+
 
       <div
         ref={trackerRef}
