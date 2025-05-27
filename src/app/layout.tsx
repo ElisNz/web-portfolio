@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import fs from "fs";
+import path from "path";
 
 import { Header } from "./components";
 

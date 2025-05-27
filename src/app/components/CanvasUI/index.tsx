@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, Suspense, act } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useFrame, Canvas, useLoader, useThree } from "@react-three/fiber";
 
 import {
@@ -22,7 +22,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
 import { ProjectDetailScreen } from "@/app/screens";
-import { set } from "mongoose";
+import { ImportModel, HitBox } from "@/app/types";
+
 
 const Fallback = () => {
   return <></>;
@@ -42,6 +43,7 @@ const CameraController = ({
   const { camera, gl, raycaster, pointer } = useThree();
   const controls = new OrbitControls(camera, gl.domElement);
   const scene = useStore((state) => state.scene);
+  const project = useStore((state) => state.project);
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const animationReady = useStore((state) => state.animationReady);
 
@@ -99,7 +101,7 @@ const CameraController = ({
     }
   }, [scene]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     state.scene.name = scene;
 
     if (scene === "cover") {
@@ -156,7 +158,8 @@ const CameraController = ({
 
     orbref.current.innerHTML = `<h3>X: ${controls.object.position.x.toFixed(3)}</h3>
                                 <h3>Y: ${controls.object.position.y.toFixed(3)} </h3>
-                                <h3>Z: ${controls.object.position.z.toFixed(3)}</h3>`;
+                                <h3>Z: ${controls.object.position.z.toFixed(3)}</h3>
+                                <h3>${project ? project : 'no project selected'}</h3>`;
 
     controls.update();
   });
@@ -180,6 +183,25 @@ const DisplayScreen = (props) => {
   const ref5 = useRef(null);
   const ref6 = useRef(null);
   const ref7 = useRef(null);
+
+  const refList = [
+    ref,
+    ref2,
+    ref3,
+    ref4,
+    ref5,
+    ref6,
+    ref7,
+  ];
+
+  const imageColors = [
+    new Color(0x40e0d0),
+    new Color(0xff69b4),
+    new Color(0xff69b4),
+    new Color(0x00ff00),
+    new Color(0x0000ff),
+    new Color(0xffd700),
+  ];
 
   let activeScreen = screens[0];
   const display =
@@ -209,83 +231,42 @@ const DisplayScreen = (props) => {
     "7": ref7,
   };
 
+
   const loadImages = async () => {
-    loader.load("https://picsum.photos/3000", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 1,
-      });
-    });
 
-    loader.load("https://picsum.photos/500", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref2.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0x40e0d0,
-        opacity: 0.5,
+    if (!project) {
+      refList.forEach((ref) => {
+        ref.current.material.map = null;
       });
-    });
 
-    loader.load("https://picsum.photos/400", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref3.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0xff69b4,
-        opacity: 0.5,
-      });
-    });
+      return;
+    }
 
-    loader.load("https://picsum.photos/600", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref4.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0xff69b4,
-        opacity: 0.5,
-      });
-    });
-
-    loader.load("https://picsum.photos/700", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref5.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0x00ff00,
-        opacity: 0.5,
-      });
-    });
-
-    loader.load("https://picsum.photos/800", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref6.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0x0000ff,
-        opacity: 0.5,
-      });
-    });
-
-    loader.load("https://picsum.photos/900", (texture) => {
-      texture.colorSpace = SRGBColorSpace;
-      ref7.current.material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        color: 0xffd700,
-        opacity: 0.5,
+    refList.forEach((ref, i) => {
+      if (ref.current.material.name === project) {
+        return;
+      }
+      loader.load(`images/${project}/${project}-${i + 1}.png`, (texture) => {
+        texture.colorSpace = SRGBColorSpace;
+        ref.current.material = new MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: i === 0 ? 1 : 0.5,
+          color: imageColors[i - 1],
+          name: project,
+        });
+      }, null, (error) => {
+        console.error("Error loading texture:", error);
       });
     });
   };
 
   useEffect(() => {
     loadImages();
-  }, []);
+  }, [project]);
 
   useEffect(() => {
-    ref.current.material.opacity = 0;
+    ref.current.material.opacity = 1;
     ref2.current.material.opacity = 0;
     ref3.current.material.opacity = 0;
     ref4.current.material.opacity = 0;
@@ -293,12 +274,15 @@ const DisplayScreen = (props) => {
     ref6.current.material.opacity = 0;
     ref7.current.material.opacity = 0;
 
+    ref.current.position.set(0, 0, 0);
     ref2.current.position.set(0, 0, 0);
     ref3.current.position.set(0, 0, 0);
     ref4.current.position.set(0, 0, 0);
     ref5.current.position.set(0, 0, 0);
     ref6.current.position.set(0, 0, 0);
     ref7.current.position.set(0, 0, 0);
+
+    ref.current.rotation.set(0, 0, 0);
 
     ref2.current.material.color = new Color().setHex(0x40e0d0);
     ref3.current.material.color = new Color().setHex(0xff69b4);
@@ -367,7 +351,7 @@ const DisplayScreen = (props) => {
     }
   };
 
-  const scrollImage = (e) => {
+  const scrollImage = (e: any) => {
 
     if (!animationFinished) {
       return;
@@ -377,11 +361,11 @@ const DisplayScreen = (props) => {
       const targetScreen = screens[0];
 
       moveToScreenPositions[activeScreen.toString()] = screenPositions["1"]; //TODO: copy over screenPositions to moveToScreenPositions here to reset
-      screenMap[activeScreen.toString()].current.material.opacity =
-        screenMap[targetScreen.toString()].current.material.opacity;
+/*       screenMap[activeScreen.toString()].current.material.opacity =
+        screenMap[targetScreen.toString()].current.material.opacity; */
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
-      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      /* screenMap[targetScreen.toString()].current.material.opacity = 1; */
       screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
 
       activeScreen = screens[0];
@@ -392,11 +376,11 @@ const DisplayScreen = (props) => {
       const targetScreen = screens[screens.length - 1];
 
       moveToScreenPositions[activeScreen.toString()] = screenPositions["7"]; //TODO: copy over screenPositions to moveToScreenPositions here to reset
-      screenMap[activeScreen.toString()].current.material.opacity =
-        screenMap[targetScreen.toString()].current.material.opacity;
+      /* screenMap[activeScreen.toString()].current.material.opacity =
+        screenMap[targetScreen.toString()].current.material.opacity; */
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
-      screenMap[targetScreen.toString()].current.material.opacity = 1;
+      /* screenMap[targetScreen.toString()].current.material.opacity = 1; */
       screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
 
       activeScreen = screens[screens.length - 1];
@@ -410,20 +394,19 @@ const DisplayScreen = (props) => {
       y: screenPositions[targetScreen.toString()].y,
       z: screenPositions[targetScreen.toString()].z,
     };
-    screenMap[activeScreen.toString()].current.material.opacity =
-      screenMap[targetScreen.toString()].current.material.opacity;
+    screenMap[activeScreen.toString()].current.material.opacity = 0.5;
     screenMap[activeScreen.toString()].current.material.color =
       screenMap[targetScreen.toString()].current.material.color;
 
     moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
-    screenMap[targetScreen.toString()].current.material.opacity = 1;
+    screenMap[targetScreen.toString()].current.material.opacity = 0.5;
     screenMap[targetScreen.toString()].current.material.color = new Color();
     screenMap[targetScreen.toString()].current.rotation.set(0, 0, 0);
 
     activeScreen = targetScreen;
   };
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (display) {
       for (let i = 1; i < screens.length + 1; i++) {
         if (activeScreen === i) {
@@ -435,9 +418,7 @@ const DisplayScreen = (props) => {
           state.camera.position.z,
         );
       }
-    }
 
-    if (display) {
       animate();
     }
   });
@@ -446,7 +427,7 @@ const DisplayScreen = (props) => {
     <group {...props} visible={display}>
       <mesh ref={ref2} castShadow receiveShadow>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <planeGeometry args={[18 / 2, 9 / 2]} />
       </mesh>
       <mesh ref={ref} castShadow receiveShadow>
         <meshBasicMaterial transparent />
@@ -454,11 +435,11 @@ const DisplayScreen = (props) => {
       </mesh>
       <mesh ref={ref3} castShadow receiveShadow>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <planeGeometry args={[18 / 2, 9 / 2]} />
       </mesh>
       <mesh ref={ref4} castShadow receiveShadow>
         <meshPhongMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <planeGeometry args={[18 / 2, 9 / 2]} />
       </mesh>
       <mesh ref={ref5} castShadow receiveShadow>
         <meshBasicMaterial transparent />
@@ -466,7 +447,7 @@ const DisplayScreen = (props) => {
       </mesh>
       <mesh ref={ref6} castShadow receiveShadow>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <planeGeometry args={[18 / 2, 9 / 2]} />
       </mesh>
       <mesh ref={ref7} castShadow receiveShadow>
         <meshBasicMaterial transparent />
@@ -478,12 +459,11 @@ const DisplayScreen = (props) => {
 
 export const InteractiveObjectNode = (props) => {
   const [hovered, hover] = useState(false);
-  const [textureLoaded, setTextureLoaded] = useState(false);
   const [animationFinished, setAnimationFinished] = useState(false);
   const [active, setActive] = useState(false);
-  const [clicked, setClicked] = useState(false);
   const scene = useStore((state) => state.scene);
   const setScene = useStore((state) => state.setScene);
+  const project = useStore((state) => state.project);
   const setProject = useStore((state) => state.setProject);
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const loader = new TextureLoader();
@@ -491,7 +471,6 @@ export const InteractiveObjectNode = (props) => {
   const {
     modelInfo,
     material,
-    hitbox,
     position,
     showInScenes,
     label,
@@ -499,12 +478,13 @@ export const InteractiveObjectNode = (props) => {
   } = props;
 
   const textVector = new Vector3();
-  // const rotationVector = new Vector3(rotation[0], rotation[1], rotation[2]);
   const meshRef = useRef(null);
   const screenPlaneRef = useRef(null);
 
   const AUTO_ROTATION_SPEED = 0.05;
   const MAX_ANGLE = 0.03;
+  const PORTRAIT_WIDTH = window.innerWidth / 20 * 100;
+  const PORTRAIT_HEIGHT = window.innerHeight / 15 * 100;
 
   let display = showInScenes.includes(scene) || showInScenes.includes("all");
 
@@ -583,7 +563,6 @@ export const InteractiveObjectNode = (props) => {
     // setAnimationFinished(false);
   }, [scene]);
 
-  // Change color of the model by traversing meshes and assigning a random color
 
   useEffect(() => {
     (model as Object3D).traverse((child) => {
@@ -595,8 +574,6 @@ export const InteractiveObjectNode = (props) => {
         });
       }
     });
-
-    // setTextureLoaded(true);
   }, [model]);
 
   useFrame((state, delta) => {
@@ -655,9 +632,12 @@ export const InteractiveObjectNode = (props) => {
     ) {
       textElement.style.display = "none";
     } else if (textElement) {
+      textElement.style.pointerEvents = "none";
       textElement.style.left = `${textVector.x}px`;
-      textElement.style.top = `${textVector.y}px`;
+      textElement.style.top = `${textVector.y + window.innerHeight / 15}px`;
       textElement.style.minWidth = "200px";
+      textElement.style.maxWidth = PORTRAIT_WIDTH + "px";
+      textElement.style.fontFamily = "monospace, sans-serif";
       textElement.style.fontSize = "1.5rem";
       textElement.style.fontWeight = "200";
       textElement.style.fontKerning = "wide";
@@ -665,8 +645,10 @@ export const InteractiveObjectNode = (props) => {
       textElement.style.textShadow =
         "0.8px 0.8px 0.2px rgba(99, 102, 241, 0.8)";
       textElement.style.textAlign = "center";
-      textElement.style.display =
-        display && scene !== "cover" ? "block" : "none";
+      textElement.style.opacity = scene === 'overview' ? "1" : "0";
+      textElement.style.transition = scene === 'overview' ? "opacity 0.7s ease-in" : "opacity 0.1s ease-out";
+/*       textElement.style.display =
+        display && scene === "overview" ? "block" : "none"; */
 
       props.selectedPosition.x = textVector.x;
       props.selectedPosition.y = textVector.y;
@@ -686,81 +668,31 @@ export const InteractiveObjectNode = (props) => {
       <mesh
         ref={screenPlaneRef}
         visible={scene === "overview"}
-        position={[0, 2000, 0]}
+
         onPointerOver={() => {
           hover(true);
+          setProject(label);
         }}
         onPointerOut={() => {
           hover(false);
         }}
         onClick={() => {
-          if (scene !== "details") {
-            setClicked(true);
-            setProject(label);
-            props.setProjectName(`project_${props.indexNr}`);
+            if (!project) {return;}
             props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
 
-            setScene("details");
-            setActive(true);
-            setClicked(false);
+            if (scene !== "details") {
+              setScene("details");
+              setActive(true);
           }
         }}
       >
         <planeGeometry
-          args={[5 * window.innerWidth * 0.7, 4 * window.innerWidth * 0.7]}
+          args={[PORTRAIT_WIDTH, PORTRAIT_HEIGHT, 1, 1]}
         />
         <meshBasicMaterial color={0x40e0d0} transparent opacity={1} />
       </mesh>
-      {/*       <mesh
-        position={hitbox.position}
-        onPointerOver={() => {
-          if (scene !== "details") {
-            hover(true);
-          }
-        }}
-        onPointerOut={() => {
-          {
-            hover(false);
-          }
-        }}
-        onClick={() => {
-          if (scene !== "details") { 
-            setClicked(true);
-            setProject(label);
-            props.setProjectName(`project_${props.indexNr}`);
-            props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
-    
-            setScene("details");
-            setActive(true);
-            setClicked(false);
-          }
-
-        }}
-      >
-        {hitbox.geometry === 'box' && 
-          <boxGeometry args={hitbox.size} />
-        }
-        {hitbox.geometry === 'sphere' && 
-          <sphereGeometry args={hitbox.size} />
-        }
-        {hitbox.geometry === 'cone' && 
-          <coneGeometry args={hitbox.size} />
-        }
-        <meshPhongMaterial transparent opacity={0} />
-      </mesh> */}
     </mesh>
   );
-};
-
-type ImportModel = {
-  name: string;
-  format: string;
-};
-
-type HitBox = {
-  size: [number, number, number];
-  position: Vector3;
-  geometry: "box" | "sphere" | "cone";
 };
 
 class BaseObject {
@@ -791,7 +723,7 @@ class BaseObject {
   }
 }
 
-const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
+const Director = ({ selectedPosition, trackerRef }) => {
   const [clickedObj, setClickedObj] = useState(new Vector3(0, 0, 4));
   const [allObj, setAllObj] = useState([]);
   const scene = useStore((state) => state.scene);
@@ -834,7 +766,6 @@ const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
     setAllObj: (interactiveObjects: Vector3[]) => void;
     readonly scene: string;
     selectedPosition: { x: number; y: number };
-    setProjectName: (name: string) => void;
     label: string;
     showInScenes?: string[];
     node: JSX.Element;
@@ -862,7 +793,6 @@ const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
       this.setClickedObj = setClickedObj;
       this.setAllObj = setAllObj;
       this.selectedPosition = selectedPosition;
-      this.setProjectName = setProjectName;
       this.node = <InteractiveObjectNode key={props.label} {...this} />;
     }
   }
@@ -1039,16 +969,6 @@ const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
       label: "motherstructures",
       showInScenes: ["cover", "overview"],
     }),
-    /*     new InteractiveObjectProps({
-      modelInfo: { name: "models/_gran/__gran_final.obj", format: "obj" },
-      material: "models/_gran/__gran_final.mtl",
-      hitbox: { size: [2000, 8000, 2000], position: new Vector3(0, 2000, 500), geometry: 'cone' },
-      position: objectPositionDirections._gran2[scene].position,
-      scale: 0.001,
-      rotation: objectPositionDirections._gran[scene].rotation,
-      label: 'gran_2',
-      showInScenes: ["cover", "overview"]
-    }), */
   ];
 
   const display_screens_props = new InteractiveObjectProps({
@@ -1068,7 +988,7 @@ const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
       />
       {/* <ambientLight intensity={2} visible={scene !== "cover"} /> */}
       {/* <directionalLight position={[0, 10, 7]} intensity={4} visible={scene === "overview"} /> */}
-      {/* <fog attach="fog" args={["coral", 6, 14]} /> */}
+      <fog attach="fog" args={["white", 7, 14]} />
       {/* <pointLight position={[-3, 2, 1]} intensity={4} visible={scene === "details"} /> */}
       <directionalLight
         position={[4, 0, 2]}
@@ -1087,7 +1007,6 @@ const Director = ({ selectedPosition, setProjectName, trackerRef }) => {
 
 export const CanvasUI = () => {
   const [selectedPosition] = useState({ x: 0, y: 0 });
-  const [projectName, setProjectName] = useState("");
   const project = useStore((state) => state.project);
   const trackerRef = useRef(null);
   const scene = useStore((state) => state.scene);
@@ -1124,19 +1043,19 @@ export const CanvasUI = () => {
         >
           <Director
             selectedPosition={selectedPosition}
-            setProjectName={setProjectName}
             trackerRef={trackerRef}
           />
         </Suspense>
       </Canvas>
 
-
-      <ProjectDetailScreen
-        visible={scene === "details"}
-        title={projectName}
-        selectedPosition={selectedPosition}
-      />
-
+      {project && 
+        <>
+          <ProjectDetailScreen
+            selectedPosition={selectedPosition}
+          />
+        </>
+      }
+      
 
       <div
         ref={trackerRef}
@@ -1147,3 +1066,4 @@ export const CanvasUI = () => {
     </div>
   );
 };
+
