@@ -1,3 +1,35 @@
+export const Chevron = ({
+  width = 20,
+  height = 20,
+  rotate = 0,
+}: {
+  width?: number;
+  height?: number;
+  rotate?: number;
+}) => {
+  return (
+    <>
+      <svg
+        width={width}
+        height={height}
+        filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
+        transform={`rotate(${rotate})`}
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        opacity={0.9}
+        /* className="dark:invert" */
+      >
+        <path
+          fill="#3f3f3f"
+          fillRule="evenodd"
+          d="M15.293 9.707a1 1 0 001.414-1.414l-6-6a1 1 0 00-1.414 0l-6 6a1 1 0 001.414 1.414L10 4.414l5.293 5.293zm0 8a1 1 0 001.414-1.414l-6-6a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414L10 12.414l5.293 5.293z"
+        />
+      </svg>
+    </>
+  );
+};
+
 export const UpArrow = ({
   width = 20,
   height = 20,
@@ -12,6 +44,7 @@ export const UpArrow = ({
       <svg
         width={width}
         height={height}
+        filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
         transform={`rotate(${rotate})`}
         viewBox="0 0 16 16"
         fill="none"
@@ -38,6 +71,7 @@ export const Settings = ({
     <svg
       width={width}
       height={height}
+      filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
