@@ -9,14 +9,6 @@ import { Chevron } from "@/app/components/svg";
 
 
 const projectMap = process.env.NODE_ENV === "development" ? {
-  about_me: {
-    title: "Elis Nilzen",
-    subtitle: "Web designer",
-    text: "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground.",
-    titleR: "What I do",
-    description:
-      "I specialize in creating web experiences with robust design and typography for businesses and individuals. This is a site for my projects, and a design playground.",
-  },
   motherstructures: {
     title: "Motherstructures",
     subtitle: "Urban greenspaces",
@@ -36,14 +28,6 @@ const projectMap = process.env.NODE_ENV === "development" ? {
       "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
     tech: ["Next.js", "Tailwind/CSS", "Node.js", "Google Cloud", "Firebase"],
     link: "https://markanta.se/",
-  },
-  various: {
-    title: "Various",
-    subtitle: "Various projects",
-    text: "I've worked on a variety of projects, ranging from e-commerce platforms to community projects. Each project has its own unique challenges and opportunities. I enjoy working on projects that allow me to explore new ideas and technologies. If you have a project that you'd like to discuss, please get in touch!",
-    titleR: "About the projects",
-    description:
-      "I've worked on a variety of projects, ranging from e-commerce platforms to community projects. Each project has its own unique challenges and opportunities. I enjoy working on projects that allow me to explore new ideas and technologies. If you have a project that you'd like to discuss, please get in touch!",
   },
 } : {};
 
@@ -269,7 +253,7 @@ export const ProjectDetailScreen = (props) => {
   return (
     <>
       <div
-        className={`text-foreground [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]  ${visible ? "transition-opacity delay-500 duration-500 ease-in-out opacity-100" : "opacity-0 invisible"}`}
+        className={`text-foreground [text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)]  ${visible ? "transition-opacity delay-500 duration-500 ease-in-out opacity-100" : "opacity-0 invisible"}`}
       >
         <div id="details-screen-l" className="w-1/4 absolute">
           <h2
@@ -310,7 +294,7 @@ export const ProjectDetailScreen = (props) => {
               <Chevron width={40} height={40} rotate={180} />
             </div>
           )}
-          <div className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+          <div className="[text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)]">
             <h3
               id="title-r"
               className="text-2xl font-semibold text-nowrap pr-20"
@@ -323,9 +307,9 @@ export const ProjectDetailScreen = (props) => {
             >
               {projectMap[project]?.description}
             </pre>
-            <div className={`${projectMap[project]?.tech ? '' : 'hidden'} text-md font-mono flex flex-wrap justify-between gap-4 pt-4 italic`}>
+            <div className={`${projectMap[project]?.tech ? '' : 'hidden'} text-md font-mono flex flex-wrap justify-between gap-4 pt-4`}>
               <h3 className="w-full text-2xl font-semibold text-nowrap text-center">
-                Stack
+                Tech
               </h3>
               <ul className="grid grid-cols-2 text-balance bg-blend-difference list-disc list-inside indent-8 px-2">
                 {projectMap[project]?.tech?.map((item: string, index: number) => (

@@ -33,7 +33,6 @@ const CameraController = ({
   cameraPosition,
   orbref,
   autoRotate,
-  clickedObj,
 }: {
   cameraPosition: Vector3;
   orbref: React.MutableRefObject<any>;
@@ -65,7 +64,7 @@ const CameraController = ({
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
 
-    // use heightened coefficient for pointer. This will work without the followig line.
+    // use heightened coefficient for pointer. This will work without the following line.
     pointer.set(
       (event.clientX / window.innerWidth) * 2 - 1,
       -(event.clientY / window.innerHeight) * 2 + 1,
@@ -73,16 +72,13 @@ const CameraController = ({
   }
 
   if (scene === "details") {
-    // controls.enablePan = true;
     controls.screenSpacePanning = true;
-
     window.addEventListener("pointermove", onPointerMove);
   }
 
   useEffect(() => {
     controls.maxPolarAngle = Math.PI / 1.5;
     controls.minPolarAngle = Math.PI / 4;
-    // controls.enablePan = true;
 
     return () => {
       controls.dispose();
@@ -133,7 +129,7 @@ const CameraController = ({
     if (scene === "details") {
       controls.enableDamping = true;
       controls.dampingFactor = 2;
-      // clickedObj.lerp({x: cameraPosition.x, y: cameraPosition.y + 2, z: cameraPosition.z - 2}, 0.01);
+
       controls.object.position.lerp(
         { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z },
         0.04,
@@ -242,7 +238,7 @@ const DisplayScreen = (props) => {
       return;
     }
 
-    refList.forEach((ref, i) => {
+/*     refList.forEach((ref, i) => {
       if (ref.current.material.name === project) {
         return;
       }
@@ -258,12 +254,12 @@ const DisplayScreen = (props) => {
       }, null, (error) => {
         console.error("Error loading texture:", error);
       });
-    });
+    }); */
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     loadImages();
-  }, [project]);
+  }, [project]); */
 
   useEffect(() => {
     ref.current.material.opacity = 1;
@@ -294,13 +290,13 @@ const DisplayScreen = (props) => {
     setAnimationFinished(false);
   }, [scene]);
 
-  useEffect(() => {
+/*   useEffect(() => {
     window.addEventListener("wheel", (e) => scrollImage(e));
 
     return () => {
       window.removeEventListener("wheel", (e) => scrollImage(e));
     };
-  }, [animationFinished]);
+  }, [animationFinished]); */
 
   const animate = () => {
     if (!animationFinished) {
@@ -361,8 +357,8 @@ const DisplayScreen = (props) => {
       const targetScreen = screens[0];
 
       moveToScreenPositions[activeScreen.toString()] = screenPositions["1"]; //TODO: copy over screenPositions to moveToScreenPositions here to reset
-/*       screenMap[activeScreen.toString()].current.material.opacity =
-        screenMap[targetScreen.toString()].current.material.opacity; */
+      screenMap[activeScreen.toString()].current.material.opacity =
+        screenMap[targetScreen.toString()].current.material.opacity;
 
       moveToScreenPositions[targetScreen.toString()] = { x: 0, y: 0, z: 0 };
       /* screenMap[targetScreen.toString()].current.material.opacity = 1; */
@@ -425,33 +421,33 @@ const DisplayScreen = (props) => {
 
   return (
     <group {...props} visible={display}>
-      <mesh ref={ref2} castShadow receiveShadow>
+      <mesh ref={ref2}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[18 / 2, 9 / 2]} />
+        <boxGeometry args={[18 / 2, 9 / 2, 1]} />
       </mesh>
-      <mesh ref={ref} castShadow receiveShadow>
+      <mesh ref={ref}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <boxGeometry args={[5, 5, 1]} />
       </mesh>
-      <mesh ref={ref3} castShadow receiveShadow>
+      <mesh ref={ref3}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[18 / 2, 9 / 2]} />
+        <boxGeometry args={[18 / 2, 9 / 2, 1]} />
       </mesh>
-      <mesh ref={ref4} castShadow receiveShadow>
+      <mesh ref={ref4}>
         <meshPhongMaterial transparent />
-        <planeGeometry args={[18 / 2, 9 / 2]} />
+        <boxGeometry args={[18 / 2, 9 / 2, 1]} />
       </mesh>
-      <mesh ref={ref5} castShadow receiveShadow>
+      <mesh ref={ref5}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <boxGeometry args={[5, 5, 1]} />
       </mesh>
-      <mesh ref={ref6} castShadow receiveShadow>
+      <mesh ref={ref6}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[18 / 2, 9 / 2]} />
+        <boxGeometry args={[18 / 2, 9 / 2, 1]} />
       </mesh>
-      <mesh ref={ref7} castShadow receiveShadow>
+      <mesh ref={ref7}>
         <meshBasicMaterial transparent />
-        <planeGeometry args={[5, 5]} />
+        <boxGeometry args={[5, 5, 1]} />
       </mesh>
     </group>
   );
@@ -678,7 +674,7 @@ export const InteractiveObjectNode = (props) => {
         }}
         onClick={() => {
             if (!project) {return;}
-            props.setClickedObj(meshRef.current.position); // !this is a full reference to the mesh position vector
+            props.setClickedObj(meshRef.current.position); // !this is a reference to the mesh position vector
 
             if (scene !== "details") {
               setScene("details");
@@ -686,8 +682,8 @@ export const InteractiveObjectNode = (props) => {
           }
         }}
       >
-        <planeGeometry
-          args={[PORTRAIT_WIDTH, PORTRAIT_HEIGHT, 1, 1]}
+        <boxGeometry
+          args={[PORTRAIT_WIDTH, PORTRAIT_HEIGHT, 1]}
         />
         <meshBasicMaterial color={0x40e0d0} transparent opacity={1} />
       </mesh>
@@ -793,7 +789,6 @@ const Director = ({ selectedPosition, trackerRef }) => {
       this.setClickedObj = setClickedObj;
       this.setAllObj = setAllObj;
       this.selectedPosition = selectedPosition;
-      this.node = <InteractiveObjectNode key={props.label} {...this} />;
     }
   }
 
@@ -922,15 +917,6 @@ const Director = ({ selectedPosition, trackerRef }) => {
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
       material: "models/tree_g/tree_g.mtl",
-      position: objectPositionDirections.various[scene].position,
-      scale: 0.001,
-      rotation: objectPositionDirections.various[scene].rotation,
-      label: "various",
-      showInScenes: ["cover", "overview"],
-    }),
-    new InteractiveObjectProps({
-      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
-      material: "models/tree_g/tree_g.mtl",
       hitbox: {
         size: [2000, 4000, 2000],
         position: new Vector3(0, 2000, 0),
@@ -940,20 +926,6 @@ const Director = ({ selectedPosition, trackerRef }) => {
       scale: 0.002,
       rotation: objectPositionDirections.tree_g2[scene].rotation,
       showInScenes: ["cover"],
-    }),
-    new InteractiveObjectProps({
-      modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
-      material: "models/tree_g/tree_g.mtl",
-      hitbox: {
-        size: [2000, 4000, 2000],
-        position: new Vector3(0, 2000, 0),
-        geometry: "box",
-      },
-      position: objectPositionDirections.about[scene].position,
-      scale: 0.001,
-      rotation: objectPositionDirections.about[scene].rotation,
-      label: "about_me",
-      showInScenes: ["cover", "overview"],
     }),
     new InteractiveObjectProps({
       modelInfo: { name: "models/tree_g/tree_g.obj", format: "obj" },
@@ -971,12 +943,12 @@ const Director = ({ selectedPosition, trackerRef }) => {
     }),
   ];
 
-  const display_screens_props = new InteractiveObjectProps({
+  const display_screens_props = {
     position: objectPositionDirections.display_screens[scene].position,
     scale: objectPositionDirections.display_screens[scene].scale,
     rotation: objectPositionDirections.display_screens[scene].rotation,
     showInScenes: ["details"],
-  });
+  };
 
   return (
     <>
