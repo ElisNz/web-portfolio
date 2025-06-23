@@ -12,6 +12,7 @@ import {
   Object3D,
   TextureLoader,
   SRGBColorSpace,
+  MathUtils
 } from "three";
 
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -593,9 +594,12 @@ export const InteractiveObjectNode = (props) => {
     if (scene === "cover") {
       meshRef.current.rotation.y =
         (state.clock.elapsedTime - delta) * MAX_ANGLE;
+      meshRef.current.rotation.x = 0;
+      meshRef.current.rotation.z = 0;
+      meshRef.current.scale.set(props.scale, props.scale, props.scale);
     }
 
-    if (scene === "overview" && !hovered) {     
+    if (scene === "overview") {     
       
       meshRef.current.rotation.z = 
         Math.sin(state.clock.elapsedTime - delta) * 0.1;
@@ -610,6 +614,22 @@ export const InteractiveObjectNode = (props) => {
 
     if (scene === "overview" && !animationFinished) {
       animate();
+    }
+
+    if (scene === "overview") {
+
+      const scaleLerp = MathUtils.lerp(
+        meshRef.current.scale.x,
+        hovered ? props.scale * 1.3 : props.scale,
+        0.05,
+      );
+      meshRef.current.scale.set(scaleLerp, scaleLerp, scaleLerp);
+      const zLerp = MathUtils.lerp(
+        meshRef.current.position.z,
+        hovered ? 4 : props.position[2],
+        0.05,
+      );
+      meshRef.current.position.z = zLerp;
     }
 
     const widthHalf = state.size.width / 2;
@@ -660,7 +680,7 @@ export const InteractiveObjectNode = (props) => {
       ref={meshRef}
       rotation={rotation}
       visible={display}
-      scale={hovered ? props.scale * 1.1 : props.scale}
+      scale={props.scale}
     >
       <mesh position={[0, hovered ? 10 : 0, 370]} visible={scene === "cover"}>
         <primitive object={(model as Object3D).clone()} />
@@ -866,7 +886,7 @@ const Director = ({ selectedPosition, trackerRef }) => {
         rotation: [8, 0, 4] as vector,
       },
       overview: {
-        position: [-5, 3.5, 1] as vector,
+        position: [-5, 3.5, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       details: {
@@ -880,7 +900,7 @@ const Director = ({ selectedPosition, trackerRef }) => {
         rotation: [8, 0, 4] as vector,
       },
       overview: {
-        position: [-6, -3.5, 2] as vector,
+        position: [-6, -3.5, 0] as vector,
         rotation: [0, 0, 0] as vector,
       },
       details: {
@@ -1036,7 +1056,7 @@ const Director = ({ selectedPosition, trackerRef }) => {
         visible={scene !== "details"}
       />
 
-      <fog attach="fog" args={["white", 7, 14]} />
+      <fog attach="fog" args={["white", 7.5, 20]} />
 
       <directionalLight
         position={[4, 0, 2]}
@@ -1058,8 +1078,7 @@ export const CanvasUI = () => {
   const project = useStore((state) => state.project);
   const trackerRef = useRef(null);
   const scene = useStore((state) => state.scene);
-  // const animationReady = useStore(useShallow((state) => state.animationReady));
-  console.log('rendering CanvasUI', scene, project);
+
   let backgroundStyle = "";
 
   switch (scene) {
@@ -1103,7 +1122,6 @@ export const CanvasUI = () => {
           />
         </>
       }
-      
 
       <div
         ref={trackerRef}

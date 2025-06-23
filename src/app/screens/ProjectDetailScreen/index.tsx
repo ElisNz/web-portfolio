@@ -36,7 +36,7 @@ const projectMap = process.env.NODE_ENV === "development" ? {
     titleR: "About the project",
     description:
       "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    tech: ["Next.js", "Tailwind/CSS", "Node.js", "Google Cloud", "Firebase"],
+    tech: ["Wordpress"],
     link: "https://jacobdahlgren.com/",
   },
 } : {};
