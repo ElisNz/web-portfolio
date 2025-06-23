@@ -12,7 +12,7 @@ export const Header = () => {
     <div className="absolute w-full h-12 z-50 px-sm lg:px-lg">
       <div className="w-full flex flex-row items-baseline justify-between">
         <a href="/">
-          <h1 className="text-4xl font-bold underline underline-offset-[0.5em] p-2 [text-shadow:_0_0px_2px_rgb(99_102_241_/_1)] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">
+          <h1 className="text-4xl font-bold underline underline-offset-[0.5em] p-2 [text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)] dark:[text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)]">
             cactus_cat
           </h1>
         </a>

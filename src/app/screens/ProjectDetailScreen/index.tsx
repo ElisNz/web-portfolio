@@ -29,6 +29,16 @@ const projectMap = process.env.NODE_ENV === "development" ? {
     tech: ["Next.js", "Tailwind/CSS", "Node.js", "Google Cloud", "Firebase"],
     link: "https://markanta.se/",
   },
+  "jacob dahlgren": {
+    title: "jacob dahlgren",
+    subtitle: "artist and designer",
+    text: `Jacob Dahlgren’s work is concerned with a dialogue between the authoritative singularity of pure formal abstraction and its position within a variable, complex and social shared culture. Dahlgren’s repetitious collections of ubiquitous and ordinary objects, often domestic, industrially manufactured; stand in their gestalt form as proxy for High Modernist Abstract Painting and for all of the ideological territory that Twentieth Century Art Theory has staked out for it.`,
+    titleR: "About the project",
+    description:
+      "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
+    tech: ["Next.js", "Tailwind/CSS", "Node.js", "Google Cloud", "Firebase"],
+    link: "https://jacobdahlgren.com/",
+  },
 } : {};
 
 const getRandomAsciiChar = () => {
