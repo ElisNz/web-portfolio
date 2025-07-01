@@ -7,7 +7,6 @@ import MobileProjectScreen from "./screens/MobileProjectScreen";
 
 import { CanvasUI } from "@/app/components";
 import { useStore } from "@/app/Store";
-import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 
 export default function Home() {
@@ -37,12 +36,12 @@ export default function Home() {
     const prefersReducedMotion =
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
       window.innerWidth < 1024;
-    setPrefers(prefersReducedMotion ? "reduce" : "no-preference")
+    if (prefersReducedMotion) {
+      setPrefers(prefersReducedMotion ? "reduce" : "no-preference")
+    }
+    setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, [prefers]);
 
   return (
     <>
