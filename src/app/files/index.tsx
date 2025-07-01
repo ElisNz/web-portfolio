@@ -1,5 +1,13 @@
+type project = {
+  title: string;
+  description: string;
+  text: string;
+  subtitle: string;
+  images: string[];
+};
+
 export const getDataUtility = (fileName: string) => {
-  let files: object[];
+  let files: project[];
   
   switch (process.env.NODE_ENV) {
     case 'development':
