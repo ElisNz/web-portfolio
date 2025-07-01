@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@/app/components/svg";
 import MobileProjectScreen from "./screens/MobileProjectScreen";
 
 import { CanvasUI } from "@/app/components";
 import { useStore } from "@/app/Store";
+import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 
 export default function Home() {
   const store = useStore((state) => state);
   const { scene, setScene, prefers, setPrefers } = store;
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
   const ActionButton = ({ text, onClick, className }: {text: string, onClick: any, className?: string}) => (
@@ -34,13 +36,17 @@ export default function Home() {
   useEffect(() => {
     const prefersReducedMotion =
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      window.innerWidth < 600;
-    setPrefers(prefersReducedMotion ? "reduce" : "no-preference");
+      window.innerWidth < 1024;
+    setPrefers(prefersReducedMotion ? "reduce" : "no-preference")
   }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, [prefers]);
 
   return (
     <>
-      {prefers === "no-preference" && 
+      {prefers === "no-preference" && isMounted &&
         <div
           className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
         >
@@ -48,7 +54,7 @@ export default function Home() {
         </div>
       }
 
-      {prefers === "reduce" &&
+      {prefers === "reduce" && isMounted &&
         <div
           className={`fixed ${prefers === "reduce" ? "" : "hidden"} ${scene === "cover" ? "-z-50" : ""}`}
         >
