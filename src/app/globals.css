@@ -8,12 +8,12 @@
   --foreground: #3f3f3f;
 }
 
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #3f3f3f;
     --foreground: #ededed;
   }
-} */
+}
 
 @layer base {
   html {
@@ -35,4 +35,23 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Custom scrollbar styles */
+.scrollbar-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: gray transparent; /* Firefox */
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px; /* Chrome, Safari, Edge */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent; /* Chrome, Safari, Edge */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: gray; /* Chrome, Safari, Edge */
+  border-radius: 4px;
 }

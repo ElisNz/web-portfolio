@@ -45,24 +45,21 @@ export default function Home() {
 
   return (
     <>
-      {prefers === "no-preference" && isMounted &&
+      {/* {prefers === "no-preference" && isMounted &&
         <div
           className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
         >
           <CanvasUI />
         </div>
-      }
+      } */}
 
-      {prefers === "reduce" && isMounted &&
-        <div
-          className={`fixed ${prefers === "reduce" ? "" : "hidden"} ${scene === "cover" ? "-z-50" : ""}`}
-        >
-          <MobileProjectScreen />
-        </div>
-      }
+
+      <MobileProjectScreen />
+        
+      
 
       <div
-        className={`${scene === "cover" ? "opacity-100" : "transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
+        className={`${scene === "cover" ? "opacity-100" : "hidden transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
       >
         <div
           className={`fixed w-full h-full  ${prefers === 'reduce' ? 'bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60': 'bg-gradient-to-r from-[pink]/60 to-[white]/60'} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
