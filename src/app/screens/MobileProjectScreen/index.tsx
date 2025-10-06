@@ -46,7 +46,7 @@ export default function MobileProjectScreen() {
     <div className={`fixed w-full h-full ${backgroundStyle} text-background`}>
       <div
         className={`fixed w-full ${
-          scene === "overview" ? "opacity-100" : "hidden opacity-0"
+          scene === "overview" ? "opacity-100" : "opacity-10 scale-[0.95] pointer-events-none"
         } transition-all duration-500 overflow-hidden`}
       >
         <div className="h-[75vh] w-full grid grid-cols-1 mt-20 justify-center gap-4 overflow-auto scrollbar-custom lg:gap-8">
@@ -58,7 +58,7 @@ export default function MobileProjectScreen() {
 
       {scene !== "cover" && (
         <div
-          className={`fixed w-full h-[85vh] pt-[10vh] pb-[20vh] overflow-scroll ${
+          className={`fixed w-full h-[85vh] pt-[10vh] pb-[20vh] overflow-scroll scrollbar-custom ${
             scene === "details"
               ? "opacity-100"
               : "opacity-0 -z-50"
