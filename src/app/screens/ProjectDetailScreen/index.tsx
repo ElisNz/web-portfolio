@@ -67,7 +67,6 @@ export const ProjectDetailScreen = (props) => {
   const RIGHT_TYPING_SPEED = 10;
 
 
-
   const flickerText = (text, element, delay, maxTime) => {
     const textTemplate = new Array(text.length).fill(" ");
 

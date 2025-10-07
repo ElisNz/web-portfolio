@@ -13,16 +13,16 @@ export default function MobileProjectScreen() {
     <button
       type="button"
       title={title}
-      className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 px-60"
+      className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4"
       onClick={() => {
         setProject(title);
         setScene("details");
       }}
     >
-      <div className="relative bg-[white]/20">
-        <Image src={images[0]} alt={title} width={600} height={400} />
+      <div className="size-[10rem] relative bg-[white]/20">
+        <Image draggable="false" src={images[0]} alt={title} fill objectFit="fit" />
       </div>
-      <h2 className="pt-2 break-all text-lg lg:text-xl xl:text-2xl">{title}</h2>
+      <h2 className={`${scene === 'cover' ? 'invisible' : ''} pt-2 break-all text-lg lg:text-xl xl:text-2xl`}>{title}</h2>
     </button>
   );
 
@@ -49,7 +49,7 @@ export default function MobileProjectScreen() {
           scene === "overview" ? "opacity-100" : "opacity-10 scale-[0.95] pointer-events-none"
         } transition-all duration-500 overflow-hidden`}
       >
-        <div className="h-[75vh] w-full grid grid-cols-1 mt-20 justify-center gap-4 overflow-auto scrollbar-custom lg:gap-8">
+        <div className="h-[75vh] w-full flex flex-wrap mt-20 justify-center gap-4 scrollbar-custom lg:gap-8">
           {projects?.map((project, index) =>
             project.title ? <ProjectCard key={index} {...project} /> : null
           )}
