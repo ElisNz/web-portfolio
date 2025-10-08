@@ -13,7 +13,7 @@ export const Header = () => {
       <div className="w-full flex flex-row items-baseline justify-between">
         <a href="/">
           <h1 className="text-4xl font-bold underline underline-offset-[0.5em] p-2 [text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)] dark:[text-shadow:_0_0px_1px_rgb(99_102_241_/_0.8)]">
-            cactus_cat
+            el_ni
           </h1>
         </a>
         <div className="max-md:hidden flex flex-row items-center gap-2 lg:gap-4 my-4">

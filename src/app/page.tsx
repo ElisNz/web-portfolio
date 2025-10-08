@@ -8,6 +8,7 @@ import MobileProjectScreen from "./screens/MobileProjectScreen";
 import { CanvasUI } from "@/app/components";
 import { useStore } from "@/app/Store";
 
+import { insertBlinkingCaret, typeAndEraseWords } from "@/app/functions";
 
 export default function Home() {
   const store = useStore((state) => state);
@@ -40,6 +41,11 @@ export default function Home() {
       setPrefers(prefersReducedMotion ? "reduce" : "no-preference")
     }
     setIsMounted(true);
+    insertBlinkingCaret("caret");
+    typeAndEraseWords(
+      ["creative", "curious", "freelancing"],
+      "typing"
+    );
   }, []);
 
 
@@ -62,23 +68,23 @@ export default function Home() {
         className={`${scene === "cover" ? "opacity-100" : "hidden transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
       >
         <div
-          className={`fixed w-full h-full  ${prefers === 'reduce' ? 'bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60': 'bg-gradient-to-r from-[pink]/60 to-[white]/60'} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
+          className={`fixed w-full h-full ${prefers === 'reduce' ? 'bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60': 'bg-gradient-to-r from-[pink]/60 to-[white]/60'} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div>
-            <h2 className="text-4xl font-bold [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
-              I'm a web designer.
+            <h2 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+              I'm a <span id="typing"></span><span id="caret"></span> <span className="text-nowrap">web developer</span>.
             </h2>
-            <p className="text-lg pt-[1.5rem] text-balance bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <p className="text-balance bg-blend-difference [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               I specialize in creating web experiences with robust design and
               typography for businesses and individuals.
             </p>
             <br />
-            <p className="text-lg text-pretty bg-blend-difference font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <p className="text-pretty bg-blend-difference [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               This is a site for my projects, and a design playground.
             </p>
           </div>
-          <div className="md:hidden w-full flex flex-row justify-center font-mono font-black px-sm [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_8px_rgb(99_102_241_/_0.8)]">
+          <div className="md:hidden w-full flex flex-row justify-center font-black px-sm [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_8px_rgb(99_102_241_/_0.8)]">
             <ActionButton 
               text="About" 
               onClick={() => setScene("overview")} 
@@ -108,9 +114,9 @@ export default function Home() {
               <span className="max-md:hidden">
                 <Chevron width={40} height={40} />
               </span>
-              <h2 className="text-center w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
-                Overview
-              </h2>
+              <h3 className="text-center w-fit [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+                overview
+              </h3>
             </div>
           </button>
         </div>
@@ -133,9 +139,9 @@ export default function Home() {
         >
           <div className="max-lg:h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
-            <h2 className="w-fit text-2xl font-mono [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
-              {scene === "overview" ? "Home" : "Overview"}
-            </h2>
+            <h3 className="w-fit [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+              {scene === "overview" ? "home" : "overview"}
+            </h3>
           </div>
         </button>
       </div>

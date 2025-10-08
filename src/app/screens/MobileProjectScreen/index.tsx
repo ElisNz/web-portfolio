@@ -22,7 +22,7 @@ export default function MobileProjectScreen() {
       }}
     >
       <div className="size-[10rem] relative bg-[white]/20">
-        <Image draggable="false" src={images[0]} alt={title} fill objectFit="fit" />
+        <Image draggable="false" src={images[0]} alt={title} fill className="objectFit-fit" />
       </div>
       <h2 className={`${scene === 'cover' ? 'invisible' : ''} pt-2 break-all text-lg lg:text-xl xl:text-2xl`}>{title}</h2>
     </button>
