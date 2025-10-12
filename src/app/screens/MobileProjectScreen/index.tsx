@@ -8,23 +8,27 @@ import { MobileProjectDetailScreen } from "../MobileProjectDetailScreen";
 
 export default function MobileProjectScreen() {
   const store = useStore((state) => state);
-  const { scene, setScene, project, setProject } = store;
+  const { scene, setScene, setProject } = store;
   const projects = useMemo(() => getDataUtility("projects"), []);
 
   const ProjectCard = ({ title, images }) => (
     <button
       type="button"
       title={title}
-      className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none"
+      className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none hover:scale-[1.1] transition-scale duration-300"
       onClick={() => {
-        setProject(title);
+        setProject(title?.toLowerCase());
         setScene("details");
       }}
     >
       <div className="size-[10rem] relative bg-[white]/20">
-        <Image draggable="false" src={images[0]} alt={title} fill className="objectFit-fit" />
+        <Image draggable="false" src={images[0]} alt={title} fill />
       </div>
-      <h2 className={`${scene === 'cover' ? 'invisible' : ''} pt-2 break-all text-lg lg:text-xl xl:text-2xl`}>{title}</h2>
+      <h2
+        className={`${scene !== "overview" ? "invisible" : ""} capitalize pt-2 break-all text-lg lg:text-xl xl:text-2xl`}
+      >
+        {title}
+      </h2>
     </button>
   );
 
@@ -48,19 +52,19 @@ export default function MobileProjectScreen() {
     <div className={`fixed w-full h-full ${backgroundStyle} text-background`}>
       <div
         className={`fixed w-full ${
-          scene === "overview" ? "opacity-100" : "opacity-10 scale-[0.95] pointer-events-none"
+          scene === "overview"
+            ? "opacity-100"
+            : "opacity-10 scale-[0.95] pointer-events-none blur-sm"
         } transition-all duration-500 overflow-hidden`}
       >
         <div className="h-[75vh] w-full flex flex-wrap mt-20 justify-center gap-4 scrollbar-custom lg:gap-8">
           {projects?.map((project, index) =>
-            project.title ? <ProjectCard key={index} {...project} /> : null
+            project.title ? <ProjectCard key={index} {...project} /> : null,
           )}
         </div>
       </div>
 
-      {scene !== "cover" && 
-        <MobileProjectDetailScreen />
-      }
+      {scene !== "cover" && <MobileProjectDetailScreen />}
     </div>
   );
 }

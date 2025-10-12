@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "lintpush": "npm run npm run prettier && git add . && git commit -m 'prettier' && git push"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.10",

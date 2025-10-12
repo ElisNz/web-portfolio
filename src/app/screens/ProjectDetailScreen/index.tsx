@@ -3,43 +3,50 @@
 import { useState, useEffect } from "react";
 import { useStore } from "@/app/Store";
 
-
 import { Miniloader } from "@/app/components/Miniloader";
 import { Chevron } from "@/app/components/svg";
 
-
-const projectMap = process.env.NODE_ENV === "development" ? {
-  motherstructures: {
-    title: "Motherstructures",
-    subtitle: "Urban greenspaces",
-    text: "Motherstructures is a New York based company that aims to create urban greenspaces from simple, easily reusable materials. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
-    titleR: "About the project",
-    description:
-      "I was approached to replace a website for a local community project. The project aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
-    tech: ["Next.js", "Tailwind/CSS", "Node.js"],
-    link: "https://motherstructures.com/",
-  },
-  markanta: {
-    title: "Markanta",
-    subtitle: "Engineering Consultants",
-    text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    titleR: "About the project",
-    description:
-      "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    tech: ["Next.js", "Tailwind/CSS", "Node.js", "Google Cloud", "Firebase"],
-    link: "https://markanta.se/",
-  },
-  "jacob dahlgren": {
-    title: "jacob dahlgren",
-    subtitle: "artist and designer",
-    text: `Jacob Dahlgren’s work is concerned with a dialogue between the authoritative singularity of pure formal abstraction and its position within a variable, complex and social shared culture. Dahlgren’s repetitious collections of ubiquitous and ordinary objects, often domestic, industrially manufactured; stand in their gestalt form as proxy for High Modernist Abstract Painting and for all of the ideological territory that Twentieth Century Art Theory has staked out for it.`,
-    titleR: "About the project",
-    description:
-      "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    tech: ["Wordpress"],
-    link: "https://jacobdahlgren.com/",
-  },
-} : {};
+const projectMap =
+  process.env.NODE_ENV === "development"
+    ? {
+        motherstructures: {
+          title: "Motherstructures",
+          subtitle: "Urban greenspaces",
+          text: "Motherstructures is a New York based company that aims to create urban greenspaces from simple, easily reusable materials. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
+          titleR: "About the project",
+          description:
+            "I was approached to replace a website for a local community project. The project aims to create urban greenspaces in the city. The project is a collaboration between the city council and local businesses. The goal is to create a network of green spaces that are accessible to everyone. The project is currently in the planning stage, and we are looking for input from the community. If you have any ideas or suggestions, please let us know!",
+          tech: ["Next.js", "Tailwind/CSS", "Node.js"],
+          link: "https://motherstructures.com/",
+        },
+        markanta: {
+          title: "Markanta",
+          subtitle: "Engineering Consultants",
+          text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
+          titleR: "About the project",
+          description:
+            "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
+          tech: [
+            "Next.js",
+            "Tailwind/CSS",
+            "Node.js",
+            "Google Cloud",
+            "Firebase",
+          ],
+          link: "https://markanta.se/",
+        },
+        "jacob dahlgren": {
+          title: "jacob dahlgren",
+          subtitle: "artist and designer",
+          text: `Jacob Dahlgren’s work is concerned with a dialogue between the authoritative singularity of pure formal abstraction and its position within a variable, complex and social shared culture. Dahlgren’s repetitious collections of ubiquitous and ordinary objects, often domestic, industrially manufactured; stand in their gestalt form as proxy for High Modernist Abstract Painting and for all of the ideological territory that Twentieth Century Art Theory has staked out for it.`,
+          titleR: "About the project",
+          description:
+            "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
+          tech: ["Wordpress"],
+          link: "https://jacobdahlgren.com/",
+        },
+      }
+    : {};
 
 const getRandomAsciiChar = () => {
   const asciiStart = 32; // Space character
@@ -65,7 +72,6 @@ export const ProjectDetailScreen = (props) => {
   const MODEL_HEIGHT = window.innerHeight / 2 - 40;
   const LEFT_TYPING_SPEED = 1;
   const RIGHT_TYPING_SPEED = 10;
-
 
   const flickerText = (text, element, delay, maxTime) => {
     const textTemplate = new Array(text.length).fill(" ");
@@ -112,7 +118,6 @@ export const ProjectDetailScreen = (props) => {
       element.innerHTML = textTemplate.join("");
     }, delay);
   };
-
 
   const setDetailsScreenPosition = () => {
     const detailsL = document.getElementById("details-screen-l");
@@ -277,8 +282,14 @@ export const ProjectDetailScreen = (props) => {
           >
             {projectMap[project]?.subtitle}
           </h3>
-          <a href={projectMap[project]?.link} target="_blank" className={`${projectMap[project]?.link ? '' : 'hidden'} py-[0.3em]`}>
-            <h2 className="font-[verdana] text-[#1670e9] hover:text-[white]">{projectMap[project]?.link}</h2>
+          <a
+            href={projectMap[project]?.link}
+            target="_blank"
+            className={`${projectMap[project]?.link ? "" : "hidden"} py-[0.3em]`}
+          >
+            <h2 className="font-[verdana] text-[#1670e9] hover:text-[white]">
+              {projectMap[project]?.link}
+            </h2>
           </a>
           <pre
             className="text-md pt-4 text-balance bg-blend-difference"
@@ -316,16 +327,23 @@ export const ProjectDetailScreen = (props) => {
             >
               {projectMap[project]?.description}
             </pre>
-            <div className={`${projectMap[project]?.tech ? '' : 'hidden'} text-md font-mono flex flex-wrap justify-between gap-4 pt-4`}>
+            <div
+              className={`${projectMap[project]?.tech ? "" : "hidden"} text-md font-mono flex flex-wrap justify-between gap-4 pt-4`}
+            >
               <h3 className="w-full text-2xl font-semibold text-nowrap text-center">
                 Tech
               </h3>
               <ul className="grid grid-cols-2 text-balance bg-blend-difference list-disc list-inside indent-8 px-2">
-                {projectMap[project]?.tech?.map((item: string, index: number) => (
-                  <li key={index} className="text-md text-balance bg-blend-difference">
-                    {item}
-                  </li>
-                ))}
+                {projectMap[project]?.tech?.map(
+                  (item: string, index: number) => (
+                    <li
+                      key={index}
+                      className="text-md text-balance bg-blend-difference"
+                    >
+                      {item}
+                    </li>
+                  ),
+                )}
               </ul>
             </div>
           </div>

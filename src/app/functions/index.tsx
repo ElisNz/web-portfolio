@@ -53,11 +53,10 @@ const flickerText = (setTextLoaded, text, element, delay, maxTime) => {
 };
 
 function insertBlinkingCaret(targetId) {
-
   const targetElement = document.getElementById(targetId);
 
-  const caret = document.createElement('span');
-  caret.classList.add('blinking-caret');
+  const caret = document.createElement("span");
+  caret.classList.add("blinking-caret");
 
   targetElement.appendChild(caret);
 }
@@ -105,9 +104,9 @@ function typeAndEraseWords(words: string[], containerId: string) {
   typeNextLetter();
 }
 
-export { 
-  getRandomAsciiChar, 
-  flickerText, 
+export {
+  getRandomAsciiChar,
+  flickerText,
   insertBlinkingCaret,
-  typeAndEraseWords
+  typeAndEraseWords,
 };

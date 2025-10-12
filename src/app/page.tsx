@@ -16,7 +16,15 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
-  const ActionButton = ({ text, onClick, className }: {text: string, onClick: any, className?: string}) => (
+  const ActionButton = ({
+    text,
+    onClick,
+    className,
+  }: {
+    text: string;
+    onClick: any;
+    className?: string;
+  }) => (
     <button
       className={`w-fit hover:scale-110 transition-size duration-300 px-sm font-mono font-black relative ${className}`}
       type="button"
@@ -38,16 +46,24 @@ export default function Home() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
       window.innerWidth < 1024;
     if (prefersReducedMotion) {
-      setPrefers(prefersReducedMotion ? "reduce" : "no-preference")
+      setPrefers(prefersReducedMotion ? "reduce" : "no-preference");
     }
     setIsMounted(true);
     insertBlinkingCaret("caret");
     typeAndEraseWords(
-      ["creative", "curious", "freelancing"],
-      "typing"
+      [
+        "creative web",
+        "systems",
+        "freelance web",
+        "full-stack",
+        " design-minded web",
+        " detail-oriented",
+        "dedicated app",
+        "adaptable",
+      ],
+      "typing",
     );
   }, []);
-
 
   return (
     <>
@@ -59,21 +75,20 @@ export default function Home() {
         </div>
       } */}
 
-
       <MobileProjectScreen />
-        
-      
 
       <div
         className={`${scene === "cover" ? "opacity-100" : "hidden transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
       >
         <div
-          className={`fixed w-full h-full ${prefers === 'reduce' ? 'bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60': 'bg-gradient-to-r from-[pink]/60 to-[white]/60'} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
+          className={`fixed w-full h-full ${prefers === "reduce" ? "bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60" : "bg-gradient-to-r from-[pink]/60 to-[white]/60"} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div>
             <h2 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
-              I'm a <span id="typing"></span><span id="caret"></span> <span className="text-nowrap">web developer</span>.
+              I'm a <span id="typing"></span>
+              <span id="caret"></span>{" "}
+              <span className="text-nowrap">developer</span>.
             </h2>
             <p className="text-balance bg-blend-difference [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
               I specialize in creating web experiences with robust design and
@@ -85,26 +100,26 @@ export default function Home() {
             </p>
           </div>
           <div className="md:hidden w-full flex flex-row justify-center font-black px-sm [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_8px_rgb(99_102_241_/_0.8)]">
-            <ActionButton 
-              text="About" 
-              onClick={() => setScene("overview")} 
-            />
-            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">|</span>
+            <ActionButton text="About" onClick={() => setScene("overview")} />
+            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">
+              |
+            </span>
             <ActionButton
               text="Projects"
               onClick={() => setScene("overview")}
             />
-            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">|</span>
-            <ActionButton 
-              text="Contact" 
-              onClick={() => setScene("overview")} 
-            />
+            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">
+              |
+            </span>
+            <ActionButton text="Contact" onClick={() => setScene("overview")} />
           </div>
         </div>
       </div>
 
-      {scene === "cover" && 
-        <div className={`max-md:hidden fixed w-full bottom-[10%] flex justify-center`}>
+      {scene === "cover" && (
+        <div
+          className={`max-md:hidden fixed w-full bottom-[10%] flex justify-center`}
+        >
           <button
             className="w-fit hover:scale-110 transition-size duration-300 px-sm font-mono font-black"
             type="button"
@@ -120,13 +135,13 @@ export default function Home() {
             </div>
           </button>
         </div>
-      }
-      
+      )}
+
       <div
-        className={`w-full flex flex-row fixed bottom-[3%] justify-center ${scene !== "cover" ? "opacity-100 transition-all duration-300" : "opacity-0 invisible pointer-events-none"}`}
+        className={`w-full flex flex-row fixed bottom-0 py-sm justify-center ${scene !== "cover" ? "transition-all duration-300" : "opacity-0 invisible pointer-events-none"}`}
       >
         <button
-          className="w-fit hover:scale-110 transition-size duration-300"
+          className="w-fit p-sm hover:scale-110 transition-size duration-300"
           type="button"
           onClick={() => {
             if (scene === "overview") {

@@ -12,7 +12,7 @@ import {
   Object3D,
   TextureLoader,
   SRGBColorSpace,
-  MathUtils
+  MathUtils,
 } from "three";
 
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -24,7 +24,6 @@ import { useStore } from "@/app/Store";
 import { useShallow } from "zustand/react/shallow";
 import { ProjectDetailScreen } from "@/app/screens";
 import { ImportModel, HitBox } from "@/app/types";
-
 
 const Fallback = () => {
   return <p>fallback</p>;
@@ -156,7 +155,7 @@ const CameraController = ({
     orbref.current.innerHTML = `<h3>X: ${controls.object.position.x.toFixed(3)}</h3>
                                 <h3>Y: ${controls.object.position.y.toFixed(3)} </h3>
                                 <h3>Z: ${controls.object.position.z.toFixed(3)}</h3>
-                                <h3>${project ? project : 'no project selected'}</h3>`;
+                                <h3>${project ? project : "no project selected"}</h3>`;
 
     controls.update();
   });
@@ -181,15 +180,7 @@ const DisplayScreen = (props) => {
   const ref6 = useRef(null);
   const ref7 = useRef(null);
 
-  const refList = [
-    ref,
-    ref2,
-    ref3,
-    ref4,
-    ref5,
-    ref6,
-    ref7,
-  ];
+  const refList = [ref, ref2, ref3, ref4, ref5, ref6, ref7];
 
   const imageColors = [
     new Color(0x40e0d0),
@@ -228,9 +219,7 @@ const DisplayScreen = (props) => {
     "7": ref7,
   };
 
-
   const loadImages = async () => {
-
     if (!project) {
       refList.forEach((ref) => {
         ref.current.material.map = null;
@@ -243,18 +232,9 @@ const DisplayScreen = (props) => {
       if (ref.current.material.name === project) {
         return;
       }
-      loader.load(`images/${project}/${project}-${i + 1}.png`, (texture) => {
-        texture.colorSpace = SRGBColorSpace;
-        ref.current.material = new MeshBasicMaterial({
-          map: texture,
-          transparent: true,
-          opacity: i === 0 ? 1 : 0.5,
-          color: imageColors[i - 1],
-          name: project,
-        });
-      }, null, (error) => {
-        console.error("Couldn't load texture. Loaded placeholder instead.", error);
-        loader.load(`images/texture_text_test.png`, (texture) => {
+      loader.load(
+        `images/${project}/${project}-${i + 1}.png`,
+        (texture) => {
           texture.colorSpace = SRGBColorSpace;
           ref.current.material = new MeshBasicMaterial({
             map: texture,
@@ -263,8 +243,25 @@ const DisplayScreen = (props) => {
             color: imageColors[i - 1],
             name: project,
           });
-        });
-      });
+        },
+        null,
+        (error) => {
+          console.error(
+            "Couldn't load texture. Loaded placeholder instead.",
+            error,
+          );
+          loader.load(`images/texture_text_test.png`, (texture) => {
+            texture.colorSpace = SRGBColorSpace;
+            ref.current.material = new MeshBasicMaterial({
+              map: texture,
+              transparent: true,
+              opacity: i === 0 ? 1 : 0.5,
+              color: imageColors[i - 1],
+              name: project,
+            });
+          });
+        },
+      );
     });
   };
 
@@ -301,7 +298,7 @@ const DisplayScreen = (props) => {
     setAnimationFinished(false);
   }, [scene]);
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     window.addEventListener("wheel", (e) => scrollImage(e));
 
     return () => {
@@ -359,7 +356,6 @@ const DisplayScreen = (props) => {
   };
 
   const scrollImage = (e: any) => {
-
     if (!animationFinished) {
       return;
     }
@@ -475,14 +471,8 @@ export const InteractiveObjectNode = (props) => {
   const setAnimationReady = useStore((state) => state.setAnimationReady);
   const loader = new TextureLoader();
   // console.log('Render InteractiveObjectNode');
-  const {
-    modelInfo,
-    material,
-    position,
-    showInScenes,
-    label,
-    rotation,
-  } = props;
+  const { modelInfo, material, position, showInScenes, label, rotation } =
+    props;
 
   const textVector = new Vector3();
   const meshRef = useRef(null);
@@ -490,8 +480,8 @@ export const InteractiveObjectNode = (props) => {
 
   const AUTO_ROTATION_SPEED = 0.05;
   const MAX_ANGLE = 0.03;
-  const PORTRAIT_WIDTH = window.innerWidth / 20 * 100;
-  const PORTRAIT_HEIGHT = window.innerHeight / 15 * 100;
+  const PORTRAIT_WIDTH = (window.innerWidth / 20) * 100;
+  const PORTRAIT_HEIGHT = (window.innerHeight / 15) * 100;
 
   let display = showInScenes.includes(scene) || showInScenes.includes("all");
 
@@ -550,7 +540,6 @@ export const InteractiveObjectNode = (props) => {
   }, []);
 
   useEffect(() => {
-    
     if (scene === "cover") {
       // set initial position pre-lerp
       meshRef.current.position.set(position[0], position[1], position[2]);
@@ -570,7 +559,6 @@ export const InteractiveObjectNode = (props) => {
     // setAnimationFinished(false);
   }, [scene]);
 
-
   useEffect(() => {
     (model as Object3D).traverse((child) => {
       if (child.type === "Mesh") {
@@ -588,7 +576,6 @@ export const InteractiveObjectNode = (props) => {
     textVector.setFromMatrixPosition(meshRef.current.matrixWorld);
     textVector.project(state.camera);
 
-
     const textElement = document.getElementById(label);
 
     if (scene === "cover") {
@@ -599,11 +586,10 @@ export const InteractiveObjectNode = (props) => {
       meshRef.current.scale.set(props.scale, props.scale, props.scale);
     }
 
-    if (scene === "overview") {     
-      
-      meshRef.current.rotation.z = 
+    if (scene === "overview") {
+      meshRef.current.rotation.z =
         Math.sin(state.clock.elapsedTime - delta) * 0.1;
-      
+
       meshRef.current.position.lerp(
         { x: position[0], y: position[1], z: position[2] },
         0.05,
@@ -617,7 +603,6 @@ export const InteractiveObjectNode = (props) => {
     }
 
     if (scene === "overview") {
-
       const scaleLerp = MathUtils.lerp(
         meshRef.current.scale.x,
         hovered ? props.scale * 1.3 : props.scale,
@@ -665,9 +650,10 @@ export const InteractiveObjectNode = (props) => {
       textElement.style.textShadow =
         "0.8px 0.8px 0.2px rgba(99, 102, 241, 0.8)";
       textElement.style.textAlign = "center";
-      textElement.style.opacity = scene === 'overview' ? "1" : "0";
-      textElement.style.transition = scene === 'overview' ? "opacity 0.7s ease-in" : "opacity 0.1s ease-out";
-/*       textElement.style.display =
+      textElement.style.opacity = scene === "overview" ? "1" : "0";
+      textElement.style.transition =
+        scene === "overview" ? "opacity 0.7s ease-in" : "opacity 0.1s ease-out";
+      /*       textElement.style.display =
         display && scene === "overview" ? "block" : "none"; */
 
       props.selectedPosition.x = textVector.x;
@@ -688,7 +674,6 @@ export const InteractiveObjectNode = (props) => {
       <mesh
         ref={screenPlaneRef}
         visible={scene === "overview"}
-
         onPointerOver={() => {
           hover(true);
           setProject(label);
@@ -697,18 +682,18 @@ export const InteractiveObjectNode = (props) => {
           hover(false);
         }}
         onClick={() => {
-            if (!project) {return;}
-            props.setClickedObj(meshRef.current.position); // !this is a reference to the mesh position vector
+          if (!project) {
+            return;
+          }
+          props.setClickedObj(meshRef.current.position); // !this is a reference to the mesh position vector
 
-            if (scene !== "details") {
-              setScene("details");
-              setActive(true);
+          if (scene !== "details") {
+            setScene("details");
+            setActive(true);
           }
         }}
       >
-        <boxGeometry
-          args={[PORTRAIT_WIDTH, PORTRAIT_HEIGHT, 1]}
-        />
+        <boxGeometry args={[PORTRAIT_WIDTH, PORTRAIT_HEIGHT, 1]} />
         <meshBasicMaterial color={0x40e0d0} transparent opacity={1} />
       </mesh>
     </mesh>
@@ -748,7 +733,7 @@ const Director = ({ selectedPosition, trackerRef }) => {
   const [allObj, setAllObj] = useState([]);
   const scene = useStore((state) => state.scene);
   // console.log('Rendering Director', scene);
-/*   class CameraProps {
+  /*   class CameraProps {
     cameraPosition: Vector3;
     orbref: React.MutableRefObject<any>;
     autoRotate: boolean;
@@ -809,9 +794,9 @@ const Director = ({ selectedPosition, trackerRef }) => {
     autoRotate: scene === "cover",
     clickedObj: clickedObj,
     allObj: allObj,
-  }
+  };
 
-/*   class InteractiveObjectProps extends BaseObject {
+  /*   class InteractiveObjectProps extends BaseObject {
     setClickedObj: (position: Vector3) => void;
     setAllObj: (interactiveObjects: Vector3[]) => void;
     readonly scene: string;
@@ -861,7 +846,7 @@ const Director = ({ selectedPosition, trackerRef }) => {
       x: number;
       y: number;
     };
-  };
+  }
 
   type vector = [number, number, number];
 
@@ -1115,13 +1100,11 @@ export const CanvasUI = () => {
         </Suspense>
       </Canvas>
 
-      {project && 
+      {project && (
         <>
-          <ProjectDetailScreen
-            selectedPosition={selectedPosition}
-          />
+          <ProjectDetailScreen selectedPosition={selectedPosition} />
         </>
-      }
+      )}
 
       <div
         ref={trackerRef}
