@@ -67,7 +67,7 @@ export default function Home() {
 
   return (
     <>
-      {/* {prefers === "no-preference" && isMounted &&
+{/*       {prefers === "no-preference" && isMounted &&
         <div
           className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
         >
@@ -85,30 +85,30 @@ export default function Home() {
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div>
-            <h2 className="[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <h2 className="text-pretty">
               I'm a <span id="typing"></span>
               <span id="caret"></span>{" "}
               <span className="text-nowrap">developer</span>.
             </h2>
-            <p className="text-balance bg-blend-difference [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <p className="text-balance bg-blend-difference">
               I specialize in creating web experiences with robust design and
               typography for businesses and individuals.
             </p>
             <br />
-            <p className="text-pretty bg-blend-difference [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <p className="text-pretty bg-blend-difference">
               This is a site for my projects, and a design playground.
             </p>
           </div>
-          <div className="md:hidden w-full flex flex-row justify-center font-black px-sm [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_8px_rgb(99_102_241_/_0.8)]">
+          <div className="md:hidden w-full flex flex-row justify-center font-black px-sm">
             <ActionButton text="About" onClick={() => setScene("overview")} />
-            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">
+            <span className="text-[2rem]">
               |
             </span>
             <ActionButton
               text="Projects"
               onClick={() => setScene("overview")}
             />
-            <span className="text-[2rem] dark:[text-shadow:_0_0px_4px_rgb(99_102_241_/_0.8)]">
+            <span className="text-[2rem]">
               |
             </span>
             <ActionButton text="Contact" onClick={() => setScene("overview")} />

@@ -21,7 +21,7 @@ const devProjects = {
       "Google Cloud",
       "Firebase",
     ],
-    link: "https://markanta.se/",
+    link: "https://www.markanta.se",
   },
 "jacob dahlgren": {
     title: "jacob dahlgren",
@@ -56,7 +56,7 @@ export const MobileProjectDetailScreen = () => {
 
   return (
     <div
-      className={`grid grid-cols-2 gap-x-20 fixed w-full h-full pt-20 pb-40 overflow-scroll scrollbar-custom [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]
+      className={`grid grid-cols-5 gap-x-20 fixed w-full h-full pt-[20vh] overflow-scroll scrollbar-custom
         ${
           visible
             ? "opacity-100"
@@ -64,11 +64,9 @@ export const MobileProjectDetailScreen = () => {
         } 
         transition-all duration-0 overflow-auto`}
     >
-      <div className="relative w-full flex flex-col items-center">
-        <h1 className="capitalize [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
-          {project}
-        </h1>
-        <div className="w-full lg:w-1/2 flex flex-row justify-center mx-auto">
+      <div className="relative col-span-2 flex flex-col items-center">
+        
+        <div className="w-full lg:w-1/3 flex flex-row justify-center mx-auto">
           <Suspense
             fallback={<div className="h-12 w-12 bg-[white]/20 animate-pulse" />}
           >
@@ -145,40 +143,51 @@ export const MobileProjectDetailScreen = () => {
       </div>
 
       <div
-        className="grid grid-cols-1 gap-x-8 px-md lg:px-lg xl:px-xl pt-20"
+        className="col-span-3 grid grid-cols-1 gap-x-8 px-md lg:px-lg xl:px-xl"
       >
-        <div>
-          <h2>{devProjects[project]?.subtitle}</h2>
+        <div className="w-full">
+          <h1 className="mb-0 capitalize">
+            {project}
+          </h1>
+          <div className="flex flex-row justify-between pb-sm">
 
-          <p className="pb-sm">{devProjects[project]?.text}</p>
-
-          <h3>{devProjects[project]?.titleR}</h3>
-          <p>{devProjects[project]?.description}</p>
-        </div>
-
-        <div className="flex flex-row justify-between px-md">
-          <div>
-            <h3 className="pt-md">Tech Stack</h3>
-            <ul className="grid grid-cols-2 list-disc list-inside px-sm">
-              {devProjects[project]?.tech.map((tech) => (
-                <li key={tech}>{tech}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="pt-md">Link</h3>
-            <p className="pb-sm">
+            <div>
+              <h3 className="mb-0">{devProjects[project]?.subtitle}</h3>
               <a
                 href={devProjects[project]?.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline"
+                className="size-fit underline pb-md block text-blue-700 font-mono text-[1.1rem] tracking-wider"
               >
-                {devProjects[project]?.link}
+                {devProjects[project]?.link.replace(/(^\w+:|)\/\/(www\.)/, '')}
               </a>
-            </p>
+            </div>
+
+            <div className="flex flex-col justify-between">
+              <h3>Stack:</h3>
+              <ul className="grid grid-cols-3 list-disc list-inside gap-x-8">
+                {devProjects[project]?.tech.map((tech) => (
+                  <li key={tech}>{tech}</li>
+                ))}
+              </ul>
+            </div>
+
           </div>
+
+          <p>{devProjects[project]?.text}</p>
+
+          <h2>{devProjects[project]?.titleR}</h2>
+          <p>{devProjects[project]?.description}</p>
         </div>
+
+{/*         <div>
+          <h3 className="text-center">Tech Stack</h3>
+          <ul className="w-1/2 flex flex-wrap list-disc justify-center gap-x-8 gap-y-4 mx-auto">
+            {devProjects[project]?.tech.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+        </div> */}
       </div>
       {/* <div className="px-md lg:px-lg xl:px-xl">
         <h2 className="pb-sm [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
