@@ -23,13 +23,13 @@ export const MobileProjectDetailScreen = () => {
         }
       }, 500);
     }
-    
+
     setProjectData(projects.find((i) => i.title === project.toLowerCase()));
   }, [scene]);
 
   return (
     <div
-      className={`grid grid-cols-5 gap-x-20 fixed w-full h-full pt-[20vh] overflow-scroll scrollbar-custom
+      className={`lg:grid lg:grid-cols-5 gap-x-20 fixed w-full h-full pt-[20vh] pb-[20vh] md:pb-none overflow-scroll scrollbar-custom
         ${
           visible
             ? "opacity-100"
@@ -37,7 +37,7 @@ export const MobileProjectDetailScreen = () => {
         } 
         transition-all duration-0 overflow-auto`}
     >
-      <div className="relative col-span-2 flex flex-col items-center">
+      <div className="relative lg:col-span-2 w-full flex flex-col items-center">
         
         <div className="w-full lg:w-1/3 flex flex-row justify-center mx-auto">
           <Suspense
@@ -46,7 +46,7 @@ export const MobileProjectDetailScreen = () => {
             <div
               className={`content-center h-[12svh] w-[12dvw] bg-[white]/20 ${
                 visible
-                  ? "absolute right-[26dvw] top-[20dvh] opacity-80 hover:scale-[1.05]"
+                  ? "lg:absolute right-[26dvw] top-[20dvh] opacity-80 hover:scale-[1.05]"
                   : "opacity-0 right-[100dvw]"
               } delay-800 transition-all duration-500`}
             >
@@ -64,7 +64,7 @@ export const MobileProjectDetailScreen = () => {
             <div
               className={`content-center h-[20dvh] w-[20dvw] bg-[white]/20 ${
                 visible
-                  ? "absolute left-[10dvw] top-[25vh] opacity-80 hover:scale-[1.05]"
+                  ? "lg:absolute left-[10dvw] top-[25vh] opacity-80 hover:scale-[1.05]"
                   : "opacity-0 left-[10dvw]"
               } delay-3000 transition-all duration-500`}
             >
@@ -82,7 +82,7 @@ export const MobileProjectDetailScreen = () => {
             <div
               className={`content-center h-[10dvh] w-[10dvw] bg-[white]/20 ${
                 visible
-                  ? "absolute right-[10dvw] top-[25vh] opacity-60 hover:scale-[1.05]"
+                  ? "lg:absolute right-[10dvw] top-[25vh] opacity-60 hover:scale-[1.05]"
                   : "opacity-0 right-[50dvw]"
               } delay-2000 transition-all duration-500`}
             >
@@ -119,10 +119,10 @@ export const MobileProjectDetailScreen = () => {
         className="col-span-3 grid grid-cols-1 gap-x-8 px-md lg:px-lg xl:px-xl"
       >
         <div className="w-full">
-          <h1 className="mb-0 capitalize">
+          <h1 className="max-lg:text-[2rem] mb-0 capitalize">
             {project}
           </h1>
-          <div className="flex flex-row justify-between pb-sm">
+          <div className="lg:flex lg:flex-row justify-between pb-sm">
 
             <div>
               <h3 className="mb-0">{projectData?.subtitle}</h3>
@@ -136,9 +136,9 @@ export const MobileProjectDetailScreen = () => {
               </a>
             </div>
 
-            <div className="flex flex-col justify-between">
-              <h3>Stack:</h3>
-              <ul className="grid grid-cols-3 list-disc list-inside gap-x-8">
+            <div className="flex flex-col lg:justify-between items-start">
+              <h3 className="w-fit">Stack</h3>
+              <ul className="w-fit grid grid-cols-2 md:grid-cols-3 list-disc list-inside md:gap-x-8">
                 {projectData?.tech?.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
@@ -146,10 +146,9 @@ export const MobileProjectDetailScreen = () => {
             </div>
 
           </div>
-
+          <h2>{projectData?.titleR}</h2>
           <p>{projectData?.text}</p>
 
-          <h2>{projectData?.titleR}</h2>
           <p>{projectData?.description}</p>
         </div>
 

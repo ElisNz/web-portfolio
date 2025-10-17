@@ -26,15 +26,12 @@ export default function Home() {
     className?: string;
   }) => (
     <button
-      className={`w-fit hover:scale-110 transition-size duration-300 px-sm font-mono font-black relative ${className}`}
+      className={`w-full hover:scale-110 transition-size duration-300 relative ${className}`}
       type="button"
       onClick={onClick}
     >
       <div className="flex flex-col items-center">
-        <span className="max-md:hidden">
-          <Chevron width={40} height={40} />
-        </span>
-        <h2 className="text-center w-fit text-2xl [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+        <h2 className="text-center text-[1.5em]">
           {text}
         </h2>
       </div>
@@ -59,7 +56,7 @@ export default function Home() {
         " design-minded web",
         " detail-oriented",
         "dedicated app",
-        "adaptable",
+        "front-end",
       ],
       "typing",
     );
@@ -85,7 +82,7 @@ export default function Home() {
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div>
-            <h2 className="text-pretty">
+            <h2 className="text-pretty h-[2em] mb-[1.5em]">
               I'm a <span id="typing"></span>
               <span id="caret"></span>{" "}
               <span className="text-nowrap">developer</span>.
@@ -99,18 +96,9 @@ export default function Home() {
               This is a site for my projects, and a design playground.
             </p>
           </div>
-          <div className="md:hidden w-full flex flex-row justify-center font-black px-sm">
+          <div className="md:hidden w-full grid grid-cols-3 gap-x-12">
             <ActionButton text="About" onClick={() => setScene("overview")} />
-            <span className="text-[2rem]">
-              |
-            </span>
-            <ActionButton
-              text="Projects"
-              onClick={() => setScene("overview")}
-            />
-            <span className="text-[2rem]">
-              |
-            </span>
+            <ActionButton text="Projects" onClick={() => setScene("overview")} />
             <ActionButton text="Contact" onClick={() => setScene("overview")} />
           </div>
         </div>
