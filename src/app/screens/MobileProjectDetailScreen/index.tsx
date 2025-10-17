@@ -6,42 +6,13 @@ import { Miniloader } from "@/app/components/Miniloader";
 
 const projects = getDataUtility("projects");
 
-const devProjects = {
-  "markanta": {
-    title: "Markanta",
-    subtitle: "Engineering Consultants",
-    text: "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    titleR: "About the project",
-    description:
-      "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    tech: [
-      "Next.js",
-      "Tailwind/CSS",
-      "Node.js",
-      "Google Cloud",
-      "Firebase",
-    ],
-    link: "https://www.markanta.se",
-  },
-"jacob dahlgren": {
-    title: "jacob dahlgren",
-    subtitle: "artist and designer",
-    text: `Jacob Dahlgren’s work is concerned with a dialogue between the authoritative singularity of pure formal abstraction and its position within a variable, complex and social shared culture. Dahlgren’s repetitious collections of ubiquitous and ordinary objects, often domestic, industrially manufactured; stand in their gestalt form as proxy for High Modernist Abstract Painting and for all of the ideological territory that Twentieth Century Art Theory has staked out for it.`,
-    titleR: "About the project",
-    description:
-      "I was approached to replace a website for an e-commerce platform. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    tech: ["Wordpress"],
-    link: "https://jacobdahlgren.com/",
-  }
-};
 
 export const MobileProjectDetailScreen = () => {
   const store = useStore((state) => state);
+  const [projectData, setProjectData] = useState(null);
   const { scene, project } = store;
-  const [showArrow, setShowArrow] = useState({ up: false, down: false });
 
   const visible = scene === "details";
-  console.log(project);
 
   useEffect(() => {
     if (visible) {
@@ -52,6 +23,8 @@ export const MobileProjectDetailScreen = () => {
         }
       }, 500);
     }
+    
+    setProjectData(projects.find((i) => i.title === project.toLowerCase()));
   }, [scene]);
 
   return (
@@ -152,21 +125,21 @@ export const MobileProjectDetailScreen = () => {
           <div className="flex flex-row justify-between pb-sm">
 
             <div>
-              <h3 className="mb-0">{devProjects[project]?.subtitle}</h3>
+              <h3 className="mb-0">{projectData?.subtitle}</h3>
               <a
-                href={devProjects[project]?.link}
+                href={projectData?.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="size-fit underline pb-md block text-blue-700 font-mono text-[1.1rem] tracking-wider"
               >
-                {devProjects[project]?.link.replace(/(^\w+:|)\/\/(www\.)/, '')}
+                {projectData?.link?.replace(/(^\w+:|)\/\/(www\.)/, '')}
               </a>
             </div>
 
             <div className="flex flex-col justify-between">
               <h3>Stack:</h3>
               <ul className="grid grid-cols-3 list-disc list-inside gap-x-8">
-                {devProjects[project]?.tech.map((tech) => (
+                {projectData?.tech?.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
               </ul>
@@ -174,16 +147,16 @@ export const MobileProjectDetailScreen = () => {
 
           </div>
 
-          <p>{devProjects[project]?.text}</p>
+          <p>{projectData?.text}</p>
 
-          <h2>{devProjects[project]?.titleR}</h2>
-          <p>{devProjects[project]?.description}</p>
+          <h2>{projectData?.titleR}</h2>
+          <p>{projectData?.description}</p>
         </div>
 
 {/*         <div>
           <h3 className="text-center">Tech Stack</h3>
           <ul className="w-1/2 flex flex-wrap list-disc justify-center gap-x-8 gap-y-4 mx-auto">
-            {devProjects[project]?.tech.map((tech) => (
+            {projectData?.tech.map((tech) => (
               <li key={tech}>{tech}</li>
             ))}
           </ul>
