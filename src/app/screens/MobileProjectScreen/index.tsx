@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, Suspense } from "react";
 import Image from "next/image";
 
 import { useStore } from "@/app/Store";
@@ -12,24 +12,31 @@ export default function MobileProjectScreen() {
   const projects = useMemo(() => getDataUtility("projects"), []);
 
   const ProjectCard = ({ title, images }) => (
-    <button
-      type="button"
-      title={title}
-      className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none hover:scale-[1.1] transition-scale duration-300"
-      onClick={() => {
-        setProject(title?.toLowerCase());
-        setScene("details");
-      }}
-    >
-      <div className="size-[10rem] relative bg-[white]/20">
-        <Image draggable="false" src={images[0]} alt={title} fill />
-      </div>
-      <h2
-        className={`${scene !== "overview" ? "invisible" : ""} capitalize pt-2 break-all text-lg lg:text-xl xl:text-2xl`}
+    <Suspense fallback={<p>Loading...</p>}>
+      <button
+        type="button"
+        title={title}
+        className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none hover:scale-[1.1] transition-scale duration-300"
+        onClick={() => {
+          setProject(title?.toLowerCase());
+          setScene("details");
+        }}
       >
-        {title}
-      </h2>
-    </button>
+        <div className="size-[15rem] relative">
+          {images[0] ?  
+            <Image draggable="false" src={images[0]} alt={title} fill /> : 
+            <div className="size-full place-content-center">
+              <strong className="text-[10em] uppercase font-black">{title[0]}</strong>
+            </div>
+          }
+        </div>
+        <h2
+          className={`${scene !== "overview" ? "invisible" : ""} capitalize tracking-tighter pt-2 break-all text-lg lg:text-xl xl:text-2xl max-w-[8rem] lg:max-w-[15rem] h-[1em]`}
+        >
+          {title}
+        </h2>
+      </button>
+    </Suspense>
   );
 
   let backgroundStyle = "";

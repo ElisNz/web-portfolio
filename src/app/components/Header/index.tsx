@@ -3,7 +3,6 @@ import { Settings } from "../svg";
 
 export const Header = () => {
   const items = [
-    { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];

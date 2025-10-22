@@ -6,6 +6,7 @@ import { Chevron } from "@/app/components/svg";
 import MobileProjectScreen from "./screens/MobileProjectScreen";
 
 import { CanvasUI } from "@/app/components";
+import { Texture } from "@/app/texture";
 import { useStore } from "@/app/Store";
 
 import { insertBlinkingCaret, typeAndEraseWords } from "@/app/functions";
@@ -71,6 +72,7 @@ export default function Home() {
           <CanvasUI />
         </div>
       } */}
+      {prefers === "no-preference" && isMounted && <Texture />}
 
       <MobileProjectScreen />
 
@@ -87,8 +89,9 @@ export default function Home() {
               <span id="caret"></span>{" "}
               <span className="text-nowrap">developer</span>.
             </h2>
+            <p>Full-stack developer for hire.</p>
             <p className="text-balance bg-blend-difference">
-              I specialize in creating web experiences with robust design and
+              My specialization is in creating web experiences with robust design and
               typography for businesses and individuals.
             </p>
             <br />
@@ -99,7 +102,7 @@ export default function Home() {
           <div className="md:hidden w-full grid grid-cols-3 gap-x-12">
             <ActionButton text="About" onClick={() => setScene("overview")} />
             <ActionButton text="Projects" onClick={() => setScene("overview")} />
-            <ActionButton text="Contact" onClick={() => setScene("overview")} />
+            <ActionButton text="Contact" onClick={() => router.push('/contact')} />
           </div>
         </div>
       </div>

@@ -41,10 +41,10 @@ export const MobileProjectDetailScreen = () => {
         
         <div className="w-full lg:w-1/3 flex flex-row justify-center mx-auto">
           <Suspense
-            fallback={<div className="h-12 w-12 bg-[white]/20 animate-pulse" />}
+            fallback={<div className="h-12 w-12 animate-pulse" />}
           >
             <div
-              className={`content-center h-[12svh] w-[12dvw] bg-[white]/20 ${
+              className={`content-center h-[12svh] w-[12dvw]  ${
                 visible
                   ? "lg:absolute right-[26dvw] top-[20dvh] opacity-80 hover:scale-[1.05]"
                   : "opacity-0 right-[100dvw]"
@@ -59,10 +59,10 @@ export const MobileProjectDetailScreen = () => {
             </div>
           </Suspense>
           <Suspense
-            fallback={<div className="h-12 w-12 bg-[white]/20 animate-pulse" />}
+            fallback={<div className="h-12 w-12  animate-pulse" />}
           >
             <div
-              className={`content-center h-[20dvh] w-[20dvw] bg-[white]/20 ${
+              className={`content-center h-[20dvh] w-[20dvw]  ${
                 visible
                   ? "lg:absolute left-[10dvw] top-[25vh] opacity-80 hover:scale-[1.05]"
                   : "opacity-0 left-[10dvw]"
@@ -77,10 +77,10 @@ export const MobileProjectDetailScreen = () => {
             </div>
           </Suspense>
           <Suspense
-            fallback={<div className="h-12 w-12 bg-[white]/20 animate-pulse" />}
+            fallback={<div className="h-12 w-12  animate-pulse" />}
           >
             <div
-              className={`content-center h-[10dvh] w-[10dvw] bg-[white]/20 ${
+              className={`content-center h-[10dvh] w-[10dvw]  ${
                 visible
                   ? "lg:absolute right-[10dvw] top-[25vh] opacity-60 hover:scale-[1.05]"
                   : "opacity-0 right-[50dvw]"
@@ -95,10 +95,10 @@ export const MobileProjectDetailScreen = () => {
             </div>
           </Suspense>
           <Suspense
-            fallback={<div className="h-12 w-12 bg-[white]/20 animate-pulse" />}
+            fallback={<div className="h-12 w-12  animate-pulse" />}
           >
             <div
-              className={`w-[25dvw] h-[25dvw] content-center self-center bg-[white]/20 ${
+              className={`w-[25dvw] h-[25dvw] content-center self-center  ${
                 visible
                   ? "opacity-100 hover:scale-[1.05] z-50"
                   : "opacity-0 blur-md"
@@ -118,19 +118,19 @@ export const MobileProjectDetailScreen = () => {
       <div
         className="col-span-3 grid grid-cols-1 gap-x-8 px-md lg:px-lg xl:px-xl"
       >
-        <div className="w-full">
+        <div>
           <h1 className="max-lg:text-[2rem] mb-0 capitalize">
             {project}
           </h1>
-          <div className="lg:flex lg:flex-row justify-between pb-sm">
+          <div className="w-full lg:flex lg:flex-row justify-between pb-sm gap-x-8">
 
-            <div>
+            <div className="w-1/2">
               <h3 className="mb-0">{projectData?.subtitle}</h3>
               <a
                 href={projectData?.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="size-fit underline pb-md block text-blue-700 font-mono text-[1.1rem] tracking-wider"
+                className="truncate block underline pb-md pr-sm text-blue-700 font-mono text-[1.1rem]"
               >
                 {projectData?.link?.replace(/(^\w+:|)\/\/(www\.)/, '')}
               </a>
@@ -138,7 +138,7 @@ export const MobileProjectDetailScreen = () => {
 
             <div className="flex flex-col lg:justify-between items-start">
               <h3 className="w-fit">Stack</h3>
-              <ul className="w-fit grid grid-cols-2 md:grid-cols-3 list-disc list-inside md:gap-x-8">
+              <ul className="w-full grid grid-cols-2 md:grid-cols-3 list-disc list-outside md:gap-x-8 px-sm">
                 {projectData?.tech?.map((tech) => (
                   <li key={tech}>{tech}</li>
                 ))}
