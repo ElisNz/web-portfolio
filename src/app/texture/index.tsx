@@ -10,7 +10,6 @@ const FilmGrain = (options: {intensity?: number, speed?: number}) => {
   const { intensity = 0.5, speed = 2.0 } = options;
   const key = Object.values(options).join('-');
 
-  console.log(intensity, speed);
 
   const vertexShader = `
     void main() {
@@ -41,7 +40,7 @@ const FilmGrain = (options: {intensity?: number, speed?: number}) => {
   });
 
   return (
-    <mesh>
+    <mesh visible={intensity > 0.01}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial
         key={key}

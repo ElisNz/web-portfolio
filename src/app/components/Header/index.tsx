@@ -38,11 +38,14 @@ export const Header = () => {
   return (
     <div className="absolute w-full h-20 z-50 px-sm lg:px-lg">
       <div className="w-full flex flex-row items-baseline justify-between">
-        <a href="/">
-          <h1 className="text-4xl font-bold underline underline-offset-[0.5em] p-2">
+
+        <a href="/" className="text-center divide-solid divide-current divide-y-4">
+          <h1 className="text-[3em] w-full mb-0 font-bold tracking-wide">
             el_ni
           </h1>
-        </a>
+          <p className="font-bold text-[1em] w-full tracking-tight">STHLM-TOKYO</p>
+        </a>     
+
 
         <div className="max-md:hidden flex flex-row gap-2 lg:gap-4 my-4">
           <div className="flex flex-col items-end justify-evenly text-lg lg:text-xl font-bold border-r-4 border-foreground p-4 py-2 gap-2 lg:gap-4">
@@ -59,7 +62,7 @@ export const Header = () => {
                   ref={sliderRef}
                 />
                 <div className="h-[2em]">
-                  Grain: <span id="sliderValue">{options.intensity}</span>
+                  Grain: <span id="sliderValue">{options.intensity > 0.01 ? options.intensity : 'off'}</span>
                 </div>
               </div>
             
@@ -78,7 +81,7 @@ export const Header = () => {
           <button
             type="button"
             title="settings"
-            className="transition duration-300 ease-in-out hover:-rotate-45 hover:scale-110"
+            className={`transition duration-300 ease-in-out hover:-rotate-45 hover:scale-110 ${isSettingsOpen ? "text-accent -rotate-45 scale-110" : "text-foreground"}`}
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
           >
             <Settings />
