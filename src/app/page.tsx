@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@/app/components/svg";
 import MobileProjectScreen from "./screens/MobileProjectScreen";
@@ -15,6 +15,7 @@ export default function Home() {
   const store = useStore((state) => state);
   const { scene, setScene, prefers, setPrefers } = store;
   const [isMounted, setIsMounted] = useState(false);
+
   const router = useRouter();
 
   const ActionButton = ({
@@ -65,7 +66,7 @@ export default function Home() {
 
   return (
     <>
-{/*       {prefers === "no-preference" && isMounted &&
+      {/* {prefers === "no-preference" && isMounted &&
         <div
           className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
         >
@@ -150,6 +151,7 @@ export default function Home() {
             </h3>
           </div>
         </button>
+
       </div>
     </>
   );

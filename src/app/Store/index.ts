@@ -4,12 +4,19 @@ interface storeTypes {
   scene: string;
   animationReady: boolean;
   project: string;
+  options: options;
 }
 
 type scenes = "cover" | "overview" | "details";
 type preferences = "no-preference" | "reduce";
+type options = {
+  intensity?: number;
+  speed?: number;
+};
 
 class Store implements storeTypes {
+  options: options;
+  setOptions: (options: object) => void;
   prefers: preferences;
   setPrefers: (theme: "no-preference" | "reduce") => void;
   scene: scenes;
@@ -25,6 +32,11 @@ class Store implements storeTypes {
 }
 
 export const useStore = create<Store>((set) => ({
+  options: {
+    intensity: 1.0,
+    speed: 2.0,
+  },
+  setOptions: (optionsObject) => set({options: { ...optionsObject }}),
   prefers: "no-preference",
   setPrefers: (preference) => set({ prefers: preference }),
   scene: "cover",
