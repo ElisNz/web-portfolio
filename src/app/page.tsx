@@ -121,7 +121,7 @@ export default function Home() {
               <span className="max-md:hidden">
                 <Chevron width={40} height={40} />
               </span>
-              <h3 className="text-center w-fit [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+              <h3 className="text-center w-fit">
                 overview
               </h3>
             </div>
@@ -146,7 +146,7 @@ export default function Home() {
         >
           <div className="max-lg:h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
-            <h3 className="w-fit [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)] dark:[text-shadow:_0_0px_2px_rgb(99_102_241_/_0.8)]">
+            <h3 className="w-fit">
               {scene === "overview" ? "home" : "overview"}
             </h3>
           </div>

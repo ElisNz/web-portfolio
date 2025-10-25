@@ -34,7 +34,7 @@ class Store implements storeTypes {
 export const useStore = create<Store>((set) => ({
   options: {
     intensity: 1.0,
-    speed: 2.0,
+    speed: 1,
   },
   setOptions: (optionsObject) => set({options: { ...optionsObject }}),
   prefers: "no-preference",

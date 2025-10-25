@@ -15,13 +15,16 @@ export const Header = () => {
     { name: "Contact", href: "/contact" },
   ];
 
+  const handleSliderChange = (target: string) => {
+    let sliderRef;
+    if (target === 'intensity') sliderRef = intensitySliderRef;
+    if (target === 'speed') sliderRef = speedSliderRef;
+    const value = parseFloat(sliderRef.current.value);
+    setOptions({ ...options, [target]: value });    
+  };
+
   useEffect(() => {
     if (!intensitySliderRef.current || !speedSliderRef.current) return;
-
-    const handleSliderChange = (target: string) => {
-        const value = parseFloat(intensitySliderRef.current.value);
-        setOptions({ ...options, [target]: value });    
-    };
 
     intensitySliderRef.current.addEventListener("input", () => handleSliderChange('intensity')); 
     speedSliderRef.current.addEventListener("input", () => handleSliderChange('speed')); 
@@ -32,8 +35,8 @@ export const Header = () => {
       intensitySliderRef.current.removeEventListener("input", () => handleSliderChange);
       speedSliderRef.current.removeEventListener("input", () => handleSliderChange);
     };
-  }, [setOptions, isSettingsOpen]);
-
+  }, [scene]);
+  
 
   return (
     <div className="absolute w-full z-50 px-sm lg:px-lg">
@@ -47,24 +50,23 @@ export const Header = () => {
         </a>     
 
 
-        <div className="max-md:hidden flex flex-row gap-x-2 lg:gap-x-4">
-          <div className="flex flex-col items-end text-lg lg:text-xl font-bold border-r-4 border-current p-4 py-2">
-              <div className={`${isSettingsOpen && scene === 'cover' ? "h-[8em] opacity-100 mb-4" : "h-0 opacity-0 invisible"} px-sm transition-all duration-300 border-dotted border-b-4 border-current`}>
+        <div className="max-md:hidden flex flex-row items-center gap-x-2 lg:gap-x-4">
+          <div className="flex flex-col items-end text-lg lg:text-xl font-bold border-r-4 border-current p-sm py-2">
+              <div className={`${isSettingsOpen && scene === 'cover' ? "h-[6em] opacity-100 mb-4" : "h-0 opacity-0 invisible"} px-sm transition-all duration-300 border-dotted border-b-4 border-current`}>
 
                 <div>
                   <input
                     className="h-[0.25em]"
                     title="Intensity Slider"
                     type="range"
-                    id="intensityslider"
                     min="0.0"
                     max="2"
                     step="0.1"
                     defaultValue={options.intensity || 0.5}
                     ref={intensitySliderRef}
                   />
-                  <p className="h-[2em] text-[1rem] mb-0">
-                    Grain: <span id="intensityslidervalue">{options.intensity > 0.01 ? options.intensity : 'off'}</span>
+                  <p className="h-[1em] text-[1rem] font-light mb-0">
+                    Grain: {options.intensity > 0.01 ? options.intensity : 'off'}
                   </p>
                 </div>
 
@@ -73,24 +75,22 @@ export const Header = () => {
                     className="h-[0.25em]"
                     title="Speed Slider"
                     type="range"
-                    id="speedslider"
-                    min="0.0"
-                    max="2"
-                    step="0.1"
-                    defaultValue={options.speed || 2.0}
+                    min="0"
+                    max="1"
+                    step="1"
+                    defaultValue={options.speed || 0.1}
                     ref={speedSliderRef}
                   />
-                  <p className="h-[2em] text-[1rem] mb-0">
-                    Speed: <span id="speedslidervalue">{options.speed > 0.01 ? options.speed : 'none'}</span>
+                  <p className="h-[1em] text-[1rem] font-light mb-0">
+                    Render on/off: {options.speed > 0 ? 'on' : 'off'}
                   </p>
                 </div>
-
               </div>
             
 
             {items.map((item, index) => (
               <a
-                className="px-sm hover:underline underline-offset-4 transition-all duration-300 my-2"
+                className="px-sm hover:underline underline-offset-4 transition-all duration-300"
                 key={index}
                 href={item.href}
               >
@@ -102,7 +102,7 @@ export const Header = () => {
             <button
               type="button"
               title="settings"
-              className={`transition duration-300 ease-in-out hover:-rotate-45 hover:scale-110 ${isSettingsOpen ? "text-accent -rotate-45 scale-110" : "text-foreground"}`}
+              className={`size-fit transition duration-300 ease-in-out hover:-rotate-45 hover:scale-110 ${isSettingsOpen ? "text-accent -rotate-45 scale-110" : "text-foreground"}`}
               onClick={() => setIsSettingsOpen(!isSettingsOpen)}
             >
               <Settings />

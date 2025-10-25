@@ -7,7 +7,7 @@ import { useStore } from '@/app/Store';
 
 const FilmGrain = (options: {intensity?: number, speed?: number}) => {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const { intensity = 0.5, speed = 2.0 } = options;
+  const { intensity = 0.5, speed = 1 } = options;
   const key = Object.values(options).join('-');
 
 
@@ -29,7 +29,7 @@ const FilmGrain = (options: {intensity?: number, speed?: number}) => {
     void main() {
       vec2 st = gl_FragCoord.xy / uResolution.xy;
       float grain = random(st + uTime * uSpeed) * uIntensity;
-      gl_FragColor = vec4(vec3(grain), 0.1);
+      gl_FragColor = vec4(vec3(grain), (uIntensity * 0.15));
     }
   `;
 
