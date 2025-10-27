@@ -1,33 +1,33 @@
 'use client';
 import { useState, useRef, useEffect } from "react";
-import { useStore } from "@/app/Store";
+import { useStore, scenes } from "@/app/Store";
 import { Settings } from "../svg";
+import { parse } from "path";
 
 export const Header = () => {
-  const { scene, options, setOptions } = useStore((state) => state);
+  const { scene, setScene, options, setOptions } = useStore((state) => state);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const intensitySliderRef = useRef<HTMLInputElement>(null);
   const speedSliderRef = useRef<HTMLInputElement>(null);
 
-  const items = [
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+  const items: {name: string, scene: scenes }[] = [
+    { name: "About", scene: "about" },
+    { name: "Contact", scene: "contact" },
   ];
 
-  const handleSliderChange = (target: string) => {
-    let sliderRef;
-    if (target === 'intensity') sliderRef = intensitySliderRef;
-    if (target === 'speed') sliderRef = speedSliderRef;
-    const value = parseFloat(sliderRef.current.value);
-    setOptions({ ...options, [target]: value });    
+  const handleSliderChange = () => {
+    const intensity = parseFloat(intensitySliderRef.current.value);
+    const speed = parseFloat(speedSliderRef.current.value);
+
+    setOptions({ intensity: intensity, speed: speed });    
   };
 
   useEffect(() => {
     if (!intensitySliderRef.current || !speedSliderRef.current) return;
 
-    intensitySliderRef.current.addEventListener("input", () => handleSliderChange('intensity')); 
-    speedSliderRef.current.addEventListener("input", () => handleSliderChange('speed')); 
+    intensitySliderRef.current.addEventListener("input", handleSliderChange); 
+    speedSliderRef.current.addEventListener("input", handleSliderChange); 
 
     return () => {
       if(!intensitySliderRef.current || !speedSliderRef.current) return;
@@ -52,7 +52,7 @@ export const Header = () => {
 
         <div className="max-md:hidden flex flex-row items-center gap-x-2 lg:gap-x-4">
           <div className="flex flex-col items-end text-lg lg:text-xl font-bold border-r-4 border-current p-sm py-2">
-              <div className={`${isSettingsOpen && scene === 'cover' ? "h-[6em] opacity-100 mb-4" : "h-0 opacity-0 invisible"} px-sm transition-all duration-300 border-dotted border-b-4 border-current`}>
+              <div className={`${isSettingsOpen && scene === 'cover' ? "h-[6em] opacity-100 mb-4" : "h-0 opacity-0 collapse"} px-sm transition-all duration-300 border-dotted border-b-4 border-current`}>
 
                 <div>
                   <input
@@ -62,11 +62,11 @@ export const Header = () => {
                     min="0.0"
                     max="2"
                     step="0.1"
-                    defaultValue={options.intensity || 0.5}
+                    defaultValue={options.intensity || 1}
                     ref={intensitySliderRef}
                   />
                   <p className="h-[1em] text-[1rem] font-light mb-0">
-                    Grain: {options.intensity > 0.01 ? options.intensity : 'off'}
+                    Grain: {options.intensity > 0 ? options.intensity : 'off'}
                   </p>
                 </div>
 
@@ -89,13 +89,14 @@ export const Header = () => {
             
 
             {items.map((item, index) => (
-              <a
+              <button
+                type="button"
                 className="px-sm hover:underline underline-offset-4 transition-all duration-300"
                 key={index}
-                href={item.href}
+                onClick={() => setScene(item.scene)}
               >
                 {item.name}
-              </a>
+              </button>
             ))}
           </div>
           {scene === "cover" && (

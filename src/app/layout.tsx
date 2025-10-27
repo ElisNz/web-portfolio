@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import fs from "fs";
-import path from "path";
+
 
 import { Header } from "./components";
 
@@ -18,7 +17,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Cactus Cat",
+  title: "UI/UX Designer - Web Developer - Elis Nilzen",
   description: "This is my personal website and portfolio.",
 };
 

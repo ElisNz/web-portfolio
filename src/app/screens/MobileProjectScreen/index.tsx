@@ -52,7 +52,7 @@ export default function MobileProjectScreen() {
       backgroundStyle = "bg-gradient-to-b from-[pink] to-[coral]/60";
       break;
     default:
-      backgroundStyle = "bg-transparent";
+      backgroundStyle = "bg-transparent -z-50";
   }
 
   return (

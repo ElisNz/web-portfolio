@@ -7,7 +7,7 @@ interface storeTypes {
   options: options;
 }
 
-type scenes = "cover" | "overview" | "details";
+export type scenes = "cover" | "overview" | "details" | "about" | "contact";
 type preferences = "no-preference" | "reduce";
 type options = {
   intensity?: number;
@@ -16,7 +16,7 @@ type options = {
 
 class Store implements storeTypes {
   options: options;
-  setOptions: (options: object) => void;
+  setOptions: (options: options) => void;
   prefers: preferences;
   setPrefers: (theme: "no-preference" | "reduce") => void;
   scene: scenes;
@@ -36,7 +36,7 @@ export const useStore = create<Store>((set) => ({
     intensity: 1.0,
     speed: 1,
   },
-  setOptions: (optionsObject) => set({options: { ...optionsObject }}),
+  setOptions: (optionsObject) => set({options: optionsObject }),
   prefers: "no-preference",
   setPrefers: (preference) => set({ prefers: preference }),
   scene: "cover",

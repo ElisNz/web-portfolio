@@ -1,3 +1,11 @@
-import { ProjectDetailScreen } from "./ProjectDetailScreen";
+import { MobileProjectDetailScreen } from "./MobileProjectDetailScreen";
+import MobileProjectScreen from "./MobileProjectScreen";
+import { AboutScreen } from "./AboutScreen";
+import { ContactScreen } from "./ContactScreen";
 
-export { ProjectDetailScreen };
+export { 
+  MobileProjectDetailScreen, 
+  MobileProjectScreen,
+  AboutScreen,
+  ContactScreen
+ };

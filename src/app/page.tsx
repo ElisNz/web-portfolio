@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Chevron } from "@/app/components/svg";
-import MobileProjectScreen from "./screens/MobileProjectScreen";
+import { MobileProjectScreen, AboutScreen, ContactScreen } from "./screens";
 
-import { CanvasUI } from "@/app/components";
 import { Texture } from "@/app/texture";
 import { useStore } from "@/app/Store";
 
@@ -66,31 +65,25 @@ export default function Home() {
 
   return (
     <>
-      {/* {prefers === "no-preference" && isMounted &&
-        <div
-          className={`${prefers === "no-preference" ? "" : "hidden"} size-full fixed ${scene === "cover" ? "-z-50" : ""}`}
-        >
-          <CanvasUI />
-        </div>
-      } */}
       {prefers === "no-preference" && isMounted && <Texture />}
 
       <MobileProjectScreen />
+      
 
       <div
-        className={`${scene === "cover" ? "opacity-100" : "hidden transition-all duration-300 opacity-0 invisible pointer-events-none"} [text-shadow:_0_0px_2px_rgb(99_102_241_/_0.4)]`}
+        className={`${scene === "cover" ? "opacity-100" : "transition-all duration-300 opacity-0 invisible pointer-events-none"}`}
       >
         <div
           className={`fixed w-full h-full ${prefers === "reduce" ? "bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60" : "bg-gradient-to-r from-[pink]/60 to-[white]/60"} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
-          <div>
+          <div className="font-sans">
             <h2 className="text-pretty h-[2em] mb-[1.5em]">
               I'm a <span id="typing"></span>
               <span id="caret"></span>{" "}
               <span className="text-nowrap">developer</span>.
             </h2>
-            <p>Full-stack developer for hire.</p>
+            <p>UI/UX focused full-stack developer.</p>
             <p className="text-balance bg-blend-difference">
               My specialization is in creating web experiences with robust design and
               typography for businesses and individuals.
@@ -107,6 +100,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <AboutScreen />
+      <ContactScreen />
 
       {scene === "cover" && (
         <div
@@ -136,18 +132,18 @@ export default function Home() {
           className="w-fit p-sm hover:scale-110 transition-size duration-300"
           type="button"
           onClick={() => {
-            if (scene === "overview") {
+            if (scene === "overview" || scene === "about" || scene === "contact") {
               router.push("/", { scroll: false });
               setScene("cover");
-            } else {
+            } else if (scene === "details") {
               setScene("overview");
-            }
+            } 
           }}
         >
           <div className="max-lg:h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
             <h3 className="w-fit">
-              {scene === "overview" ? "home" : "overview"}
+              {scene === "overview" || scene === "about" || scene === "contact" ? "home" : "overview"}
             </h3>
           </div>
         </button>
