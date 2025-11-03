@@ -28,7 +28,7 @@
     "text": "SoundBiter is a browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
     "titleR": "Description",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "images": [""],
+    "images": ["/images/soundbiter/soundbiter-1.png"],
     "tech": [
       "Next.js",
       "Tailwind/CSS",

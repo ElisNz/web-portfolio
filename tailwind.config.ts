@@ -7,6 +7,9 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    breakpoints: {
+      xs: "320px",
+    },
     extend: {
       scrollbar: {
         hide: "scrollbar-width: none; -ms-overflow-style: none;",
@@ -19,6 +22,13 @@ const config: Config = {
         fancy: "url(/cursor/cursor-default.png), auto",
       },
       padding: {
+        xs: "0.25rem",
+        sm: "1rem",
+        md: "2rem",
+        lg: "3rem",
+      },
+      margin: {
+        xs: "0.25rem",
         sm: "1rem",
         md: "2rem",
         lg: "3rem",

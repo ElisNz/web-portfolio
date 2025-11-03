@@ -16,22 +16,22 @@ export default function MobileProjectScreen() {
       <button
         type="button"
         title={title}
-        className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none hover:scale-[1.1] transition-scale duration-300"
+        className="flex flex-col text-center items-center justify-center lg:justify-center lg:gap-4 select-none hover:scale-[1.1] transition-scale duration-300 pb-8 md:pb-0"
         onClick={() => {
           setProject(title?.toLowerCase());
           setScene("details");
         }}
       >
-        <div className="size-[15rem] relative">
+        <div className="size-40 md:size-[15rem] relative">
           {images[0] ?  
             <Image draggable="false" src={images[0]} alt={title} fill /> : 
-            <div className="size-full place-content-center">
-              <strong className="text-[10em] uppercase font-black">{title[0]}</strong>
+            <div className="max-md:h-[10em] place-content-center overflow-hidden">
+              <strong className="max-md:h-full text-[10em] max-md:leading-[1.5rem] uppercase font-black">{title[0]}</strong>
             </div>
           }
         </div>
         <h2
-          className={`${scene !== "overview" ? "invisible" : ""} capitalize tracking-tighter pt-2 break-all text-lg lg:text-xl xl:text-2xl max-w-[8rem] lg:max-w-[15rem] h-[1em]`}
+          className={`${scene !== "overview" ? "invisible" : ""} mb-0 text-center text-nowrap capitalize tracking-tighter md:pt-2 break-all text-[1.5em] lg:text-xl xl:text-2xl md:max-w-[8rem] lg:max-w-[15rem]`}
         >
           {title}
         </h2>
@@ -58,13 +58,13 @@ export default function MobileProjectScreen() {
   return (
     <div className={`fixed w-full h-full ${backgroundStyle} text-background`}>
       <div
-        className={`fixed w-full ${
+        className={`fixed w-full h-full ${
           scene === "overview"
             ? "opacity-100"
             : "opacity-10 scale-[0.95] pointer-events-none blur-sm"
-        } transition-all duration-500 overflow-hidden`}
+        } transition-all duration-500 overflow-scroll lg:overflow-hidden`}
       >
-        <div className="h-[75vh] w-full flex flex-wrap mt-20 justify-center gap-4 scrollbar-custom lg:gap-8">
+        <div className="md:h-[75vh] w-full flex flex-col md:flex-wrap mt-40 md:mt-20 max-md:mb-40 justify-center gap-8 scrollbar-custom lg:gap-8">
           {projects?.map((project, index) =>
             project.title ? <ProjectCard key={index} {...project} /> : null,
           )}

@@ -5,7 +5,7 @@
     "text": "SoundBiter is a browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
     "titleR": "Description",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "images": [""],
+    "images": ["/images/soundbiter/soundbiter-1.png"],
     "tech": [
       "Next.js",
       "Tailwind/CSS",
@@ -30,22 +30,6 @@
       "Firebase"
     ],
     "link": "https://www.markanta.se"
-  },
-  {
-    "title": "motherstructures",
-    "subtitle": "Urban Greenspaces",
-    "text": "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
-    "titleR": "About the project",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "images": ["/images/motherstructures/motherstructures-1.png"],
-    "tech": [
-      "Next.js",
-      "Tailwind/CSS",
-      "Node.js",
-      "Google Cloud",
-      "Firebase"
-    ],
-    "link": "https://www.motherstructures.com"
   },
   {
     "title": "pomona v2",

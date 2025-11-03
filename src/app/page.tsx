@@ -27,15 +27,13 @@ export default function Home() {
     className?: string;
   }) => (
     <button
-      className={`w-full hover:scale-110 transition-size duration-300 relative ${className}`}
+      className={`size-fit transition-size duration-300 relative ${className}`}
       type="button"
       onClick={onClick}
     >
-      <div className="flex flex-col items-center">
-        <h2 className="text-center text-[1.5em]">
-          {text}
-        </h2>
-      </div>
+      <h3 className="text-center text-[1.5em]">
+        {text}
+      </h3>
     </button>
   );
 
@@ -93,10 +91,11 @@ export default function Home() {
               This is a site for my projects, and a design playground.
             </p>
           </div>
-          <div className="md:hidden w-full grid grid-cols-3 gap-x-12">
-            <ActionButton text="About" onClick={() => setScene("overview")} />
+
+          <div className="md:hidden w-full h-fit flex flex-row justify-between">
+            <ActionButton text="About" onClick={() => setScene("about")} />
             <ActionButton text="Projects" onClick={() => setScene("overview")} />
-            <ActionButton text="Contact" onClick={() => router.push('/contact')} />
+            <ActionButton text="Contact" onClick={() => setScene("contact")} />
           </div>
         </div>
       </div>

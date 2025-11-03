@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { useStore } from "@/app/Store";
 import { getDataUtility } from "@/app/files";
-import { Miniloader } from "@/app/components/Miniloader";
+
 
 const projects = getDataUtility("projects");
 
@@ -11,6 +11,7 @@ export const MobileProjectDetailScreen = () => {
   const store = useStore((state) => state);
   const [projectData, setProjectData] = useState(null);
   const { scene, project } = store;
+  const images = projects.find((i) => i.title === project)?.images || [];
 
   const visible = scene === "details";
 
@@ -39,79 +40,90 @@ export const MobileProjectDetailScreen = () => {
     >
       <div className="relative lg:col-span-2 w-full flex flex-col items-center">
         
-        <div className="w-full lg:w-1/3 flex flex-row justify-center mx-auto">
-          <Suspense
-            fallback={<div className="h-12 w-12 animate-pulse" />}
-          >
-            <div
-              className={`content-center h-[12svh] w-[12dvw]  ${
-                visible
-                  ? "lg:absolute right-[26dvw] top-[20dvh] opacity-80 hover:scale-[1.05]"
-                  : "opacity-0 right-[100dvw]"
-              } delay-800 transition-all duration-500`}
+        <div className="w-full lg:w-1/2 flex flex-row justify-center">
+          {images[0] &&
+            <Suspense
+              fallback={<div className="h-20 w-20 animate-pulse" />}
             >
-              <Image
-                src={projects.find((i) => i.title === project)?.images[0] || ""}
-                alt={projects.find((i) => i.title === project)?.title || ""}
-                width={200}
-                height={200}
-              />
-            </div>
-          </Suspense>
-          <Suspense
-            fallback={<div className="h-12 w-12  animate-pulse" />}
-          >
-            <div
-              className={`content-center h-[20dvh] w-[20dvw]  ${
-                visible
-                  ? "lg:absolute left-[10dvw] top-[25vh] opacity-80 hover:scale-[1.05]"
-                  : "opacity-0 left-[10dvw]"
-              } delay-3000 transition-all duration-500`}
+              <div
+                className={`h-60 w-60 ${
+                  visible
+                    ? "lg:absolute left-[20vw] top-[25%]"
+                    : "opacity-0 left-0"
+                } delay-800 transition-all duration-500`}
+              >
+                <Image
+                  src={images[0] || ""}
+                  alt={images[0] || ""}
+                  width={200}
+                  height={200}
+                />
+              </div>
+            </Suspense>
+          }
+
+          {images[1] &&
+            <Suspense
+              fallback={<div className="h-12 w-12  animate-pulse" />}
             >
-              <Image
-                src={projects.find((i) => i.title === project)?.images[0] || ""}
-                alt={projects.find((i) => i.title === project)?.title || ""}
-                width={400}
-                height={400}
-              />
-            </div>
-          </Suspense>
-          <Suspense
-            fallback={<div className="h-12 w-12  animate-pulse" />}
-          >
-            <div
-              className={`content-center h-[10dvh] w-[10dvw]  ${
-                visible
-                  ? "lg:absolute right-[10dvw] top-[25vh] opacity-60 hover:scale-[1.05]"
-                  : "opacity-0 right-[50dvw]"
-              } delay-2000 transition-all duration-500`}
+              <div
+                className={`content-center h-[20dvh] w-[20dvw]  ${
+                  visible
+                    ? "lg:absolute left-[10dvw] top-[25vh] opacity-80 hover:scale-[1.05]"
+                    : "opacity-0 left-[10dvw]"
+                } delay-3000 transition-all duration-500`}
+              >
+                <Image
+                  src={images[1] || ""}
+                  alt={projects.find((i) => i.title === project)?.title || ""}
+                  width={400}
+                  height={400}
+                />
+              </div>
+            </Suspense>
+          }
+
+          {images[2] &&
+            <Suspense
+              fallback={<div className="h-12 w-12  animate-pulse" />}
             >
-              <Image
-                src={projects.find((i) => i.title === project)?.images[0] || ""}
-                alt={projects.find((i) => i.title === project)?.title || ""}
-                width={400}
-                height={400}
-              />
-            </div>
-          </Suspense>
-          <Suspense
-            fallback={<div className="h-12 w-12  animate-pulse" />}
-          >
-            <div
-              className={`w-[25dvw] h-[25dvw] content-center self-center  ${
-                visible
-                  ? "opacity-100 hover:scale-[1.05] z-50"
-                  : "opacity-0 blur-md"
-              } delay-3000 transition-all duration-1000`}
+              <div
+                className={`content-center h-[10dvh] w-[10dvw]  ${
+                  visible
+                    ? "lg:absolute right-[10dvw] top-[25vh] opacity-60 hover:scale-[1.05]"
+                    : "opacity-0 right-[50dvw]"
+                } delay-2000 transition-all duration-500`}
+              >
+                <Image
+                  src={projects.find((i) => i.title === project)?.images[0] || ""}
+                  alt={projects.find((i) => i.title === project)?.title || ""}
+                  width={400}
+                  height={400}
+                />
+              </div>
+            </Suspense>
+          }
+
+          {images[3] &&
+            <Suspense
+              fallback={<div className="h-12 w-12  animate-pulse" />}
             >
-              <Image
-                src={projects.find((i) => i.title === project)?.images[0] || ""}
-                alt={projects.find((i) => i.title === project)?.title || ""}
-                width={400}
-                height={400}
-              />
-            </div>
-          </Suspense>
+              <div
+                className={`w-[25dvw] h-[25dvw] content-center self-center  ${
+                  visible
+                    ? "opacity-100 hover:scale-[1.05] z-50"
+                    : "opacity-0 blur-md"
+                } delay-3000 transition-all duration-1000`}
+              >
+                <Image
+                  src={projects.find((i) => i.title === project)?.images[0] || ""}
+                  alt={projects.find((i) => i.title === project)?.title || ""}
+                  width={400}
+                  height={400}
+                />
+              </div>
+            </Suspense>
+          }
         </div>
       </div>
 
@@ -130,7 +142,7 @@ export const MobileProjectDetailScreen = () => {
                 href={projectData?.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="truncate block underline pb-md pr-sm text-blue-700 font-mono text-[1.1rem]"
+                className="max-w-fit truncate block underline pb-md pr-sm text-blue-700 font-mono text-[1.1rem]"
               >
                 {projectData?.link?.replace(/(^\w+:|)\/\/(www\.)/, '')}
               </a>
