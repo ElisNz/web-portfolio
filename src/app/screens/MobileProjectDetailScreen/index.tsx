@@ -46,17 +46,17 @@ export const MobileProjectDetailScreen = () => {
               fallback={<div className="h-20 w-20 animate-pulse" />}
             >
               <div
-                className={`h-60 w-60 ${
+                className={`size-40 lg:size-80 ${
                   visible
-                    ? "lg:absolute left-[20vw] top-[25%]"
+                    ? "lg:absolute left-[12vw] top-[15%]"
                     : "opacity-0 left-0"
                 } delay-800 transition-all duration-500`}
               >
                 <Image
                   src={images[0] || ""}
                   alt={images[0] || ""}
-                  width={200}
-                  height={200}
+                  fill
+                  className="object-contain"
                 />
               </div>
             </Suspense>
@@ -131,13 +131,13 @@ export const MobileProjectDetailScreen = () => {
         className="col-span-3 grid grid-cols-1 gap-x-8 px-md lg:px-lg xl:px-xl"
       >
         <div>
-          <h1 className="max-lg:text-[2rem] mb-0 capitalize">
+          <h1 className="text-[1.5rem] md:text-[2rem] lg:text-[3em] mb-0 capitalize">
             {project}
           </h1>
           <div className="w-full lg:flex lg:flex-row justify-between pb-sm gap-x-8">
 
-            <div className="w-1/2">
-              <h3 className="mb-0">{projectData?.subtitle}</h3>
+            <div className="lg:w-1/2">
+              <h3 className="mb-0 text-[1rem] lg:text-[1.5em]">{projectData?.subtitle}</h3>
               <a
                 href={projectData?.link}
                 target="_blank"
@@ -149,7 +149,7 @@ export const MobileProjectDetailScreen = () => {
             </div>
 
             <div className="flex flex-col lg:justify-between items-start">
-              <h3 className="w-fit">Stack</h3>
+              <h3 className="w-fit max-md:hidden">Stack</h3>
               <ul className="w-full grid grid-cols-2 md:grid-cols-3 list-disc list-outside md:gap-x-8 px-sm">
                 {projectData?.tech?.map((tech) => (
                   <li key={tech}>{tech}</li>
@@ -158,7 +158,7 @@ export const MobileProjectDetailScreen = () => {
             </div>
 
           </div>
-          <h2>{projectData?.titleR}</h2>
+          <h2 className="text-[1.5rem] lg:text-[2rem]">{projectData?.titleR}</h2>
           <p>{projectData?.text}</p>
 
           <p>{projectData?.description}</p>
