@@ -76,7 +76,7 @@ export default function Home() {
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div className="font-sans">
-            <h2 className="text-pretty h-[2em] mb-[1.5em]">
+            <h2 className="text-pretty h-[2em] mb-[1.5em] bg-clip-text mix-blend-difference">
               I'm a <span id="typing"></span>
               <span id="caret"></span>{" "}
               <span className="text-nowrap">developer</span>.
@@ -125,10 +125,10 @@ export default function Home() {
       )}
 
       <div
-        className={`w-full flex flex-row fixed bottom-0 py-sm justify-center ${scene !== "cover" ? "transition-all duration-300" : "opacity-0 invisible pointer-events-none"}`}
+        className={`fixed mix-blend-difference backdrop-blur-sm w-full flex flex-row bottom-0 md:py-sm justify-center max-md:h-[15vh] ${scene !== "cover" ? "transition-all duration-300" : "opacity-0 invisible pointer-events-none"}`}
       >
         <button
-          className="w-fit p-sm hover:scale-110 transition-size duration-300"
+          className={`w-fit p-sm hover:scale-110 transition-size duration-300`}
           type="button"
           onClick={() => {
             if (scene === "overview" || scene === "about" || scene === "contact") {
@@ -141,7 +141,7 @@ export default function Home() {
         >
           <div className="max-lg:h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
-            <h3 className="w-fit">
+            <h3 className="w-fit mix-blend-difference">
               {scene === "overview" || scene === "about" || scene === "contact" ? "home" : "overview"}
             </h3>
           </div>

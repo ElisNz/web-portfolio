@@ -12,7 +12,6 @@ export const Chevron = ({
       <svg
         width={width}
         height={height}
-        filter="drop-shadow(0px 0px 2px rgba(99, 102, 241, 0.4))"
         transform={`rotate(${rotate})`}
         viewBox="0 0 20 20"
         fill="none"
