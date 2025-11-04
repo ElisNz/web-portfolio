@@ -9,7 +9,7 @@ export const AboutScreen = () => {
   const visible = scene === "about";
 
   return (
-    <div className={`${visible ? "": "hidden"} fixed w-full h-full md:h-full bg-gradient-to-r from-[purple]/40 to-[pink]/60 transition-all duration-300 overflow-x-hidden overflow-y-scroll scrollbar-custom`}>
+    <div className={`${visible ? "": "hidden"} fixed w-full h-full bg-gradient-to-r from-[purple]/40 to-[pink]/60 transition-all duration-300 overflow-x-hidden overflow-y-scroll scrollbar-custom`}>
       <div className="flex flex-col md:flex-row items-center justify-evenly my-40 mx-md md:mx-40">
         <div className="max-md:relative w-full md:w-1/2">
           <h2 className="leading-none md:text-nowrap mb-0 antialiased">Fullstack Developer</h2>

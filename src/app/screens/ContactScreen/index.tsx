@@ -7,9 +7,9 @@ export const ContactScreen = () => {
   const visible = scene === "contact";
 
   return (
-    <div className={`${visible ? "": "hidden"} w-full h-screen bg-gradient-to-r from-[pink]/60 to-[white]/60 transition-all duration-100`}>
-      <div className="h-full flex flex-col items-center justify-center">
-        <form className="flex flex-col items-center p-md w-full max-w-[50%]" action="/send-mail" method="POST">
+    <div className={`${visible ? "": "hidden"} w-full h-screen bg-gradient-to-r from-[pink]/60 to-[white]/60 transition-all duration-100 overflow-x-hidden overflow-y-scroll scrollbar-custom`}>
+      <div className="w-full flex flex-col items-center justify-center my-40">
+        <form className="flex flex-col items-center md:p-md md:max-w-[50%]" action="/send-mail" method="POST">
           <h2>Get in touch</h2>
 
           <label htmlFor="name" className="block text-[1.2rem] font-sans">Name</label>
@@ -53,7 +53,7 @@ export const ContactScreen = () => {
 
           <button
             type="submit"
-            className="py-2 px-4 text-[3rem] font-black"
+            className="py-4 px-4 text-[2rem] md:text-[3rem] font-black"
           >
             Send Message
           </button>

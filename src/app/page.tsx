@@ -105,7 +105,7 @@ export default function Home() {
 
       {scene === "cover" && (
         <div
-          className={`max-md:hidden fixed w-full bottom-[10%] flex justify-center`}
+          className={`mix-blend-difference max-md:hidden fixed w-full bottom-[10%] flex justify-center`}
         >
           <button
             className="w-fit hover:scale-110 transition-size duration-300 px-sm font-mono font-black"
