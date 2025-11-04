@@ -69,10 +69,10 @@ export default function Home() {
       
 
       <div
-        className={`${scene === "cover" ? "opacity-100" : "transition-all duration-300 opacity-0 invisible pointer-events-none"}`}
+        id="cover-screen" className={`${scene === "cover" ? "opacity-100" : "transition-all duration-300 opacity-0 invisible pointer-events-none hidden"}`}
       >
         <div
-          className={`fixed w-full h-full ${prefers === "reduce" ? "bg-gradient-to-b from-[coral]/30 via-50% to-[coral]/60" : "bg-gradient-to-r from-[pink]/60 to-[white]/60"} -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
+          className={`fixed w-full h-full bg-gradient-to-r from-[pink]/60 to-[white]/60 -z-50 ${scene === "cover" ? "opacity-100" : "opacity-0"}`}
         />
         <div className="h-screen lg:h-fit flex flex-col justify-evenly px-md md:fixed lg:w-1/3 lg:bottom-20 xl:bottom-40 right-0 pt-lg">
           <div className="font-sans">
