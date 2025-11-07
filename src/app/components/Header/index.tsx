@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useStore, scenes } from "@/app/Store";
 import { Settings } from "../svg";
-import { parse } from "path";
+
 
 export const Header = () => {
   const { scene, setScene, options, setOptions } = useStore((state) => state);
@@ -12,8 +12,8 @@ export const Header = () => {
   const speedSliderRef = useRef<HTMLInputElement>(null);
 
   const items: {name: string, scene: scenes }[] = [
+    { name: "Home", scene: "cover" },
     { name: "About", scene: "about" },
-    { name: "Contact", scene: "contact" },
   ];
 
   const handleSliderChange = () => {
