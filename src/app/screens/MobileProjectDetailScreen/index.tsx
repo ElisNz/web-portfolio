@@ -39,9 +39,33 @@ export const MobileProjectDetailScreen = () => {
         transition-all duration-0 overflow-auto`}
     >
       <div className="relative lg:col-span-2 w-full flex flex-col items-center">
-        
         <div className="w-full lg:w-1/2 flex flex-row justify-center">
-          {images[0] &&
+          {images.map((img, idx) => (
+
+            <Suspense
+              fallback={<div className="h-20 w-20 animate-pulse" />}
+              key={idx}
+            >
+              <div
+                className={`size-40 lg:size-80 ${
+                  visible
+                    ? "left-[12vw] top-[15%]"
+                    : "opacity-0 left-0"
+                } delay-800 transition-all duration-500`}
+              >
+                <Image
+                  src={img || ""}
+                  alt={img || ""}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </Suspense>
+            ))
+          }
+        
+        
+{/*           {images[0] &&
             <Suspense
               fallback={<div className="h-20 w-20 animate-pulse" />}
             >
@@ -123,7 +147,7 @@ export const MobileProjectDetailScreen = () => {
                 />
               </div>
             </Suspense>
-          }
+          } */}
         </div>
       </div>
 

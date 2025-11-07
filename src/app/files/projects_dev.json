@@ -44,7 +44,7 @@
     "text": "Markanta is a Swedish engineering consultancy firm specializing in providing innovative solutions for infrastructure and construction projects.",
     "titleR": "About the project",
     "description": "With a team of experienced engineers and consultants, Markanta offers a wide range of services including project management, structural engineering, environmental consulting, and more. Their commitment to quality and sustainability has made them a trusted partner for clients across various industries.",
-    "images": ["/images/markanta/markanta-1.png"],
+    "images": ["/images/markanta/markanta-1.svg", "/images/markanta/markanta-2.png"],
     "tech": [
       "Next.js",
       "Tailwind/CSS",

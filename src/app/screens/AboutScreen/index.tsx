@@ -10,7 +10,7 @@ export const AboutScreen = () => {
 
   return (
     <div className={`${visible ? "": "hidden"} fixed w-full h-full bg-gradient-to-r from-[purple]/40 to-[pink]/60 transition-all duration-300 overflow-x-hidden overflow-y-scroll scrollbar-custom`}>
-      <div className="flex flex-col md:flex-row items-center justify-evenly my-40 mx-md md:mx-40">
+      <div className="flex flex-col md:flex-row  justify-evenly my-40 mx-md md:mx-40">
         <div className="max-md:relative w-full md:w-1/2">
           <h2 className="leading-none md:text-nowrap mb-0 antialiased">Fullstack Developer</h2>
           <h3 className="text-nowrap mb-8 font-black font-mono">UI/UX/web</h3>
@@ -23,25 +23,32 @@ export const AboutScreen = () => {
           <p className="font-sans mb-4">
             My passion for design and technology drives me to continuously learn and improve my skills, ensuring that I stay up-to-date with the latest trends and best practices in the industry.
           </p>
-          <h2 className="text-nowrap font-black font-mono antialiased">４６４９//衛理守</h2>
+          <h2 className="text-nowrap font-black font-mono antialiased">４６４９ 衛理守</h2>
         </div>
 
-        <div className="flex flex-col md:items-center max-md:pt-lg">
+        <div className="flex flex-col md:items-center justify-center max-md:pt-lg">
           <h2 className="max-md:hidden">Socials</h2>
-          <Image src="/images/texture_text_test.png" alt="About Image" width={300} height={300} className="max-md:hidden mb-8" />
-          <ul className="leading-[3rem] flex flex-row justify-between md:justify-evenly align-baseline">
-            <li className="leading-[3rem] px-sm">
-              <a href="/">
+          {/* <Image src="/images/texture_text_test.png" alt="About Image" width={300} height={300} className="max-md:hidden mb-8" /> */}
+          <ul className="leading-[3rem] flex flex-row justify-between md:justify-evenly">
+            <li className="">
+              <a href="https://www.linkedin.com/in/elis-nilz%C3%A9n-78526b19b/">
                 <h3 className="font-black underline underline-offset-4">LinkedIn</h3>
               </a>
             </li>
             <span className="text-[3rem] font-black select-none">•</span>
-            <li className="px-sm underline underline-offset-4">
-              <a href="/">
+            <li className="underline underline-offset-4">
+              <a href="https://discord.com/users/981878886566608936">
                 <h3 className="font-black">Discord</h3>
               </a>
             </li>
+            <span className="text-[3rem] font-black select-none">•</span>
+            <li className="underline underline-offset-4">
+              <h3>
+                <a href="mailto:elis.nilzen@gmail.com" className="font-black underline underline-offset-4">Mail</a>
+              </h3>
+            </li>
           </ul>
+          
         </div>
 
       </div>

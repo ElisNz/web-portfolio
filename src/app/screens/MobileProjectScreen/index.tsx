@@ -50,7 +50,7 @@ export default function MobileProjectScreen() {
       backgroundStyle = "bg-gradient-to-r from-[pink] to-[white]/60";
       break;
     case "details":
-      backgroundStyle = "bg-gradient-to-b from-[coral]/40 to-[pink]/60";
+      backgroundStyle = "bg-gradient-to-b from-[pink]/80 to-[pink]/60";
       break;
     default:
       backgroundStyle = "bg-transparent -z-50";

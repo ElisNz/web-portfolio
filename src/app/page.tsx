@@ -139,7 +139,7 @@ export default function Home() {
             } 
           }}
         >
-          <div className="max-lg:h-[10vh] flex flex-col items-center">
+          <div className="h-[10vh] flex flex-col items-center">
             <Chevron width={40} height={40} rotate={180} />
             <h3 className="w-fit mix-blend-difference">
               {scene === "overview" || scene === "about" || scene === "contact" ? "home" : "overview"}
