@@ -1,23 +1,22 @@
 [
   {
     "title": "soundbiter",
-    "subtitle": "Browser Extention",
-    "text": "SoundBiter is a browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
+    "subtitle": "Chromium Extention",
+    "text": "SoundBiter is a chromium browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
     "titleR": "Description",
     "description": "SoundBiter is a browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
-    "images": ["/images/soundbiter/soundbiter-1.png"],
+    "images": ["/images/soundbiter/soundbiter-1.svg"],
     "tech": [
-      "Next.js",
-      "Tailwind/CSS",
-      "Node.js",
-      "Google Cloud",
-      "Firebase"
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Chrome Extensions API"
     ],
     "link": "https://microsoftedge.microsoft.com/addons/detail/soundbiter/akoglabocdhgcipgldipmjmaabfdfdbp?hl=en-US"
   },
   {
     "title": "markanta",
-    "subtitle": "Engineering Consultants",
+    "subtitle": "Geo-engineering Consultants",
     "text": "Markanta is a Swedish engineering consultancy firm specializing in providing innovative solutions for infrastructure and construction projects.",
     "titleR": "About the project",
     "description": "With a team of experienced engineers and consultants, Markanta offers a wide range of services including project management, structural engineering, environmental consulting, and more. Their commitment to quality and sustainability has made them a trusted partner for clients across various industries.",
@@ -42,5 +41,18 @@
       "Node.js"
     ],
     "link": "work in progress"
+  },
+  {
+    "title": "jacob's portfolio",
+    "subtitle": "Personal Website",
+    "text": "A WordPress-based personal website showcasing art of artist Jacob Dahlgren.",
+    "titleR": "On the artist and the project",
+    "description": "Jacob Dahlgren is a contemporary Swedish artist known for his vibrant and dynamic installations that often explore themes of perception, space, and interaction. His personal website serves as a digital portfolio, showcasing his diverse body of work, upcoming exhibitions, and biographical information. The site is designed to reflect Dahlgren's artistic style while providing an accessible platform for art enthusiasts and collectors to engage with his work.",
+    "images": ["/images/jd/jd-1.png"],
+    "tech": [
+      "WordPress",
+      "PHP"
+    ],
+    "link": "https://www.jacobdahlgren.com"
   }
 ]

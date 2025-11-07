@@ -6,6 +6,7 @@ import { getDataUtility } from "@/app/files";
 
 import { MobileProjectDetailScreen } from "../MobileProjectDetailScreen";
 
+
 export default function MobileProjectScreen() {
   const store = useStore((state) => state);
   const { scene, setScene, setProject } = store;

@@ -12,7 +12,7 @@
     "text": "Markanta is an e-commerce platform that connects buyers and sellers from around the world. The platform is designed to be easy to use, and offers a wide range of products and services. Markanta is a great place to find unique items that you won't find anywhere else. Whether you're looking for clothing, accessories, or home decor, Markanta has something for everyone.",
     "titleR": "About the project",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "images": ["/images/motherstructures/motherstructures-1.png"],
+    "images": [""],
     "tech": [
       "Next.js",
       "Tailwind/CSS",
@@ -28,7 +28,7 @@
     "text": "SoundBiter is a browser extension that allows users to capture and save audio snippets from any website. Whether it's a podcast, music track, or an important meeting, soundBiter makes it easy to grab the audio you need with just a few clicks. The extension also includes features for organizing and managing your saved audio clips, making it simple to find and listen to them later.",
     "titleR": "Description",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "images": ["/images/soundbiter/soundbiter-1.png"],
+    "images": ["/images/soundbiter/soundbiter-1.svg"],
     "tech": [
       "Next.js",
       "Tailwind/CSS",
@@ -65,5 +65,18 @@
       "Node.js"
     ],
     "link": "placeholder"
+  },
+  {
+    "title": "jacob's portfolio",
+    "subtitle": "Personal Website",
+    "text": "A WordPress-based personal website showcasing art of artist Jacob Dahlgren.",
+    "titleR": "On the artist and the project",
+    "description": "Jacob Dahlgren is a contemporary Swedish artist known for his vibrant and dynamic installations that often explore themes of perception, space, and interaction. His personal website serves as a digital portfolio, showcasing his diverse body of work, upcoming exhibitions, and biographical information. The site is designed to reflect Dahlgren's artistic style while providing an accessible platform for art enthusiasts and collectors to engage with his work.",
+    "images": ["/images/jd/jd-1.png"],
+    "tech": [
+      "WordPress",
+      "PHP"
+    ],
+    "link": "https://www.jacobdahlgren.com"
   }
 ]
