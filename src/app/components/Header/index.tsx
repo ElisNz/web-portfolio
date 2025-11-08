@@ -11,6 +11,7 @@ export const Header = () => {
   const intensitySliderRef = useRef<HTMLInputElement>(null);
   const speedSliderRef = useRef<HTMLInputElement>(null);
 
+
   const items: {name: string, scene: scenes }[] = [
     { name: "Home", scene: "cover" },
     { name: "About", scene: "about" },
@@ -36,6 +37,8 @@ export const Header = () => {
       speedSliderRef.current.removeEventListener("input", () => handleSliderChange);
     };
   }, [scene]);
+
+  useEffect(() => {}, [items]);
   
 
   return (
@@ -93,7 +96,7 @@ export const Header = () => {
                 type="button"
                 className="px-sm hover:underline underline-offset-4 transition-all duration-300"
                 key={index}
-                onClick={() => setScene(item.scene)}
+                onClick={() => item.scene === scene ? () => {return} : setScene(item.scene) }
               >
                 {item.name}
               </button>

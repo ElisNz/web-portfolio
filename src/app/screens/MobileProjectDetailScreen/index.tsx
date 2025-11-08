@@ -40,7 +40,7 @@ export const MobileProjectDetailScreen = () => {
     >
       <div className="relative lg:col-span-2 w-full flex flex-col items-center">
         <div className="w-full lg:w-1/2 flex flex-row justify-center">
-          {images.map((img, idx) => (
+          {images[0] && images.map((img, idx) => (
 
             <Suspense
               fallback={<div className="h-20 w-20 animate-pulse" />}
